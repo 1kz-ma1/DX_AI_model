@@ -1,0 +1,162 @@
+{
+  "baseQuestions": [
+    {
+      "id": "name",
+      "label": "氏名",
+      "type": "text",
+      "required": true,
+      "placeholder": "山田太郎"
+    },
+    {
+      "id": "address",
+      "label": "住所",
+      "type": "text",
+      "required": true,
+      "placeholder": "東京都渋谷区"
+    },
+    {
+      "id": "birthdate",
+      "label": "生年月日",
+      "type": "date",
+      "required": false,
+      "placeholder": "1990-01-01"
+    },
+    {
+      "id": "insurance",
+      "label": "保険証の種類",
+      "type": "select",
+      "required": true,
+      "options": [
+        { "value": "kokumin", "label": "国保（国民健康保険）" },
+        { "value": "shahou", "label": "社保（社会保険）" },
+        { "value": "kouki", "label": "後期高齢（75歳以上）" }
+      ]
+    },
+    {
+      "id": "admission_type",
+      "label": "入院の区分",
+      "type": "select",
+      "required": true,
+      "options": [
+        { "value": "emergency", "label": "緊急" },
+        { "value": "planned", "label": "計画" }
+      ]
+    },
+    {
+      "id": "is_householder",
+      "label": "世帯主ですか？",
+      "type": "select",
+      "required": false,
+      "options": [
+        { "value": "yes", "label": "はい" },
+        { "value": "no", "label": "いいえ" }
+      ]
+    },
+    {
+      "id": "admission_date",
+      "label": "入院日",
+      "type": "date",
+      "required": false,
+      "placeholder": "2026-02-01"
+    },
+    {
+      "id": "discharge_date",
+      "label": "予定退院日",
+      "type": "date",
+      "required": false,
+      "placeholder": "2026-02-10"
+    }
+  ],
+  "checklist": [
+    {
+      "id": "surgery",
+      "label": "手術を受けた",
+      "key": "surgery"
+    },
+    {
+      "id": "hce",
+      "label": "高額療養費制度を申請する",
+      "key": "hce"
+    },
+    {
+      "id": "claim",
+      "label": "医療保険の給付金を請求する",
+      "key": "claim"
+    }
+  ],
+  "documents": {
+    "common": [
+      { "id": "discharge_certificate", "name": "退院証明書", "description": "入院期間を証明する書類" },
+      { "id": "payment_detail", "name": "支払い明細", "description": "病院の医療費請求書" },
+      { "id": "medical_info", "name": "診療情報提供書", "description": "医師による診断情報（転院時など）" }
+    ],
+    "surgery": [
+      { "id": "surgery_consent", "name": "手術同意書", "description": "手術実施に対する同意書" },
+      { "id": "anesthesia_consent", "name": "麻酔同意書", "description": "麻酔に対する同意書" },
+      { "id": "pre_surgery_checklist", "name": "術前チェックリスト", "description": "手術前の確認事項" },
+      { "id": "surgery_explanation", "name": "手術説明書", "description": "医師による手術説明資料" }
+    ],
+    "hce": [
+      { "id": "hce_application", "name": "限度額認定証の申請書", "description": "高額療養費制度の申請用紙" },
+      { "id": "my_number", "name": "マイナンバー確認資料", "description": "マイナンバーカードのコピー（任意）" },
+      { "id": "income_verification", "name": "所得区分の確認書類", "description": "税務証明書など" }
+    ],
+    "claim": [
+      { "id": "claim_form", "name": "医療保険の給付金請求書", "description": "保険会社への給付金請求書" },
+      { "id": "medical_certificate", "name": "診断書（医師の証明書）", "description": "医師による診断証明書" },
+      { "id": "admission_certificate", "name": "入院証明書", "description": "病院が発行する入院の証明" }
+    ]
+  },
+  "aiFlow": [
+    {
+      "question": "退院に向けて、手術は受けましたか？",
+      "key": "surgery",
+      "type": "yesno"
+    },
+    {
+      "question": "医療費は高額になりましたか？（上限制度の申請予定はありますか？）",
+      "key": "hce",
+      "type": "yesno"
+    },
+    {
+      "question": "加入している医療保険の給付金を請求しますか？",
+      "key": "claim",
+      "type": "yesno"
+    }
+  ],
+  "modes": {
+    "plain": {
+      "title": "電子化（Plain）",
+      "description": "紙をそのままWebフォームに置き換えた状態",
+      "subtitle": "従来の入院手続き",
+      "characteristics": [
+        "入力項目が多い（10-20個）",
+        "共通項目も何度も再入力",
+        "すべての書類が一覧表示される",
+        "削減なし"
+      ]
+    },
+    "smart": {
+      "title": "工夫した電子化（Smart）",
+      "description": "条件に応じた自動化により効率化",
+      "subtitle": "スマート入院手続き",
+      "characteristics": [
+        "共通項目は自動入力",
+        "分岐の自動化に限界",
+        "一部書類は削減（手動判断必要）",
+        "手動判断が必要な項目に注記表示"
+      ]
+    },
+    "ai": {
+      "title": "AI導入（AI）",
+      "description": "最小限の入力で状況を自動整理",
+      "subtitle": "AI搭載入院手続き",
+      "characteristics": [
+        "一問一答の最小入力",
+        "不要項目がフェードアウト",
+        "必要書類が最小セットに縮む",
+        "AIが状況を自動整理（typing演出付き）"
+      ]
+    }
+  }
+}
