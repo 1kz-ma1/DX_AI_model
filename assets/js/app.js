@@ -501,7 +501,6 @@ class HospitalizationDXApp {
 
     for (const question of relevantQuestions) {
       await this.renderBranchQuestion(question, container);
-      await new Promise(resolve => setTimeout(resolve, 400));
     }
 
     return true;
@@ -509,57 +508,55 @@ class HospitalizationDXApp {
 
   // 個別の質問をレンダリング
   async renderBranchQuestion(question, container) {
-    const questionDiv = document.createElement('div');
-    questionDiv.className = 'branch-question-item';
-    questionDiv.dataset.questionId = question.id;
+    return new Promise((resolve) => {
+      const questionDiv = document.createElement('div');
+      questionDiv.className = 'branch-question-item';
+      questionDiv.dataset.questionId = question.id;
 
-    const questionText = document.createElement('div');
-    questionText.className = 'branch-question-text';
-    questionText.textContent = question.ask;
-    questionDiv.appendChild(questionText);
+      const questionText = document.createElement('div');
+      questionText.className = 'branch-question-text';
+      questionText.textContent = question.ask;
+      questionDiv.appendChild(questionText);
 
-    const optionsDiv = document.createElement('div');
-    optionsDiv.className = 'branch-options';
+      const optionsDiv = document.createElement('div');
+      optionsDiv.className = 'branch-options';
 
-    if (question.type === 'single') {
-      question.options.forEach(option => {
-        const btn = document.createElement('button');
-        btn.className = 'branch-option-btn';
-        btn.textContent = option.label;
-        btn.addEventListener('click', () => {
-          this.handleBranchAnswer(question, option, questionDiv);
+      if (question.type === 'single') {
+        question.options.forEach(option => {
+          const btn = document.createElement('button');
+          btn.className = 'branch-option-btn';
+          btn.textContent = option.label;
+          btn.addEventListener('click', () => {
+            this.handleBranchAnswer(question, option, questionDiv, resolve);
+          });
+          optionsDiv.appendChild(btn);
         });
-        optionsDiv.appendChild(btn);
-      });
-    } else if (question.type === 'yesno') {
-      const yesBtn = document.createElement('button');
-      yesBtn.className = 'branch-option-btn';
-      yesBtn.textContent = 'はい';
-      yesBtn.addEventListener('click', () => {
-        this.handleBranchAnswer(question, question.yes, questionDiv, 'はい');
-      });
+      } else if (question.type === 'yesno') {
+        const yesBtn = document.createElement('button');
+        yesBtn.className = 'branch-option-btn';
+        yesBtn.textContent = 'はい';
+        yesBtn.addEventListener('click', () => {
+          this.handleBranchAnswer(question, question.yes, questionDiv, resolve, 'はい');
+        });
 
-      const noBtn = document.createElement('button');
-      noBtn.className = 'branch-option-btn';
-      noBtn.textContent = 'いいえ';
-      noBtn.addEventListener('click', () => {
-        this.handleBranchAnswer(question, question.no, questionDiv, 'いいえ');
-      });
+        const noBtn = document.createElement('button');
+        noBtn.className = 'branch-option-btn';
+        noBtn.textContent = 'いいえ';
+        noBtn.addEventListener('click', () => {
+          this.handleBranchAnswer(question, question.no, questionDiv, resolve, 'いいえ');
+        });
 
-      optionsDiv.appendChild(yesBtn);
-      optionsDiv.appendChild(noBtn);
-    }
+        optionsDiv.appendChild(yesBtn);
+        optionsDiv.appendChild(noBtn);
+      }
 
-    questionDiv.appendChild(optionsDiv);
-    container.appendChild(questionDiv);
-
-    return new Promise(resolve => {
-      questionDiv.dataset.resolve = resolve;
+      questionDiv.appendChild(optionsDiv);
+      container.appendChild(questionDiv);
     });
   }
 
   // 質問への回答を処理
-  handleBranchAnswer(question, answer, questionDiv, label) {
+  handleBranchAnswer(question, answer, questionDiv, resolve, label) {
     // ボタンを選択状態に
     const buttons = questionDiv.querySelectorAll('.branch-option-btn');
     buttons.forEach(btn => {
@@ -590,10 +587,8 @@ class HospitalizationDXApp {
 
     // 次の質問へ進む
     setTimeout(() => {
-      if (questionDiv.dataset.resolve) {
-        questionDiv.dataset.resolve();
-      }
-    }, 300);
+      resolve();
+    }, 400);
   }
 
   // 確定ログを表示
