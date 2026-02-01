@@ -605,6 +605,9 @@ class HospitalizationDXApp {
       affects: question.affects
     };
 
+    // 状態を保存
+    this.persistState();
+
     // 次の質問へ進む
     setTimeout(() => {
       resolve();
@@ -1292,7 +1295,9 @@ class HospitalizationDXApp {
   persistState() {
     const state = {
       mode: this.currentMode,
-      checklist: this.checklist
+      checklist: this.checklist,
+      derivedFlags: this.derivedFlags,
+      branchAnswers: this.branchAnswers
     };
     localStorage.setItem('dxai_state', JSON.stringify(state));
     this.updateUrlParams();
@@ -1308,6 +1313,12 @@ class HospitalizationDXApp {
       }
       if (state?.mode) {
         this.currentMode = state.mode;
+      }
+      if (state?.derivedFlags) {
+        this.derivedFlags = { ...this.derivedFlags, ...state.derivedFlags };
+      }
+      if (state?.branchAnswers) {
+        this.branchAnswers = { ...this.branchAnswers, ...state.branchAnswers };
       }
       this.syncChecklistUI();
       this.switchMode(this.currentMode);
