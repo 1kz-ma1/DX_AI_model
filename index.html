@@ -70,7 +70,23 @@
             <!-- フォーム項目は app.js で動的生成 -->
           </form>
           <button id="nextToStep2Btn" class="btn btn-primary btn-large">次のステップへ進む →</button>
+          <button id="skipInputBtn" class="btn btn-secondary btn-large" style="margin-top: 12px;">入力画面をスキップ →</button>
         </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- プレビュー画面モーダル -->
+  <div id="previewModal" class="preview-modal" style="display: none;">
+    <div class="preview-content">
+      <h2>📋 入力内容のプレビュー</h2>
+      <p class="preview-description">以下のデフォルト値が自動入力されました。このまま次のステップへ進みますか？</p>
+      <div id="previewList" class="preview-list">
+        <!-- プレビュー項目は app.js で動的生成 -->
+      </div>
+      <div class="preview-actions">
+        <button id="confirmSkipBtn" class="btn btn-primary btn-large">次の画面へ進む →</button>
+        <button id="cancelSkipBtn" class="btn btn-secondary">キャンセル</button>
       </div>
     </div>
   </div>

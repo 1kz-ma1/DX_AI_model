@@ -17,6 +17,17 @@ class HospitalizationDXApp {
       expensive: false,
       transfer: false
     };
+    // デフォルト値の定義
+    this.defaultFormData = {
+      name: '山田太郎',
+      age: '45',
+      purpose: '手術のため',
+      duration: '7',
+      patientId: '123456',
+      phone: '090-1234-5678',
+      address: '東京都渋谷区1-2-3',
+      emergency: '090-9876-5432'
+    };
     this.init();
   }
 
@@ -208,6 +219,17 @@ class HospitalizationDXApp {
     document.getElementById('backToStep1Btn').addEventListener('click', () => {
       this.transitionBackToStep1();
     });
+
+    // スキップボタンのイベントリスナー
+    const skipBtn = document.getElementById('skipInputBtn');
+    skipBtn.addEventListener('click', () => this.showPreviewModal());
+
+    // プレビューモーダルのイベントリスナー
+    const confirmBtn = document.getElementById('confirmSkipBtn');
+    confirmBtn.addEventListener('click', () => this.confirmSkip());
+
+    const cancelBtn = document.getElementById('cancelSkipBtn');
+    cancelBtn.addEventListener('click', () => this.closePreviewModal());
   }
 
   validateForm() {
@@ -940,6 +962,50 @@ class HospitalizationDXApp {
         input.checked = this.checklist[key];
       }
     });
+  }
+
+  // デフォルト値でフォームを自動入力
+  fillFormWithDefaults() {
+    Object.entries(this.defaultFormData).forEach(([key, value]) => {
+      const input = document.querySelector(`#baseForm [name="${key}"]`);
+      if (input) {
+        input.value = value;
+        this.formData[key] = value;
+      }
+    });
+  }
+
+  // プレビューモーダルを表示
+  showPreviewModal() {
+    this.fillFormWithDefaults();
+    
+    const previewList = document.getElementById('previewList');
+    const questions = this.flowsData?.questions?.baseQuestions || [];
+    
+    previewList.innerHTML = questions.map(q => {
+      const value = this.formData[q.id] || '';
+      return `
+        <div class="preview-item">
+          <span class="preview-label">${q.label}</span>
+          <span class="preview-value">${value}</span>
+        </div>
+      `;
+    }).join('');
+    
+    const modal = document.getElementById('previewModal');
+    modal.style.display = 'flex';
+  }
+
+  // プレビューモーダルを閉じる
+  closePreviewModal() {
+    const modal = document.getElementById('previewModal');
+    modal.style.display = 'none';
+  }
+
+  // スキップを確定してステップ2へ
+  confirmSkip() {
+    this.closePreviewModal();
+    this.transitionToStep2();
   }
 }
 
