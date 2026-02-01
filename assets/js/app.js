@@ -248,6 +248,19 @@ class HospitalizationDXApp {
     const cancelBtn = document.getElementById('cancelSkipBtn');
     cancelBtn.addEventListener('click', () => this.closePreviewModal());
 
+    // アクションメニュートグル
+    const menuToggle = document.getElementById('actionMenuToggle');
+    const actionButtons = document.querySelector('.action-buttons');
+    menuToggle.addEventListener('click', () => {
+      const isCollapsed = actionButtons.classList.toggle('collapsed');
+      menuToggle.classList.toggle('collapsed', isCollapsed);
+      menuToggle.setAttribute('aria-expanded', !isCollapsed);
+      
+      // トグルアイコンの変更
+      const toggleIcon = menuToggle.querySelector('.toggle-icon');
+      toggleIcon.textContent = isCollapsed ? '☰' : '✕';
+    });
+
     // アクションボタンのイベントリスナー
     document.getElementById('switchToSmartBtn').addEventListener('click', () => {
       this.switchMode('smart');

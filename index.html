@@ -295,19 +295,24 @@
           </div>
 
           <!-- アクションボタン -->
-          <div class="action-buttons">
-            <button id="switchToSmartBtn" class="action-btn btn-smart-action" title="共通部分を自動入力してスマートに">
-              <span class="action-icon">⚡</span>
-              <span class="action-text">共通部分を自動入力する</span>
+          <div class="action-buttons-container">
+            <button id="actionMenuToggle" class="action-menu-toggle" title="メニューを開く/閉じる" aria-label="アクションメニュー" aria-expanded="true">
+              <span class="toggle-icon">✕</span>
             </button>
-            <button id="switchToAiBtn" class="action-btn btn-ai-action" title="AIで最適化して最小限に">
-              <span class="action-icon">🤖</span>
-              <span class="action-text">AIを導入する</span>
-            </button>
-            <button id="showSummaryBtn" class="action-btn btn-summary-action" title="全体のまとめを見る">
-              <span class="action-icon">📊</span>
-              <span class="action-text">まとめ</span>
-            </button>
+            <div class="action-buttons">
+              <button id="switchToSmartBtn" class="action-btn btn-smart-action" title="共通部分を自動入力してスマートに">
+                <span class="action-icon">⚡</span>
+                <span class="action-text">共通部分を自動入力する</span>
+              </button>
+              <button id="switchToAiBtn" class="action-btn btn-ai-action" title="AIで最適化して最小限に">
+                <span class="action-icon">🤖</span>
+                <span class="action-text">AIを導入する</span>
+              </button>
+              <button id="showSummaryBtn" class="action-btn btn-summary-action" title="全体のまとめを見る">
+                <span class="action-icon">📊</span>
+                <span class="action-text">まとめ</span>
+              </button>
+            </div>
           </div>
         </section>
       </div>
