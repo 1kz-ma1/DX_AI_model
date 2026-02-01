@@ -7,12 +7,39 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <div class="container">
-    <!-- ヘッダー -->
-    <header class="header">
-      <h1>🏥 入院手続き DX × AI 体験アプリ</h1>
-      <p>退院に向けた必要書類を整理するプロセスを体験してみましょう</p>
-    </header>
+  <!-- 導入画面 -->
+  <div id="introScreen" class="intro-screen">
+    <div class="intro-content">
+      <div class="intro-image">
+        <img src="assets/img/papers.png" alt="書類整理のイメージ">
+      </div>
+      <div class="intro-text">
+        <h1>🏥 入院手続き DX × AI 体験アプリ</h1>
+        <p class="intro-subtitle">退院に向けた書類整理をスマートに</p>
+        <div class="intro-description">
+          <p>入院手続きでは、同じ情報を何度も書かされていませんか？</p>
+          <p>このアプリは、その複雑さを<strong>DX × AI</strong>の視点から解決するデモです。</p>
+        </div>
+        <div class="intro-stages">
+          <h3>3つの段階を体験できます</h3>
+          <ul>
+            <li><span class="stage-num">①</span> <strong>電子化</strong> - 紙をそのままWebに置き換えた状態</li>
+            <li><span class="stage-num">②</span> <strong>工夫</strong> - 共通項目の自動入力で効率化</li>
+            <li><span class="stage-num">③</span> <strong>AI導入</strong> - 最小限の入力で自動整理</li>
+          </ul>
+        </div>
+        <button id="startBtn" class="btn btn-start">体験を始める</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mainApp" class="main-app" style="display: none;">
+    <div class="container">
+      <!-- ヘッダー -->
+      <header class="header">
+        <h1>🏥 入院手続き DX × AI 体験アプリ</h1>
+        <p>退院に向けた必要書類を整理するプロセスを体験してみましょう</p>
+      </header>
 
     <!-- DXステージ切替ボタン -->
     <div class="mode-switcher">
@@ -99,6 +126,7 @@
         </div>
       </section>
 
+    </div>
     </div>
   </div>
 

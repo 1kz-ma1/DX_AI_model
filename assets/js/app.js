@@ -25,12 +25,49 @@ class HospitalizationDXApp {
       const response = await fetch('assets/data/flows.json');
       this.flowsData = await response.json();
 
+      // 導入画面のイベントをセット
+      this.setupIntroScreen();
+
       // UIの初期化
       this.initializeUI();
       this.attachEventListeners();
     } catch (error) {
       console.error('Failed to load flows.json:', error);
     }
+  }
+
+  /**
+   * 導入画面のセットアップ
+   */
+  setupIntroScreen() {
+    const startBtn = document.getElementById('startBtn');
+    startBtn.addEventListener('click', () => {
+      this.transitionToMain();
+    });
+  }
+
+  /**
+   * 導入画面からメイン画面への遷移
+   */
+  async transitionToMain() {
+    const introScreen = document.getElementById('introScreen');
+    const mainApp = document.getElementById('mainApp');
+
+    // 導入画面をフェードアウト
+    introScreen.style.transition = 'opacity 0.4s ease-out';
+    introScreen.style.opacity = '0';
+
+    await new Promise(resolve => setTimeout(resolve, 400));
+
+    // 導入画面を非表示、メイン画面を表示
+    introScreen.style.display = 'none';
+    mainApp.style.display = 'block';
+
+    // メイン画面をフェードイン
+    mainApp.style.opacity = '0';
+    mainApp.offsetHeight; // reflow
+    mainApp.style.transition = 'opacity 0.4s ease-in';
+    mainApp.style.opacity = '1';
   }
 
   /**
