@@ -150,6 +150,26 @@
         "whenNeeded": "全ケース推奨",
         "aiReason": "患者安全の基本情報として自動選定",
         "conditions": []
+      },
+      {
+        "id": "health_insurance_copy",
+        "name": "健康保険証の写し",
+        "description": "国民健康保険証・社会保険証等",
+        "purpose": "保険資格の確認",
+        "fields": ["保険者名称", "被保険者番号", "有効期限"],
+        "whenNeeded": "入院手続き時に原則必須",
+        "aiReason": "保険資格確認の基本資料",
+        "conditions": ["!mynumber.used"]
+      },
+      {
+        "id": "id_document",
+        "name": "本人確認書類（運転免許証等）",
+        "description": "運転免許証・マイナンバーカード等",
+        "purpose": "本人確認",
+        "fields": ["氏名", "生年月日", "住所", "顔写真"],
+        "whenNeeded": "入院手続き時に原則必須",
+        "aiReason": "本人確認の基本資料",
+        "conditions": ["!mynumber.used"]
       }
     ],
     "surgery": [
@@ -233,7 +253,7 @@
         "fields": ["被保険者情報", "世帯主情報", "所得区分"],
         "whenNeeded": "医療費が高額の場合に申請推奨",
         "aiReason": "医療費が高額なため申請をお勧めします",
-        "conditions": ["hce"]
+        "conditions": ["hce", "!mynumber.used"]
       },
       {
         "id": "income_verification",
@@ -243,7 +263,7 @@
         "fields": ["年間所得", "税務署印"],
         "whenNeeded": "高額療養費申請時に必須",
         "aiReason": "自己負担額の算定に必須",
-        "conditions": ["hce"]
+        "conditions": ["hce", "!mynumber.used"]
       },
       {
         "id": "my_number",
@@ -512,6 +532,18 @@
       "yes": { "set": ["family.co_sign"] },
       "no": { "unset": ["family.co_sign"] },
       "affects": ["家族署名シート"]
+    },
+    {
+      "id": "mynumber_used",
+      "ask": "入院時にマイナンバーカードを利用して保険資格の確認を行いましたか？",
+      "type": "single",
+      "showIf": [],
+      "options": [
+        { "label": "はい", "set": ["mynumber.used"], "unset": [] },
+        { "label": "いいえ", "set": [], "unset": ["mynumber.used"] },
+        { "label": "わからない", "set": [], "unset": ["mynumber.used"] }
+      ],
+      "affects": ["健康保険証の写し", "本人確認書類（運転免許証等）", "限度額認定証の申請書", "所得区分の確認書類"]
     },
     {
       "id": "transfer_scope",

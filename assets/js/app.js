@@ -466,6 +466,9 @@ class HospitalizationDXApp {
     
     let hypotheses = [];
     
+    // マイナンバー利用の仮説
+    hypotheses.push('<p>入院時のマイナンバーカード利用状況を確認し、書類削減の可能性を検討します。</p>');
+    
     if (this.checklist.surgery) {
       hypotheses.push('<p>手術があるため、麻酔方法の確認が必要と判断しました。</p>');
     }
@@ -599,8 +602,19 @@ class HospitalizationDXApp {
     const logs = [];
 
     Object.values(this.branchAnswers).forEach(answer => {
-      const affectsText = answer.affects.join('、');
-      logs.push(`<p>${answer.answer}を選択 → ${affectsText}を判定</p>`);
+      // マイナンバー質問の場合、特別なメッセージを表示
+      if (answer.question.includes('マイナンバーカード')) {
+        if (answer.answer === 'はい') {
+          logs.push('<p>✓ マイナンバー関連データを照合しました。資格情報・本人確認・所得区分に矛盾がなかったため、関連書類は提出不要と判断しました。</p>');
+        } else if (answer.answer === 'いいえ') {
+          logs.push('<p>✗ マイナンバーカード利用が確認できませんでした。手続き漏れを防ぐため、関連書類は保持します。</p>');
+        } else {
+          logs.push('<p>? 資格確認状況が不明なため、関連書類は安全側として保持します。</p>');
+        }
+      } else {
+        const affectsText = answer.affects.join('、');
+        logs.push(`<p>${answer.answer}を選択 → ${affectsText}を判定</p>`);
+      }
     });
 
     if (logs.length === 0) {
@@ -666,6 +680,14 @@ class HospitalizationDXApp {
 
       // 全ての条件を満たす必要がある（AND条件）
       return doc.conditions.every(condition => {
+        // 否定条件（"!"で始まる）の処理
+        if (condition.startsWith('!')) {
+          const flagName = condition.substring(1);
+          // フラグがfalseまたは未定義なら表示
+          return !this.checklist[flagName] && !this.derivedFlags[flagName];
+        }
+        
+        // 肯定条件の処理
         // 基本チェックリスト
         if (this.checklist[condition]) {
           return true;
