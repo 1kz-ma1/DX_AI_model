@@ -477,7 +477,25 @@ class HospitalizationDXApp {
     // 書類パネルを表示
     await new Promise(resolve => setTimeout(resolve, 500));
     await fadeIn(docsPanel, 300);
-base];
+
+    // 必要な書類を生成
+    const necessaryDocs = this.generateNecessaryDocuments();
+    const container = document.getElementById('aiDocuments');
+    container.innerHTML = '';
+
+    necessaryDocs.forEach(doc => {
+      const item = this.createDocumentItem(doc);
+      container.appendChild(item);
+    });
+
+    this.updateStats(necessaryDocs.length);
+  }
+
+  /**
+   * 必要な書類を生成（AI版）
+   */
+  generateNecessaryDocuments() {
+    const docs = [...this.flowsData.documents.base];
 
     if (this.checklist.surgery) {
       docs.push(...this.flowsData.documents.surgery);
@@ -499,29 +517,8 @@ base];
       docs.push(...this.flowsData.documents.expensive);
     }
 
-    if (this.checklist.transfer) {base,
-      ...this.flowsData.documents.surgery,
-      ...this.flowsData.documents.hce,
-      ...this.flowsData.documents.claim,
-      ...this.flowsData.documents.proxy,
-      ...this.flowsData.documents.expensive,
-      ...this.flowsData.documents.transfer
-  /**
-   * 必要な書類を生成（AI版）
-   */
-  generateNecessaryDocuments() {
-    const docs = [...this.flowsData.documents.common];
-
-    if (this.checklist.surgery) {
-      docs.push(...this.flowsData.documents.surgery);
-    }
-
-    if (this.checklist.hce) {
-      docs.push(...this.flowsData.documents.hce);
-    }
-
-    if (this.checklist.claim) {
-      docs.push(...this.flowsData.documents.claim);
+    if (this.checklist.transfer) {
+      docs.push(...this.flowsData.documents.transfer);
     }
 
     return docs;
@@ -532,10 +529,13 @@ base];
    */
   getAllDocuments() {
     const docs = [
-      ...this.flowsData.documents.common,
+      ...this.flowsData.documents.base,
       ...this.flowsData.documents.surgery,
       ...this.flowsData.documents.hce,
-      ...this.flowsData.documents.claim
+      ...this.flowsData.documents.claim,
+      ...this.flowsData.documents.proxy,
+      ...this.flowsData.documents.expensive,
+      ...this.flowsData.documents.transfer
     ];
     return docs;
   }
