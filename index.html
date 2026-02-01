@@ -33,51 +33,65 @@
     </div>
   </div>
 
-  <div id="mainApp" class="main-app" style="display: none;">
-    <div class="container">
-      <!-- ヘッダー -->
+  <!-- ステップ1：基本情報入力 -->
+  <div id="step1" class="step-screen" style="display: none;">
+    <div class="container step-container">
       <header class="header">
         <h1>🏥 入院手続き DX × AI 体験アプリ</h1>
-        <p>退院に向けた必要書類を整理するプロセスを体験してみましょう</p>
+        <p class="step-indicator">ステップ 1/2：基本情報の入力</p>
       </header>
 
-    <!-- DXステージ切替ボタン -->
-    <div class="mode-switcher">
-      <button class="mode-btn active" data-mode="plain">
-        <span class="mode-label">①電子化</span>
-        <span class="mode-desc">Plain</span>
-      </button>
-      <button class="mode-btn" data-mode="smart">
-        <span class="mode-label">②工夫</span>
-        <span class="mode-desc">Smart</span>
-      </button>
-      <button class="mode-btn" data-mode="ai">
-        <span class="mode-label">③AI導入</span>
-        <span class="mode-desc">AI</span>
-      </button>
+      <div class="step-content">
+        <section class="form-section">
+          <h2>📝 基本情報を入力してください</h2>
+          <p class="form-description">退院に向けた必要書類を整理するため、基本情報を入力してください。</p>
+          <form id="baseForm" class="form">
+            <!-- フォーム項目は app.js で動的生成 -->
+          </form>
+          <button id="nextToStep2Btn" class="btn btn-primary btn-large">次のステップへ進む →</button>
+        </section>
+      </div>
     </div>
+  </div>
 
-    <!-- メインコンテンツ（3カラム） -->
-    <div class="main-content">
-      
-      <!-- 左：基本入力 -->
-      <section class="column column-left">
-        <h2>📝 基本入力</h2>
-        <form id="baseForm" class="form">
-          <!-- フォーム項目は app.js で動的生成 -->
-        </form>
-        <button id="submitBtn" class="btn btn-primary">入力完了</button>
-      </section>
+  <!-- ステップ2：チェックリスト + 必要書類（3モード切替） -->
+  <div id="step2" class="step-screen" style="display: none;">
+    <div class="container">
+      <header class="header">
+        <h1>🏥 入院手続き DX × AI 体験アプリ</h1>
+        <p class="step-indicator">ステップ 2/2：必要書類の確認</p>
+      </header>
 
-      <!-- 中央：チェックリスト -->
-      <section class="column column-center">
-        <h2>✅ 退院に向けた確認</h2>
-        <div id="checklistContainer" class="checklist">
-          <!-- チェックリスト項目は app.js で動的生成 -->
-        </div>
-      </section>
+      <!-- DXステージ切替ボタン -->
+      <div class="mode-switcher">
+        <button class="mode-btn active" data-mode="plain">
+          <span class="mode-label">①電子化</span>
+          <span class="mode-desc">Plain</span>
+        </button>
+        <button class="mode-btn" data-mode="smart">
+          <span class="mode-label">②工夫</span>
+          <span class="mode-desc">Smart</span>
+        </button>
+        <button class="mode-btn" data-mode="ai">
+          <span class="mode-label">③AI導入</span>
+          <span class="mode-desc">AI</span>
+        </button>
+      </div>
 
-      <!-- 右：DX段階の体験画面 -->
+      <!-- メインコンテンツ（2カラム） -->
+      <div class="main-content step2-layout">
+        
+        <!-- 左：チェックリスト -->
+        <section class="column column-left">
+          <h2>✅ 退院に向けた確認</h2>
+          <p class="checklist-description">以下の項目に該当する場合はチェックしてください。必要書類が自動で変わります。</p>
+          <div id="checklistContainer" class="checklist">
+            <!-- チェックリスト項目は app.js で動的生成 -->
+          </div>
+          <button id="backToStep1Btn" class="btn btn-secondary">← 基本情報に戻る</button>
+        </section>
+
+        <!-- 右：DX段階の体験画面 -->
       <section class="column column-right">
         <h2 id="modeTitle">①電子化（Plain）</h2>
         <p id="modeDesc" class="mode-description"></p>

@@ -7,6 +7,7 @@ class HospitalizationDXApp {
   constructor() {
     this.flowsData = null;
     this.currentMode = 'plain'; // plain, smart, ai
+    this.currentStep = 'intro'; // intro, step1, step2
     this.formData = {};
     this.checklist = {
       surgery: false,
@@ -42,16 +43,16 @@ class HospitalizationDXApp {
   setupIntroScreen() {
     const startBtn = document.getElementById('startBtn');
     startBtn.addEventListener('click', () => {
-      this.transitionToMain();
+      this.transitionToStep1();
     });
   }
 
   /**
-   * 導入画面からメイン画面への遷移
+   * 導入画面からステップ1への遷移
    */
-  async transitionToMain() {
+  async transitionToStep1() {
     const introScreen = document.getElementById('introScreen');
-    const mainApp = document.getElementById('mainApp');
+    const step1 = document.getElementById('step1');
 
     // 導入画面をフェードアウト
     introScreen.style.transition = 'opacity 0.4s ease-out';
@@ -59,15 +60,75 @@ class HospitalizationDXApp {
 
     await new Promise(resolve => setTimeout(resolve, 400));
 
-    // 導入画面を非表示、メイン画面を表示
+    // 導入画面を非表示、ステップ1を表示
     introScreen.style.display = 'none';
-    mainApp.style.display = 'block';
+    step1.style.display = 'block';
+    this.currentStep = 'step1';
 
-    // メイン画面をフェードイン
-    mainApp.style.opacity = '0';
-    mainApp.offsetHeight; // reflow
-    mainApp.style.transition = 'opacity 0.4s ease-in';
-    mainApp.style.opacity = '1';
+    // ステップ1をフェードイン
+    step1.style.opacity = '0';
+    step1.offsetHeight; // reflow
+    step1.style.transition = 'opacity 0.4s ease-in';
+    step1.style.opacity = '1';
+  }
+
+  /**
+   * ステップ1からステップ2への遷移
+   */
+  async transitionToStep2() {
+    // フォームバリデーション
+    if (!this.validateForm()) {
+      alert('必須項目を入力してください。');
+      return;
+    }
+
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+
+    // ステップ1をフェードアウト
+    step1.style.transition = 'opacity 0.4s ease-out';
+    step1.style.opacity = '0';
+
+    await new Promise(resolve => setTimeout(resolve, 400));
+
+    // ステップ1を非表示、ステップ2を表示
+    step1.style.display = 'none';
+    step2.style.display = 'block';
+    this.currentStep = 'step2';
+
+    // ステップ2をフェードイン
+    step2.style.opacity = '0';
+    step2.offsetHeight; // reflow
+    step2.style.transition = 'opacity 0.4s ease-in';
+    step2.style.opacity = '1';
+
+    // 初期表示
+    this.renderMode(this.currentMode);
+  }
+
+  /**
+   * ステップ2からステップ1への遷移（戻る）
+   */
+  async transitionBackToStep1() {
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+
+    // ステップ2をフェードアウト
+    step2.style.transition = 'opacity 0.4s ease-out';
+    step2.style.opacity = '0';
+
+    await new Promise(resolve => setTimeout(resolve, 400));
+
+    // ステップ2を非表示、ステップ1を表示
+    step2.style.display = 'none';
+    step1.style.display = 'block';
+    this.currentStep = 'step1';
+
+    // ステップ1をフェードイン
+    step1.style.opacity = '0';
+    step1.offsetHeight; // reflow
+    step1.style.transition = 'opacity 0.4s ease-in';
+    step1.style.opacity = '1';
   }
 
   /**
@@ -182,10 +243,35 @@ class HospitalizationDXApp {
       });
     });
 
-    // 入力完了ボタン
-    document.getElementById('submitBtn').addEventListener('click', () => {
-      this.validateAndSubmit();
+    // ステップ1 → ステップ2 ボタン
+    document.getElementById('nextToStep2Btn').addEventListener('click', () => {
+      this.transitionToStep2();
     });
+
+    // ステップ2 → ステップ1（戻る）ボタン
+    document.getElementById('backToStep1Btn').addEventListener('click', () => {
+      this.transitionBackToStep1();
+    });
+  }
+
+  /**
+   * フォームバリデーション
+   */
+  validateForm() {
+    const form = document.getElementById('baseForm');
+    const requiredFields = form.querySelectorAll('[required]');
+    
+    let isValid = true;
+    requiredFields.forEach(field => {
+      if (!field.value) {
+        isValid = false;
+        field.style.borderColor = '#ef4444';
+      } else {
+        field.style.borderColor = '#d1d5db';
+      }
+    });
+
+    return isValid;
   }
 
   /**
@@ -428,30 +514,6 @@ class HospitalizationDXApp {
     const maxDocs = this.getAllDocuments().length;
     const statsPanel = document.getElementById('docStats');
     statsPanel.innerHTML = `<p>📊 必要書類: <strong>${count}</strong> 件 / 全体: ${maxDocs} 件</p>`;
-  }
-
-  /**
-   * フォーム入力値の検証と送信
-   */
-  validateAndSubmit() {
-    const form = document.getElementById('baseForm');
-    const requiredFields = form.querySelectorAll('[required]');
-    
-    let isValid = true;
-    requiredFields.forEach(field => {
-      if (!field.value) {
-        isValid = false;
-        field.style.borderColor = '#ef4444';
-      } else {
-        field.style.borderColor = '#d1d5db';
-      }
-    });
-
-    if (isValid) {
-      alert('入力完了しました！\nチェックリストを確認して、各DXモードの違いを体験してください。');
-    } else {
-      alert('必須項目を入力してください。');
-    }
   }
 }
 

@@ -192,6 +192,93 @@ body {
   display: none;
 }
 
+/* ステップ画面 */
+.step-screen {
+  animation: fadeInStep 0.4s ease-in;
+}
+
+@keyframes fadeInStep {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.step-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.step-indicator {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+/* ステップ1：基本情報入力 */
+.step-content {
+  padding: 40px 20px;
+}
+
+.form-section {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.form-section h2 {
+  font-size: 1.4rem;
+  color: #1f2937;
+  margin-bottom: 12px;
+}
+
+.form-description {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.checklist-description {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.btn-large {
+  padding: 14px 32px;
+  font-size: 1rem;
+  margin-top: 24px;
+}
+
+.btn-secondary {
+  background: #6b7280;
+  color: white;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.btn-secondary:hover {
+  background: #4b5563;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+
+/* ステップ2：2カラムレイアウト */
+.step2-layout {
+  grid-template-columns: 1fr 1.5fr;
+}
+
+@media (max-width: 1024px) {
+  .step2-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 .container {
   max-width: 1400px;
   margin: 0 auto;
