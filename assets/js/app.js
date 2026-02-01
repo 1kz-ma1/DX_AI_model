@@ -77,8 +77,8 @@ class HospitalizationDXApp {
     step1.style.opacity = '1';
   }
 
-  async transitionToStep2() {
-    if (!this.validateForm()) {
+  async transitionToStep2(skipValidation = false) {
+    if (!skipValidation && !this.validateForm()) {
       alert('必須項目を入力してください。');
       return;
     }
@@ -1005,7 +1005,7 @@ class HospitalizationDXApp {
   // スキップを確定してステップ2へ
   confirmSkip() {
     this.closePreviewModal();
-    this.transitionToStep2();
+    this.transitionToStep2(true); // バリデーションをスキップ
   }
 }
 
