@@ -101,51 +101,315 @@
   ],
   "documents": {
     "base": [
-      { "id": "discharge_certificate", "name": "退院証明書", "description": "入院期間を証明する書類" },
-      { "id": "payment_detail", "name": "支払い明細", "description": "病院の医療費請求書" },
-      { "id": "medical_info", "name": "診療情報提供書", "description": "必要に応じて発行" },
-      { "id": "prescription", "name": "処方箋", "description": "退院時の薬の処方" },
-      { "id": "discharge_guide", "name": "退院後の生活指導書", "description": "退院後の注意事項" }
+      {
+        "id": "discharge_certificate",
+        "name": "退院証明書",
+        "description": "入院期間を証明する書類",
+        "purpose": "健康保険や勤務先への報告用",
+        "fields": ["入院日", "退院日", "診断名", "医師署名"],
+        "whenNeeded": "全ケース必須",
+        "aiReason": "入院・退院の日付確認で自動選定"
+      },
+      {
+        "id": "payment_detail",
+        "name": "支払い明細",
+        "description": "病院の医療費請求書",
+        "purpose": "医療費の明細確認・記録用",
+        "fields": ["診療科目", "点数", "金額", "請求日"],
+        "whenNeeded": "全ケース必須",
+        "aiReason": "医療費確認で自動選定"
+      },
+      {
+        "id": "medical_info",
+        "name": "診療情報提供書",
+        "description": "必要に応じて発行",
+        "purpose": "他病院や保険会社への情報提供",
+        "fields": ["診断名", "治療内容", "処方情報", "医師署名"],
+        "whenNeeded": "転院・保険請求時に必要",
+        "aiReason": "診療内容の正式記録として自動選定"
+      },
+      {
+        "id": "prescription",
+        "name": "処方箋",
+        "description": "退院時の薬の処方",
+        "purpose": "退院後の調剤薬局での処方指示",
+        "fields": ["医薬品名", "用量・用法", "日数", "医師署名"],
+        "whenNeeded": "服薬がある場合は必須",
+        "aiReason": "退院後の継続治療に必須"
+      },
+      {
+        "id": "discharge_guide",
+        "name": "退院後の生活指導書",
+        "description": "退院後の注意事項",
+        "purpose": "安全な退院後の生活のため",
+        "fields": ["食事制限", "運動制限", "投薬管理", "受診予定"],
+        "whenNeeded": "全ケース推奨",
+        "aiReason": "患者安全の基本情報として自動選定"
+      }
     ],
     "surgery": [
-      { "id": "surgery_consent", "name": "手術同意書", "description": "手術実施に対する同意書" },
-      { "id": "anesthesia_consent", "name": "麻酔同意書", "description": "麻酔に対する同意書" },
-      { "id": "pre_surgery_checklist", "name": "術前チェックリスト", "description": "手術前の確認事項" },
-      { "id": "surgery_explanation", "name": "手術説明書", "description": "医師による手術説明資料" },
-      { "id": "post_surgery_guide", "name": "術後の処置に関する説明書", "description": "任意：術後のケア方法" }
+      {
+        "id": "surgery_consent",
+        "name": "手術同意書",
+        "description": "手術実施に対する同意書",
+        "purpose": "医学的・法的に手術を承認する",
+        "fields": ["手術名", "リスク説明", "署名欄"],
+        "whenNeeded": "手術実施時は必須",
+        "aiReason": "手術実施の法的根拠として必須"
+      },
+      {
+        "id": "anesthesia_consent",
+        "name": "麻酔同意書",
+        "description": "麻酔に対する同意書",
+        "purpose": "麻酔のリスク・利益を説明し同意取得",
+        "fields": ["麻酔方法", "リスク説明", "署名欄"],
+        "whenNeeded": "麻酔使用時は必須",
+        "aiReason": "麻酔使用の法的根拠として必須"
+      },
+      {
+        "id": "pre_surgery_checklist",
+        "name": "術前チェックリスト",
+        "description": "手術前の確認事項",
+        "purpose": "手術前のリスク・準備を確認",
+        "fields": ["絶食状態", "投薬歴", "アレルギー確認"],
+        "whenNeeded": "手術実施時に必須",
+        "aiReason": "手術安全性の確認として自動選定"
+      },
+      {
+        "id": "surgery_explanation",
+        "name": "手術説明書",
+        "description": "医師による手術説明資料",
+        "purpose": "患者が手術内容を理解するため",
+        "fields": ["手術方法", "期待される効果", "リスク"],
+        "whenNeeded": "手術実施時に提供",
+        "aiReason": "患者教育の基本資料として自動選定"
+      },
+      {
+        "id": "post_surgery_guide",
+        "name": "術後の処置に関する説明書",
+        "description": "術後のケア方法",
+        "purpose": "退院後の傷口ケア・制限事項の説明",
+        "fields": ["傷口管理", "活動制限", "投薬管理"],
+        "whenNeeded": "手術患者の退院時に提供",
+        "aiReason": "術後合併症予防として自動選定"
+      }
     ],
     "hce": [
-      { "id": "hce_application", "name": "限度額認定証の申請書", "description": "高額療養費制度の申請用紙" },
-      { "id": "income_verification", "name": "所得区分の確認書類", "description": "課税証明書など" },
-      { "id": "my_number", "name": "マイナンバー確認資料", "description": "マイナンバーカードのコピー" },
-      { "id": "payment_proof", "name": "支払証明書", "description": "病院の領収書" },
-      { "id": "medical_notice", "name": "医療費通知", "description": "任意：健康保険組合からの通知" }
+      {
+        "id": "hce_application",
+        "name": "限度額認定証の申請書",
+        "description": "高額療養費制度の申請用紙",
+        "purpose": "医療費の自己負担額を限度内に抑える",
+        "fields": ["被保険者情報", "世帯主情報", "所得区分"],
+        "whenNeeded": "医療費が高額の場合に申請推奨",
+        "aiReason": "医療費が高額なため申請をお勧めします"
+      },
+      {
+        "id": "income_verification",
+        "name": "所得区分の確認書類",
+        "description": "課税証明書など",
+        "purpose": "自己負担限度額の決定に必要",
+        "fields": ["年間所得", "税務署印"],
+        "whenNeeded": "高額療養費申請時に必須",
+        "aiReason": "自己負担額の算定に必須"
+      },
+      {
+        "id": "my_number",
+        "name": "マイナンバー確認資料",
+        "description": "マイナンバーカードのコピー",
+        "purpose": "本人確認・制度申請のため",
+        "fields": ["マイナンバー", "顔写真"],
+        "whenNeeded": "制度申請時に本人確認として必須",
+        "aiReason": "本人確認の一次資料として自動選定"
+      },
+      {
+        "id": "payment_proof",
+        "name": "支払証明書",
+        "description": "病院の領収書",
+        "purpose": "実払い医療費の証明",
+        "fields": ["支払い日", "金額", "領収印"],
+        "whenNeeded": "高額療養費請求時に必須",
+        "aiReason": "医療費の実績確認として必須"
+      },
+      {
+        "id": "medical_notice",
+        "name": "医療費通知",
+        "description": "健康保険組合からの通知",
+        "purpose": "年間医療費の把握・確定申告用",
+        "fields": ["診療月", "医療機関名", "支払い額"],
+        "whenNeeded": "確定申告時に参考情報として使用",
+        "aiReason": "医療費控除の証拠資料として活用可"
+      }
     ],
     "claim": [
-      { "id": "claim_form", "name": "医療保険の給付金請求書", "description": "保険会社への給付金請求書" },
-      { "id": "medical_certificate", "name": "診断書（医師の証明書）", "description": "医師による診断証明書" },
-      { "id": "admission_certificate", "name": "入院証明書", "description": "病院が発行する入院の証明" },
-      { "id": "insurance_policy", "name": "保険証券の写し", "description": "加入している保険の証明" },
-      { "id": "id_verification", "name": "受取人の本人確認書類", "description": "免許証やマイナンバーカード" }
+      {
+        "id": "claim_form",
+        "name": "医療保険の給付金請求書",
+        "description": "保険会社への給付金請求書",
+        "purpose": "保険から給付金を受け取るため",
+        "fields": ["被保険者名", "給付金額", "請求日"],
+        "whenNeeded": "給付金受取時に保険会社に提出",
+        "aiReason": "保険給付の手続きに必須"
+      },
+      {
+        "id": "medical_certificate",
+        "name": "診断書（医師の証明書）",
+        "description": "医師による診断証明書",
+        "purpose": "入院・治療内容を医学的に証明",
+        "fields": ["診断名", "治療期間", "医師署名"],
+        "whenNeeded": "保険給付請求時に保険会社が要求",
+        "aiReason": "給付金の受給要件を満たす証拠として必須"
+      },
+      {
+        "id": "admission_certificate",
+        "name": "入院証明書",
+        "description": "病院が発行する入院の証明",
+        "purpose": "入院事実を病院が公式に証明",
+        "fields": ["入院日", "退院日", "入院期間"],
+        "whenNeeded": "給付金請求・会社への報告時に必須",
+        "aiReason": "入院事実の公式証明として必須"
+      },
+      {
+        "id": "insurance_policy",
+        "name": "保険証券の写し",
+        "description": "加入している保険の証明",
+        "purpose": "保険加入を証明・契約内容を確認",
+        "fields": ["保険商品名", "保険番号", "有効期限"],
+        "whenNeeded": "保険給付請求時に提出",
+        "aiReason": "保険加入の確認に必須"
+      },
+      {
+        "id": "id_verification",
+        "name": "受取人の本人確認書類",
+        "description": "免許証やマイナンバーカード",
+        "purpose": "給付金受取人の本人確認",
+        "fields": ["氏名", "生年月日", "発行機関"],
+        "whenNeeded": "給付金受け取り時に本人確認として必須",
+        "aiReason": "本人確認の必須資料"
+      }
     ],
     "proxy": [
-      { "id": "power_of_attorney", "name": "委任状", "description": "代理人に権限を委任する書類" },
-      { "id": "proxy_id", "name": "代理人の本人確認書類", "description": "免許証など" },
-      { "id": "relationship_proof", "name": "続柄の証明", "description": "住民票など" },
-      { "id": "proxy_documents", "name": "代理提出用書類一式", "description": "病院によって形式が異なる" }
+      {
+        "id": "power_of_attorney",
+        "name": "委任状",
+        "description": "代理人に権限を委任する書類",
+        "purpose": "代理人の代理権を法的に明確化",
+        "fields": ["本人署名", "代理人氏名", "委任内容"],
+        "whenNeeded": "代理人が手続きする場合に必須",
+        "aiReason": "代理人手続きの法的根拠として必須"
+      },
+      {
+        "id": "proxy_id",
+        "name": "代理人の本人確認書類",
+        "description": "免許証など",
+        "purpose": "代理人の本人確認",
+        "fields": ["氏名", "生年月日", "発行機関"],
+        "whenNeeded": "代理人手続き時に本人確認として必須",
+        "aiReason": "代理人の身元確認に必須"
+      },
+      {
+        "id": "relationship_proof",
+        "name": "続柄の証明",
+        "description": "住民票など",
+        "purpose": "本人と代理人の関係を証明",
+        "fields": ["世帯構成", "続柄", "発行日"],
+        "whenNeeded": "代理人が親族でない場合に必須",
+        "aiReason": "代理関係の妥当性を確認するため"
+      },
+      {
+        "id": "proxy_documents",
+        "name": "代理提出用書類一式",
+        "description": "病院によって形式が異なる",
+        "purpose": "各病院の規定する代理手続き書式",
+        "fields": ["代理権確認", "手続き内容"],
+        "whenNeeded": "代理人が病院で手続きする場合に必須",
+        "aiReason": "代理手続きの統一フォーマットとして必須"
+      }
     ],
     "expensive": [
-      { "id": "payment_proof_expensive", "name": "支払証明書", "description": "医療機関発行の領収書" },
-      { "id": "medical_detail", "name": "医療費明細書", "description": "詳細な費用の内訳" },
-      { "id": "hce_pre_application", "name": "高額療養費の事前申請書", "description": "制度利用のための申請" },
-      { "id": "limit_certificate", "name": "限度額認定証", "description": "未取得の場合は申請が必要" }
+      {
+        "id": "payment_proof_expensive",
+        "name": "支払証明書",
+        "description": "医療機関発行の領収書",
+        "purpose": "10万円超の医療費を証明",
+        "fields": ["支払い日", "金額", "領収印"],
+        "whenNeeded": "医療費が10万円超の場合に必須",
+        "aiReason": "高額医療の事実確認に必須"
+      },
+      {
+        "id": "medical_detail",
+        "name": "医療費明細書",
+        "description": "詳細な費用の内訳",
+        "purpose": "診療科別・項目別の費用内訳を把握",
+        "fields": ["診療科", "点数", "金額"],
+        "whenNeeded": "医療費分析・確定申告時に参考",
+        "aiReason": "医療費控除の根拠資料として活用可"
+      },
+      {
+        "id": "hce_pre_application",
+        "name": "高額療養費の事前申請書",
+        "description": "制度利用のための申請",
+        "purpose": "医療費が高額な場合、入院中に限度額を超えた分を戻す",
+        "fields": ["被保険者情報", "予想医療費"],
+        "whenNeeded": "医療費が10万円超と予想される場合に申請推奨",
+        "aiReason": "高額医療費対策として事前申請をお勧めします"
+      },
+      {
+        "id": "limit_certificate",
+        "name": "限度額認定証",
+        "description": "未取得の場合は申請が必要",
+        "purpose": "自己負担額を限度額内に抑える",
+        "fields": ["有効期限", "限度額", "自己負担額"],
+        "whenNeeded": "医療費が高額な場合に未取得なら早急に申請",
+        "aiReason": "自己負担を軽減するため必須"
+      }
     ],
     "transfer": [
-      { "id": "referral_letter", "name": "診療情報提供書（紹介状）", "description": "転院先への情報共有" },
-      { "id": "discharge_summary", "name": "退院サマリー", "description": "入院中の経過まとめ" },
-      { "id": "medication_info", "name": "持参薬の情報", "description": "薬剤情報提供書" },
-      { "id": "test_data", "name": "検査データ", "description": "CD or 報告書" },
-      { "id": "transfer_specific", "name": "転院先が求める独自書類", "description": "受け入れ確認など" }
+      {
+        "id": "referral_letter",
+        "name": "診療情報提供書（紹介状）",
+        "description": "転院先への情報共有",
+        "purpose": "転院先の医師が診療履歴を把握",
+        "fields": ["診断名", "治療内容", "投薬情報"],
+        "whenNeeded": "転院時に転院先に提出必須",
+        "aiReason": "連携医療の情報共有に必須"
+      },
+      {
+        "id": "discharge_summary",
+        "name": "退院サマリー",
+        "description": "入院中の経過まとめ",
+        "purpose": "入院中の診療経過を転院先に報告",
+        "fields": ["入院経過", "治療内容", "今後の方針"],
+        "whenNeeded": "転院時に転院先に提出必須",
+        "aiReason": "継続医療の円滑化に必須"
+      },
+      {
+        "id": "medication_info",
+        "name": "持参薬の情報",
+        "description": "薬剤情報提供書",
+        "purpose": "転院先で使用中の薬剤情報を把握",
+        "fields": ["薬剤名", "用量", "用法"],
+        "whenNeeded": "転院時に必須",
+        "aiReason": "薬剤相互作用確認のため必須"
+      },
+      {
+        "id": "test_data",
+        "name": "検査データ",
+        "description": "CD or 報告書",
+        "purpose": "転院先での診断に必要なデータ共有",
+        "fields": ["検査項目", "検査値", "正常値"],
+        "whenNeeded": "転院時に必須",
+        "aiReason": "客観的医療情報として必須"
+      },
+      {
+        "id": "transfer_specific",
+        "name": "転院先が求める独自書類",
+        "description": "受け入れ確認など",
+        "purpose": "転院先の独自要件対応",
+        "fields": ["受け入れ確認", "紹介形式"],
+        "whenNeeded": "転院先の要件に応じて必須",
+        "aiReason": "転院先の要件対応に必須"
+      }
     ]
   },
   "aiFlow": [

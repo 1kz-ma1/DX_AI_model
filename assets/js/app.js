@@ -1,13 +1,13 @@
 /**
  * 入院手続き DX × AI 体験アプリ
- * メインアプリケーション
+ * Phase 1 対応版
  */
 
 class HospitalizationDXApp {
   constructor() {
     this.flowsData = null;
-    this.currentMode = 'plain'; // plain, smart, ai
-    this.currentStep = 'intro'; // intro, step1, step2
+    this.currentMode = 'plain';
+    this.currentStep = 'intro';
     this.formData = {};
     this.checklist = {
       surgery: false,
@@ -20,19 +20,11 @@ class HospitalizationDXApp {
     this.init();
   }
 
-  /**
-   * 初期化処理
-   */
   async init() {
     try {
-      // flows.json を読み込み
       const response = await fetch('assets/data/flows.json');
       this.flowsData = await response.json();
-
-      // 導入画面のイベントをセット
       this.setupIntroScreen();
-
-      // UIの初期化
       this.initializeUI();
       this.attachEventListeners();
     } catch (error) {
@@ -40,46 +32,30 @@ class HospitalizationDXApp {
     }
   }
 
-  /**
-   * 導入画面のセットアップ
-   */
   setupIntroScreen() {
     const startBtn = document.getElementById('startBtn');
-    startBtn.addEventListener('click', () => {
-      this.transitionToStep1();
-    });
+    startBtn.addEventListener('click', () => this.transitionToStep1());
   }
 
-  /**
-   * 導入画面からステップ1への遷移
-   */
   async transitionToStep1() {
     const introScreen = document.getElementById('introScreen');
     const step1 = document.getElementById('step1');
 
-    // 導入画面をフェードアウト
     introScreen.style.transition = 'opacity 0.4s ease-out';
     introScreen.style.opacity = '0';
-
     await new Promise(resolve => setTimeout(resolve, 400));
 
-    // 導入画面を非表示、ステップ1を表示
     introScreen.style.display = 'none';
     step1.style.display = 'block';
     this.currentStep = 'step1';
 
-    // ステップ1をフェードイン
     step1.style.opacity = '0';
-    step1.offsetHeight; // reflow
+    step1.offsetHeight;
     step1.style.transition = 'opacity 0.4s ease-in';
     step1.style.opacity = '1';
   }
 
-  /**
-   * ステップ1からステップ2への遷移
-   */
   async transitionToStep2() {
-    // フォームバリデーション
     if (!this.validateForm()) {
       alert('必須項目を入力してください。');
       return;
@@ -88,69 +64,46 @@ class HospitalizationDXApp {
     const step1 = document.getElementById('step1');
     const step2 = document.getElementById('step2');
 
-    // ステップ1をフェードアウト
     step1.style.transition = 'opacity 0.4s ease-out';
     step1.style.opacity = '0';
-
     await new Promise(resolve => setTimeout(resolve, 400));
 
-    // ステップ1を非表示、ステップ2を表示
     step1.style.display = 'none';
     step2.style.display = 'block';
     this.currentStep = 'step2';
 
-    // ステップ2をフェードイン
     step2.style.opacity = '0';
-    step2.offsetHeight; // reflow
+    step2.offsetHeight;
     step2.style.transition = 'opacity 0.4s ease-in';
     step2.style.opacity = '1';
 
-    // 初期表示
     this.renderMode(this.currentMode);
   }
 
-  /**
-   * ステップ2からステップ1への遷移（戻る）
-   */
   async transitionBackToStep1() {
     const step1 = document.getElementById('step1');
     const step2 = document.getElementById('step2');
 
-    // ステップ2をフェードアウト
     step2.style.transition = 'opacity 0.4s ease-out';
     step2.style.opacity = '0';
-
     await new Promise(resolve => setTimeout(resolve, 400));
 
-    // ステップ2を非表示、ステップ1を表示
     step2.style.display = 'none';
     step1.style.display = 'block';
     this.currentStep = 'step1';
 
-    // ステップ1をフェードイン
     step1.style.opacity = '0';
-    step1.offsetHeight; // reflow
+    step1.offsetHeight;
     step1.style.transition = 'opacity 0.4s ease-in';
     step1.style.opacity = '1';
   }
 
-  /**
-   * UI要素の初期化
-   */
   initializeUI() {
-    // フォーム要素の動的生成
     this.generateBaseForm();
-    
-    // チェックリストの生成
     this.generateChecklist();
-
-    // 初期表示（Plain）
     this.renderMode('plain');
   }
 
-  /**
-   * 基本入力フォームを動的生成
-   */
   generateBaseForm() {
     const form = document.getElementById('baseForm');
     form.innerHTML = '';
@@ -161,13 +114,9 @@ class HospitalizationDXApp {
 
       const label = document.createElement('label');
       label.htmlFor = question.id;
-      label.textContent = question.label;
-      if (question.required) {
-        label.textContent += ' *';
-      }
+      label.textContent = question.label + (question.required ? ' *' : '');
 
       let input;
-
       if (question.type === 'select') {
         input = document.createElement('select');
         input.id = question.id;
@@ -202,9 +151,6 @@ class HospitalizationDXApp {
     });
   }
 
-  /**
-   * チェックリストを動的生成
-   */
   generateChecklist() {
     const container = document.getElementById('checklistContainer');
     container.innerHTML = '';
@@ -218,7 +164,7 @@ class HospitalizationDXApp {
       input.id = item.id;
       input.addEventListener('change', (e) => {
         this.checklist[item.key] = e.target.checked;
-        // チェックリスト変更時に画面再描画（Smart/AI）
+        // リアルタイム更新
         if (this.currentMode !== 'plain') {
           this.renderMode(this.currentMode);
         }
@@ -234,11 +180,7 @@ class HospitalizationDXApp {
     });
   }
 
-  /**
-   * イベントリスナーの設定
-   */
   attachEventListeners() {
-    // DXモード切り替えボタン
     document.querySelectorAll('.mode-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const mode = e.currentTarget.dataset.mode;
@@ -246,24 +188,19 @@ class HospitalizationDXApp {
       });
     });
 
-    // ステップ1 → ステップ2 ボタン
     document.getElementById('nextToStep2Btn').addEventListener('click', () => {
       this.transitionToStep2();
     });
 
-    // ステップ2 → ステップ1（戻る）ボタン
     document.getElementById('backToStep1Btn').addEventListener('click', () => {
       this.transitionBackToStep1();
     });
   }
 
-  /**
-   * フォームバリデーション
-   */
   validateForm() {
     const form = document.getElementById('baseForm');
     const requiredFields = form.querySelectorAll('[required]');
-    
+
     let isValid = true;
     requiredFields.forEach(field => {
       if (!field.value) {
@@ -277,13 +214,9 @@ class HospitalizationDXApp {
     return isValid;
   }
 
-  /**
-   * DXモード切り替え
-   */
   switchMode(mode) {
     this.currentMode = mode;
 
-    // ボタンの状態更新
     document.querySelectorAll('.mode-btn').forEach(btn => {
       btn.classList.remove('active');
       if (btn.dataset.mode === mode) {
@@ -291,19 +224,14 @@ class HospitalizationDXApp {
       }
     });
 
-    // 画面を再描画
     this.renderMode(mode);
   }
 
-  /**
-   * モード別の描画
-   */
   renderMode(mode) {
     const modeInfo = this.flowsData.modes[mode];
     document.getElementById('modeTitle').textContent = modeInfo.title;
     document.getElementById('modeDesc').textContent = modeInfo.description;
 
-    // 全ての結果パネルを非表示
     document.querySelectorAll('.result-panel').forEach(panel => {
       panel.style.display = 'none';
     });
@@ -321,9 +249,6 @@ class HospitalizationDXApp {
     }
   }
 
-  /**
-   * Plain モード：全書類を表示
-   */
   renderPlainMode() {
     const panel = document.getElementById('plainResult');
     panel.style.display = 'block';
@@ -331,18 +256,18 @@ class HospitalizationDXApp {
     const container = document.getElementById('plainDocuments');
     container.innerHTML = '';
 
-    // 全ての書類を表示
-    this.getAllDocuments().forEach(doc => {
-      const item = this.createDocumentItem(doc);
+    // バッジの表示
+    this.displayModeBadges('plain', container);
+
+    const allDocs = this.getAllDocuments();
+    allDocs.forEach(doc => {
+      const item = this.createDocumentItem(doc, 'plain');
       container.appendChild(item);
     });
 
-    this.updateStats(this.getAllDocuments().length);
+    this.updateStats(allDocs.length, allDocs.length);
   }
 
-  /**
-   * Smart モード：条件別に書類を表示 + 限界を表示
-   */
   renderSmartMode() {
     const panel = document.getElementById('smartResult');
     panel.style.display = 'block';
@@ -350,10 +275,8 @@ class HospitalizationDXApp {
     const container = document.getElementById('smartDocuments');
     container.innerHTML = '';
 
-    // 基本書類
+    // バッジの表示
     const docs = [...this.flowsData.documents.base];
-
-    // チェックリスト項目に基づく書類追加
     const warnings = [];
 
     if (this.checklist.surgery) {
@@ -392,13 +315,13 @@ class HospitalizationDXApp {
       warnings.push('転院の予定：チェックで判定');
     }
 
-    // 書類表示
+    this.displayModeBadges('smart', container, docs.length, warnings.length);
+
     docs.forEach(doc => {
-      const item = this.createDocumentItem(doc);
+      const item = this.createDocumentItem(doc, 'smart');
       container.appendChild(item);
     });
 
-    // 警告表示
     const warningList = document.getElementById('smartWarnings');
     warningList.innerHTML = '';
     warnings.forEach(warning => {
@@ -407,32 +330,25 @@ class HospitalizationDXApp {
       warningList.appendChild(li);
     });
 
-    this.updateStats(docs.length);
+    this.updateStats(docs.length, this.getAllDocuments().length);
   }
 
-  /**
-   * AI モード：対話 + 最小書類生成
-   */
   async renderAIMode() {
     const panel = document.getElementById('aiResult');
     const dialogPanel = document.getElementById('aiDialogPanel');
     const docsPanel = document.getElementById('aiDocumentsPanel');
-    
+
     panel.style.display = 'block';
     dialogPanel.style.display = 'none';
     docsPanel.style.display = 'none';
 
-    // 対話パネルを表示
     await fadeIn(dialogPanel, 300);
 
-    // Typing アニメーション
     const typingElement = document.getElementById('aiTypingText');
     const typing = new TypingAnimation(typingElement, 40);
 
-    // AI対話シミュレーション
     let aiResponse = '状況を整理しています...\n\n';
 
-    // 各質問に対する回答を整理
     if (this.checklist.surgery) {
       aiResponse += '✓ 手術を受けられました\n';
     } else {
@@ -471,29 +387,182 @@ class HospitalizationDXApp {
 
     aiResponse += '\n必要な書類を最小限に整理しました...';
 
-    // Typing アニメーション実行
     await typing.type(aiResponse);
 
-    // 書類パネルを表示
     await new Promise(resolve => setTimeout(resolve, 500));
     await fadeIn(docsPanel, 300);
 
-    // 必要な書類を生成
     const necessaryDocs = this.generateNecessaryDocuments();
     const container = document.getElementById('aiDocuments');
     container.innerHTML = '';
 
+    this.displayModeBadges('ai', container, necessaryDocs.length);
+
     necessaryDocs.forEach(doc => {
-      const item = this.createDocumentItem(doc);
+      const item = this.createDocumentItem(doc, 'ai');
       container.appendChild(item);
     });
 
-    this.updateStats(necessaryDocs.length);
+    this.updateStats(necessaryDocs.length, this.getAllDocuments().length);
   }
 
-  /**
-   * 必要な書類を生成（AI版）
-   */
+  displayModeBadges(mode, container, docCount, warningCount) {
+    const badgesDiv = document.createElement('div');
+    badgesDiv.className = 'header-badges';
+
+    if (mode === 'plain') {
+      const inputBadge = document.createElement('span');
+      inputBadge.className = 'badge input-count';
+      inputBadge.textContent = `入力項目: ${this.flowsData.baseQuestions.length}`;
+      badgesDiv.appendChild(inputBadge);
+
+      const docBadge = document.createElement('span');
+      docBadge.className = 'badge document-count';
+      docBadge.textContent = `提出書類: ${docCount || this.getAllDocuments().length}`;
+      badgesDiv.appendChild(docBadge);
+    } else if (mode === 'smart') {
+      const docBadge = document.createElement('span');
+      docBadge.className = 'badge document-count';
+      docBadge.textContent = `提出書類: ${docCount}`;
+      badgesDiv.appendChild(docBadge);
+
+      if (warningCount > 0) {
+        const warningBadge = document.createElement('span');
+        warningBadge.className = 'badge warning-count';
+        warningBadge.textContent = `要判断: ${warningCount}`;
+        badgesDiv.appendChild(warningBadge);
+      }
+    } else if (mode === 'ai') {
+      const minBadge = document.createElement('span');
+      minBadge.className = 'badge document-count';
+      minBadge.textContent = `最小セット: ${docCount}`;
+      badgesDiv.appendChild(minBadge);
+    }
+
+    container.appendChild(badgesDiv);
+  }
+
+  createDocumentItem(doc, mode) {
+    const item = document.createElement('div');
+    item.className = 'document-item fade-in';
+
+    // ヘッダー
+    const header = document.createElement('div');
+    header.className = 'doc-header';
+
+    const name = document.createElement('div');
+    name.className = 'doc-name';
+    name.textContent = doc.name;
+
+    // ラベル
+    const label = document.createElement('span');
+    label.className = 'doc-label';
+    if (mode === 'smart') {
+      label.className += ' required-judgment';
+      label.textContent = '要判断';
+    } else if (mode === 'ai') {
+      label.className += ' auto-selected';
+      label.textContent = 'AI選定';
+    }
+
+    header.appendChild(name);
+    if (label.textContent) {
+      header.appendChild(label);
+    }
+    item.appendChild(header);
+
+    // 説明
+    const desc = document.createElement('div');
+    desc.className = 'doc-desc';
+    desc.textContent = doc.description;
+    item.appendChild(desc);
+
+    // トグル機能
+    const toggle = document.createElement('div');
+    toggle.className = 'doc-toggle';
+
+    const btn = document.createElement('button');
+    btn.className = 'doc-toggle-btn';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.textContent = '詳細を見る';
+    btn.onclick = (e) => this.toggleDetails(e, item);
+
+    toggle.appendChild(btn);
+    item.appendChild(toggle);
+
+    // 詳細（アコーディオン）
+    const details = document.createElement('div');
+    details.className = 'doc-details';
+    details.setAttribute('aria-hidden', 'true');
+
+    if (doc.purpose) {
+      const section1 = document.createElement('div');
+      section1.className = 'detail-section';
+      const title1 = document.createElement('div');
+      title1.className = 'detail-section-title';
+      title1.textContent = '目的';
+      const content1 = document.createElement('div');
+      content1.className = 'detail-section-content';
+      content1.textContent = doc.purpose;
+      section1.appendChild(title1);
+      section1.appendChild(content1);
+      details.appendChild(section1);
+    }
+
+    if (doc.fields && doc.fields.length > 0) {
+      const section2 = document.createElement('div');
+      section2.className = 'detail-section';
+      const title2 = document.createElement('div');
+      title2.className = 'detail-section-title';
+      title2.textContent = '主な項目';
+      const fieldsDiv = document.createElement('div');
+      fieldsDiv.className = 'detail-fields';
+      doc.fields.forEach(field => {
+        const fieldTag = document.createElement('span');
+        fieldTag.className = 'detail-field';
+        fieldTag.textContent = field;
+        fieldsDiv.appendChild(fieldTag);
+      });
+      section2.appendChild(title2);
+      section2.appendChild(fieldsDiv);
+      details.appendChild(section2);
+    }
+
+    if (doc.whenNeeded) {
+      const section3 = document.createElement('div');
+      section3.className = 'detail-section';
+      const title3 = document.createElement('div');
+      title3.className = 'detail-section-title';
+      title3.textContent = 'いつ必要か';
+      const content3 = document.createElement('div');
+      content3.className = 'detail-section-content';
+      content3.textContent = doc.whenNeeded;
+      section3.appendChild(title3);
+      section3.appendChild(content3);
+      details.appendChild(section3);
+    }
+
+    if (mode === 'ai' && doc.aiReason) {
+      const aiSection = document.createElement('div');
+      aiSection.className = 'ai-reason';
+      aiSection.textContent = `💡 ${doc.aiReason}`;
+      details.appendChild(aiSection);
+    }
+
+    item.appendChild(details);
+
+    return item;
+  }
+
+  toggleDetails(e, item) {
+    const button = e.target;
+    const details = item.querySelector('.doc-details');
+    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+    button.setAttribute('aria-expanded', !isExpanded);
+    details.setAttribute('aria-hidden', isExpanded);
+  }
+
   generateNecessaryDocuments() {
     const docs = [...this.flowsData.documents.base];
 
@@ -524,9 +593,6 @@ class HospitalizationDXApp {
     return docs;
   }
 
-  /**
-   * 全書類を取得
-   */
   getAllDocuments() {
     const docs = [
       ...this.flowsData.documents.base,
@@ -540,35 +606,22 @@ class HospitalizationDXApp {
     return docs;
   }
 
-  /**
-   * 書類アイテムを作成
-   */
-  createDocumentItem(doc) {
-    const item = document.createElement('div');
-    item.className = 'document-item';
-    item.dataset.docId = doc.id;
-
-    const name = document.createElement('div');
-    name.className = 'doc-name';
-    name.textContent = doc.name;
-
-    const desc = document.createElement('div');
-    desc.className = 'doc-desc';
-    desc.textContent = doc.description;
-
-    item.appendChild(name);
-    item.appendChild(desc);
-    return item;
-  }
-
-  /**
-   * 統計情報を更新
-   */
-  updateStats(count) {
-    const maxDocs = this.getAllDocuments().length;
+  updateStats(count, maxDocs) {
     const statsPanel = document.getElementById('docStats');
     statsPanel.innerHTML = `<p>📊 必要書類: <strong>${count}</strong> 件 / 全体: ${maxDocs} 件</p>`;
   }
+}
+
+// ユーティリティ関数
+async function fadeIn(element, duration) {
+  element.style.opacity = '0';
+  element.style.display = 'block';
+  element.offsetHeight;
+
+  element.style.transition = `opacity ${duration}ms ease-in`;
+  element.style.opacity = '1';
+
+  return new Promise(resolve => setTimeout(resolve, duration));
 }
 
 // ページロード時にアプリを初期化
