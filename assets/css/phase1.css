@@ -565,6 +565,15 @@
   .mobile-tabs {
     display: flex;
   }
+
+  .mobile-only {
+    display: block;
+  }
+}
+
+/* モバイル専用要素はデフォルトで非表示 */
+.mobile-only {
+  display: none;
 }
 
 /* =============================

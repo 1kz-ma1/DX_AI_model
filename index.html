@@ -65,7 +65,7 @@
       <div class="step-content">
         <section class="form-section">
           <h2>📝 基本情報を入力してください</h2>
-          <p class="form-description">退院に向けた必要書類を整理するため、基本情報を入力してください。</p>
+          <p class="form-description">退院に向けた必要書類を整理するため、基本情報を入力してください。<br>※この工程はページ下部からスキップできます。</p>
           <form id="baseForm" class="form">
             <!-- フォーム項目は app.js で動的生成 -->
           </form>
@@ -80,7 +80,7 @@
   <div id="previewModal" class="preview-modal" style="display: none;">
     <div class="preview-content">
       <h2>📋 入力内容のプレビュー</h2>
-      <p class="preview-description">以下のデフォルト値が自動入力されました。このまま次のステップへ進みますか？</p>
+      <p class="preview-description">基本情報は自動入力されました。このまま次のステップへ進みますか？</p>
       <div id="previewList" class="preview-list">
         <!-- プレビュー項目は app.js で動的生成 -->
       </div>
@@ -208,6 +208,7 @@
           <div id="checklistContainer" class="checklist">
             <!-- チェックリスト項目は app.js で動的生成 -->
           </div>
+          <button id="showResultBtn" class="btn btn-primary mobile-only" style="margin-bottom: 12px;">結果を表示する →</button>
           <button id="backToStep1Btn" class="btn btn-secondary">← 基本情報に戻る</button>
         </section>
 

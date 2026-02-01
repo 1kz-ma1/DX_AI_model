@@ -220,6 +220,13 @@ class HospitalizationDXApp {
       this.transitionBackToStep1();
     });
 
+    // モバイル専用「結果を表示する」ボタン
+    const showResultBtn = document.getElementById('showResultBtn');
+    showResultBtn.addEventListener('click', () => {
+      this.setActiveMobileTab('result');
+      this.showMobileSection('result');
+    });
+
     // スキップボタンのイベントリスナー
     const skipBtn = document.getElementById('skipInputBtn');
     skipBtn.addEventListener('click', () => this.showPreviewModal());
