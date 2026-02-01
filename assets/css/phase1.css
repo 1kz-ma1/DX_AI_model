@@ -275,6 +275,28 @@
   text-align: center;
 }
 
+.metric-row {
+  display: grid;
+  grid-template-columns: 50px 1fr 32px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.metric-row-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: left;
+}
+
+.metric-row-value {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1f2937;
+  text-align: right;
+}
+
 .metric-label {
   font-size: 12px;
   font-weight: 600;
@@ -405,4 +427,142 @@
 
 .result-summary-actions .btn-print:hover {
   background: #c7d2fe;
+}
+
+/* ============================================ */
+/* Phase 3: ローディング & エラーハンドリング */
+/* ============================================ */
+
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  backdrop-filter: blur(4px);
+}
+
+.loading-card {
+  width: min(720px, 92vw);
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.skeleton-line {
+  height: 14px;
+  background: linear-gradient(90deg, #e5e7eb 0%, #f8fafc 50%, #e5e7eb 100%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  animation: shimmer 1.2s infinite;
+}
+
+.skeleton-line.title {
+  height: 20px;
+  width: 60%;
+}
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.skeleton-card {
+  height: 90px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #e5e7eb 0%, #f8fafc 50%, #e5e7eb 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.load-error {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1300;
+}
+
+.load-error button {
+  white-space: nowrap;
+}
+
+/* ============================================ */
+/* Phase 4: モバイル最適化 & アクセシビリティ */
+/* ============================================ */
+
+.mobile-tabs {
+  display: none;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.mobile-tab {
+  flex: 1;
+  border: 1px solid #e5e7eb;
+  background: white;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+}
+
+.mobile-tab.active {
+  border-color: #667eea;
+  color: #3730a3;
+  background: #eef2ff;
+}
+
+.mode-switcher {
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+}
+
+.mode-btn:focus-visible,
+.btn:focus-visible,
+.doc-toggle-btn:focus-visible,
+.mobile-tab:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .main-content.step2-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .column-left,
+  .column-right {
+    display: none;
+  }
+
+  .column-left.mobile-visible,
+  .column-right.mobile-visible {
+    display: block;
+  }
+
+  .mobile-tabs {
+    display: flex;
+  }
 }
