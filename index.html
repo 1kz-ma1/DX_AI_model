@@ -97,6 +97,12 @@
       <header class="header">
         <h1>🏥 入院手続き DX × AI 体験アプリ</h1>
         <p class="step-indicator">ステップ 2/2：必要書類の確認</p>
+        <!-- 数値バッジ -->
+        <div class="header-metrics" id="headerMetrics">
+          <span class="header-badge" id="headerDocsBadge">📋 提出書類: <strong>-</strong></span>
+          <span class="header-badge" id="headerInputBadge">✏️ 入力項目: <strong>-</strong></span>
+          <span class="header-badge" id="headerWarnBadge">⚠️ 要判断: <strong>-</strong></span>
+        </div>
       </header>
 
       <!-- モバイル用タブ（入力・チェック・結果） -->
@@ -241,16 +247,42 @@
 
             <!-- AI モード：対話パネル + 最小書類 -->
             <div id="aiResult" class="result-panel result-ai" style="display: none;">
+              <!-- 仮説ログ -->
+              <div id="aiHypothesisPanel" class="ai-hypothesis-panel" style="display: none;" aria-live="polite">
+                <h3>🤖 AI が状況を分析中...</h3>
+                <div id="aiHypothesisLog" class="ai-hypothesis-log"></div>
+              </div>
+
+              <!-- 可変質問パネル -->
+              <div id="aiBranchQuestions" class="ai-branch-questions" style="display: none;" aria-live="polite">
+                <h3>📝 詳細を確認します</h3>
+                <p class="branch-description">より正確に必要書類を絞り込むため、いくつか質問させてください。</p>
+                <div id="branchQuestionContainer" class="branch-question-container">
+                  <!-- 質問は動的に生成 -->
+                </div>
+              </div>
+
+              <!-- 確定ログ -->
+              <div id="aiConfirmLog" class="ai-confirm-log" style="display: none;" aria-live="polite">
+                <h3>✅ 判断結果</h3>
+                <div id="aiConfirmLogContent" class="ai-confirm-log-content"></div>
+              </div>
+
+              <!-- 旧対話パネル（後方互換用） -->
               <div id="aiDialogPanel" class="ai-dialog-panel" style="display: none;">
                 <h3>🤖 AI が状況を整理中...</h3>
                 <pre id="aiJudgmentLog" class="ai-judgment-log"></pre>
                 <pre id="aiTypingText" class="ai-typing-text"></pre>
               </div>
               
+              <!-- 書類リスト -->
               <div id="aiDocumentsPanel" style="display: none;">
                 <h3>📋 あなたに必要な書類（最小セット）</h3>
                 <div id="aiDocuments" class="documents-list ai-documents">
                   <!-- ドキュメント一覧は app.js で生成 -->
+                </div>
+                <div class="simulation-note">
+                  <p>💡 本デモは一般的な想定に基づくシミュレーションです。実際の運用は医療機関の指示に従ってください。</p>
                 </div>
               </div>
             </div>
@@ -259,6 +291,22 @@
           <!-- 統計情報 -->
           <div class="stats-panel">
             <p id="docStats"></p>
+          </div>
+
+          <!-- アクションボタン -->
+          <div class="action-buttons">
+            <button id="switchToSmartBtn" class="action-btn btn-smart-action" title="共通部分を自動入力してスマートに">
+              <span class="action-icon">⚡</span>
+              <span class="action-text">共通部分を自動入力する</span>
+            </button>
+            <button id="switchToAiBtn" class="action-btn btn-ai-action" title="AIで最適化して最小限に">
+              <span class="action-icon">🤖</span>
+              <span class="action-text">AIを導入する</span>
+            </button>
+            <button id="showSummaryBtn" class="action-btn btn-summary-action" title="全体のまとめを見る">
+              <span class="action-icon">📊</span>
+              <span class="action-text">まとめ</span>
+            </button>
           </div>
         </section>
       </div>

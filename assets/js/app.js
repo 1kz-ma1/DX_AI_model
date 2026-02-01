@@ -17,6 +17,16 @@ class HospitalizationDXApp {
       expensive: false,
       transfer: false
     };
+    // 派生フラグ（AI可変質問用）
+    this.derivedFlags = {
+      'anesthesia.general': false,
+      'anesthesia.local': false,
+      'family.co_sign': false,
+      'transfer.internal': false,
+      'transfer.external': false
+    };
+    // 可変質問の回答状態
+    this.branchAnswers = {};
     // デフォルト値の定義
     this.defaultFormData = {
       name: '山田太郎',
@@ -237,6 +247,29 @@ class HospitalizationDXApp {
 
     const cancelBtn = document.getElementById('cancelSkipBtn');
     cancelBtn.addEventListener('click', () => this.closePreviewModal());
+
+    // アクションボタンのイベントリスナー
+    document.getElementById('switchToSmartBtn').addEventListener('click', () => {
+      this.switchMode('smart');
+      // モバイルの場合は結果タブに切り替え
+      if (window.innerWidth <= 900) {
+        this.setActiveMobileTab('result');
+        this.showMobileSection('result');
+      }
+    });
+
+    document.getElementById('switchToAiBtn').addEventListener('click', () => {
+      this.switchMode('ai');
+      // モバイルの場合は結果タブに切り替え
+      if (window.innerWidth <= 900) {
+        this.setActiveMobileTab('result');
+        this.showMobileSection('result');
+      }
+    });
+
+    document.getElementById('showSummaryBtn').addEventListener('click', () => {
+      this.showSummary();
+    });
   }
 
   validateForm() {
@@ -296,6 +329,53 @@ class HospitalizationDXApp {
     }
 
     this.updateMetrics();
+    this.updateHeaderBadges(); // ヘッダーバッジを更新
+  }
+
+  // ヘッダーバッジを更新
+  updateHeaderBadges() {
+    const allDocs = this.getAllDocuments();
+    let currentDocs, currentInput, currentWarn;
+
+    switch (this.currentMode) {
+      case 'plain':
+        currentDocs = allDocs.length;
+        currentInput = this.flowsData?.baseQuestions?.length || 8;
+        currentWarn = 0;
+        break;
+      case 'smart':
+        const smartResult = this.getSmartDocumentsAndWarnings();
+        currentDocs = smartResult.documents.length;
+        currentInput = 3; // 自動入力後
+        currentWarn = smartResult.warnings.length;
+        break;
+      case 'ai':
+        const aiDocs = this.getAiDocuments();
+        currentDocs = aiDocs.length;
+        currentInput = 3; // AI質問数
+        currentWarn = 0;
+        break;
+    }
+
+    this.animateHeaderBadge('headerDocsBadge', currentDocs);
+    this.animateHeaderBadge('headerInputBadge', currentInput);
+    this.animateHeaderBadge('headerWarnBadge', currentWarn);
+  }
+
+  // ヘッダーバッジをアニメーション更新
+  animateHeaderBadge(badgeId, value) {
+    const badge = document.getElementById(badgeId);
+    if (!badge) return;
+
+    const strong = badge.querySelector('strong');
+    if (!strong) return;
+
+    // パルスアニメーション
+    badge.classList.add('pulse');
+    setTimeout(() => badge.classList.remove('pulse'), 500);
+
+    // 数値を更新
+    strong.textContent = value;
   }
 
   renderPlainMode() {
@@ -351,6 +431,261 @@ class HospitalizationDXApp {
   }
 
   async renderAIMode() {
+    const panel = document.getElementById('aiResult');
+    panel.style.display = 'block';
+
+    // 新しいパネルを使用
+    const hypothesisPanel = document.getElementById('aiHypothesisPanel');
+    const branchQuestionsPanel = document.getElementById('aiBranchQuestions');
+    const confirmLogPanel = document.getElementById('aiConfirmLog');
+    const docsPanel = document.getElementById('aiDocumentsPanel');
+
+    // 全パネルを初期化
+    hypothesisPanel.style.display = 'none';
+    branchQuestionsPanel.style.display = 'none';
+    confirmLogPanel.style.display = 'none';
+    docsPanel.style.display = 'none';
+
+    // 1. 仮説ログを表示
+    await this.showHypothesisLog();
+
+    // 2. 可変質問を表示（該当する質問がある場合）
+    const hasQuestions = await this.showBranchQuestions();
+
+    // 3. 確定ログを表示
+    await this.showConfirmLog();
+
+    // 4. 書類リストを表示（フェードアウト演出付き）
+    await this.showAIDocuments();
+  }
+
+  // 仮説ログを表示
+  async showHypothesisLog() {
+    const panel = document.getElementById('aiHypothesisPanel');
+    const logContainer = document.getElementById('aiHypothesisLog');
+    
+    let hypotheses = [];
+    
+    if (this.checklist.surgery) {
+      hypotheses.push('<p>手術があるため、麻酔方法の確認が必要と判断しました。</p>');
+    }
+    if (this.checklist.transfer) {
+      hypotheses.push('<p>転院予定があるため、必要書類を仮選定しています。</p>');
+    }
+    if (!this.checklist.surgery && !this.checklist.transfer) {
+      hypotheses.push('<p>基本的な退院手続きのため、標準的な書類セットを準備します。</p>');
+    }
+
+    logContainer.innerHTML = hypotheses.join('');
+    panel.style.display = 'block';
+    
+    await new Promise(resolve => setTimeout(resolve, 800));
+  }
+
+  // 可変質問を表示
+  async showBranchQuestions() {
+    const branchQuestions = this.flowsData.aiBranchQuestions || [];
+    const relevantQuestions = branchQuestions.filter(q => {
+      return q.showIf.every(flag => this.checklist[flag]);
+    });
+
+    if (relevantQuestions.length === 0) {
+      return false;
+    }
+
+    const panel = document.getElementById('aiBranchQuestions');
+    const container = document.getElementById('branchQuestionContainer');
+    container.innerHTML = '';
+
+    panel.style.display = 'block';
+
+    for (const question of relevantQuestions) {
+      await this.renderBranchQuestion(question, container);
+      await new Promise(resolve => setTimeout(resolve, 400));
+    }
+
+    return true;
+  }
+
+  // 個別の質問をレンダリング
+  async renderBranchQuestion(question, container) {
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'branch-question-item';
+    questionDiv.dataset.questionId = question.id;
+
+    const questionText = document.createElement('div');
+    questionText.className = 'branch-question-text';
+    questionText.textContent = question.ask;
+    questionDiv.appendChild(questionText);
+
+    const optionsDiv = document.createElement('div');
+    optionsDiv.className = 'branch-options';
+
+    if (question.type === 'single') {
+      question.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'branch-option-btn';
+        btn.textContent = option.label;
+        btn.addEventListener('click', () => {
+          this.handleBranchAnswer(question, option, questionDiv);
+        });
+        optionsDiv.appendChild(btn);
+      });
+    } else if (question.type === 'yesno') {
+      const yesBtn = document.createElement('button');
+      yesBtn.className = 'branch-option-btn';
+      yesBtn.textContent = 'はい';
+      yesBtn.addEventListener('click', () => {
+        this.handleBranchAnswer(question, question.yes, questionDiv, 'はい');
+      });
+
+      const noBtn = document.createElement('button');
+      noBtn.className = 'branch-option-btn';
+      noBtn.textContent = 'いいえ';
+      noBtn.addEventListener('click', () => {
+        this.handleBranchAnswer(question, question.no, questionDiv, 'いいえ');
+      });
+
+      optionsDiv.appendChild(yesBtn);
+      optionsDiv.appendChild(noBtn);
+    }
+
+    questionDiv.appendChild(optionsDiv);
+    container.appendChild(questionDiv);
+
+    return new Promise(resolve => {
+      questionDiv.dataset.resolve = resolve;
+    });
+  }
+
+  // 質問への回答を処理
+  handleBranchAnswer(question, answer, questionDiv, label) {
+    // ボタンを選択状態に
+    const buttons = questionDiv.querySelectorAll('.branch-option-btn');
+    buttons.forEach(btn => {
+      btn.classList.remove('selected');
+      btn.disabled = true;
+    });
+    
+    event.target.classList.add('selected');
+
+    // フラグを更新
+    if (answer.set) {
+      answer.set.forEach(flag => {
+        this.derivedFlags[flag] = true;
+      });
+    }
+    if (answer.unset) {
+      answer.unset.forEach(flag => {
+        this.derivedFlags[flag] = false;
+      });
+    }
+
+    // 回答を記録
+    this.branchAnswers[question.id] = {
+      question: question.ask,
+      answer: label || event.target.textContent,
+      affects: question.affects
+    };
+
+    // 次の質問へ進む
+    setTimeout(() => {
+      if (questionDiv.dataset.resolve) {
+        questionDiv.dataset.resolve();
+      }
+    }, 300);
+  }
+
+  // 確定ログを表示
+  async showConfirmLog() {
+    const panel = document.getElementById('aiConfirmLog');
+    const content = document.getElementById('aiConfirmLogContent');
+    
+    const logs = [];
+
+    Object.values(this.branchAnswers).forEach(answer => {
+      const affectsText = answer.affects.join('、');
+      logs.push(`<p>${answer.answer}を選択 → ${affectsText}を判定</p>`);
+    });
+
+    if (logs.length === 0) {
+      logs.push('<p>基本的な確認のみで書類を選定しました。</p>');
+    }
+
+    // 最大3行に制限
+    content.innerHTML = logs.slice(0, 3).join('');
+    panel.style.display = 'block';
+
+    await new Promise(resolve => setTimeout(resolve, 600));
+  }
+
+  // AI書類リストを表示（フェードアウト演出付き）
+  async showAIDocuments() {
+    const docsPanel = document.getElementById('aiDocumentsPanel');
+    const container = document.getElementById('aiDocuments');
+    
+    // 全書類を一度表示
+    const allDocs = this.getAiDocuments();
+    container.innerHTML = '';
+
+    allDocs.forEach(doc => {
+      const item = this.createDocumentItem(doc, 'ai', 'ai');
+      container.appendChild(item);
+    });
+
+    docsPanel.style.display = 'block';
+    await new Promise(resolve => setTimeout(resolve, 400));
+
+    // 条件に合わない書類をフェードアウト（段階的）
+    const finalDocs = this.filterDocumentsByConditions(allDocs);
+    const docsToRemove = allDocs.filter(doc => !finalDocs.includes(doc));
+
+    for (let i = 0; i < docsToRemove.length; i++) {
+      const docToRemove = docsToRemove[i];
+      const docElement = Array.from(container.children).find(el => 
+        el.querySelector('.doc-name')?.textContent === docToRemove.name
+      );
+      
+      if (docElement) {
+        docElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        docElement.style.opacity = '0';
+        docElement.style.transform = 'translateX(-20px)';
+        
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        setTimeout(() => {
+          docElement.remove();
+        }, 300);
+      }
+    }
+
+    this.updateStats(finalDocs.length, this.getAllDocuments().length);
+  }
+
+  // 条件に基づいて書類をフィルタリング
+  filterDocumentsByConditions(documents) {
+    return documents.filter(doc => {
+      if (!doc.conditions || doc.conditions.length === 0) {
+        return true; // 条件なし = 常に表示
+      }
+
+      // 全ての条件を満たす必要がある（AND条件）
+      return doc.conditions.every(condition => {
+        // 基本チェックリスト
+        if (this.checklist[condition]) {
+          return true;
+        }
+        // 派生フラグ
+        if (this.derivedFlags[condition]) {
+          return true;
+        }
+        return false;
+      });
+    });
+  }
+
+  // 旧renderAIMode（後方互換・フォールバック用）
+  async renderAIModeOld() {
     const panel = document.getElementById('aiResult');
     const dialogPanel = document.getElementById('aiDialogPanel');
     const docsPanel = document.getElementById('aiDocumentsPanel');
@@ -627,7 +962,9 @@ class HospitalizationDXApp {
   }
 
   getAiDocuments() {
-    return this.generateNecessaryDocuments();
+    // 全書類を取得してconditionsでフィルタリング
+    const allDocs = this.getAllDocuments();
+    return this.filterDocumentsByConditions(allDocs);
   }
 
   getSmartDocumentsAndWarnings() {
@@ -1013,6 +1350,12 @@ class HospitalizationDXApp {
   confirmSkip() {
     this.closePreviewModal();
     this.transitionToStep2(true); // バリデーションをスキップ
+  }
+
+  // まとめ画面を表示
+  showSummary() {
+    // TODO: まとめ画面の実装（後で追加予定）
+    alert('まとめ画面は準備中です。内容は後ほど追加されます。');
   }
 }
 

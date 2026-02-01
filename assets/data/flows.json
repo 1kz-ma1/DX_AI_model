@@ -108,7 +108,8 @@
         "purpose": "健康保険や勤務先への報告用",
         "fields": ["入院日", "退院日", "診断名", "医師署名"],
         "whenNeeded": "全ケース必須",
-        "aiReason": "入院・退院の日付確認で自動選定"
+        "aiReason": "入院・退院の日付確認で自動選定",
+        "conditions": []
       },
       {
         "id": "payment_detail",
@@ -117,7 +118,8 @@
         "purpose": "医療費の明細確認・記録用",
         "fields": ["診療科目", "点数", "金額", "請求日"],
         "whenNeeded": "全ケース必須",
-        "aiReason": "医療費確認で自動選定"
+        "aiReason": "医療費確認で自動選定",
+        "conditions": []
       },
       {
         "id": "medical_info",
@@ -126,7 +128,8 @@
         "purpose": "他病院や保険会社への情報提供",
         "fields": ["診断名", "治療内容", "処方情報", "医師署名"],
         "whenNeeded": "転院・保険請求時に必要",
-        "aiReason": "診療内容の正式記録として自動選定"
+        "aiReason": "診療内容の正式記録として自動選定",
+        "conditions": []
       },
       {
         "id": "prescription",
@@ -135,7 +138,8 @@
         "purpose": "退院後の調剤薬局での処方指示",
         "fields": ["医薬品名", "用量・用法", "日数", "医師署名"],
         "whenNeeded": "服薬がある場合は必須",
-        "aiReason": "退院後の継続治療に必須"
+        "aiReason": "退院後の継続治療に必須",
+        "conditions": []
       },
       {
         "id": "discharge_guide",
@@ -144,7 +148,8 @@
         "purpose": "安全な退院後の生活のため",
         "fields": ["食事制限", "運動制限", "投薬管理", "受診予定"],
         "whenNeeded": "全ケース推奨",
-        "aiReason": "患者安全の基本情報として自動選定"
+        "aiReason": "患者安全の基本情報として自動選定",
+        "conditions": []
       }
     ],
     "surgery": [
@@ -155,16 +160,38 @@
         "purpose": "医学的・法的に手術を承認する",
         "fields": ["手術名", "リスク説明", "署名欄"],
         "whenNeeded": "手術実施時は必須",
-        "aiReason": "手術実施の法的根拠として必須"
+        "aiReason": "手術実施の法的根拠として必須",
+        "conditions": ["surgery"]
       },
       {
-        "id": "anesthesia_consent",
-        "name": "麻酔同意書",
-        "description": "麻酔に対する同意書",
-        "purpose": "麻酔のリスク・利益を説明し同意取得",
+        "id": "anesthesia_consent_general",
+        "name": "麻酔同意書（全身麻酔）",
+        "description": "全身麻酔に対する同意書",
+        "purpose": "全身麻酔のリスク・利益を説明し同意取得",
         "fields": ["麻酔方法", "リスク説明", "署名欄"],
-        "whenNeeded": "麻酔使用時は必須",
-        "aiReason": "麻酔使用の法的根拠として必須"
+        "whenNeeded": "全身麻酔使用時は必須",
+        "aiReason": "全身麻酔を選択したため必須",
+        "conditions": ["surgery", "anesthesia.general"]
+      },
+      {
+        "id": "anesthesia_consent_local",
+        "name": "麻酔同意書（局所麻酔）",
+        "description": "局所麻酔に対する同意書",
+        "purpose": "局所麻酔のリスク・利益を説明し同意取得",
+        "fields": ["麻酔方法", "リスク説明", "署名欄"],
+        "whenNeeded": "局所麻酔使用時は必須",
+        "aiReason": "局所麻酔を選択したため必須",
+        "conditions": ["surgery", "anesthesia.local"]
+      },
+      {
+        "id": "family_signature",
+        "name": "家族署名シート",
+        "description": "ご家族の同意署名用紙",
+        "purpose": "家族の同意を記録する",
+        "fields": ["家族氏名", "続柄", "署名欄"],
+        "whenNeeded": "家族署名が必要な場合",
+        "aiReason": "家族署名を取得するため必須",
+        "conditions": ["surgery", "family.co_sign"]
       },
       {
         "id": "pre_surgery_checklist",
@@ -173,7 +200,8 @@
         "purpose": "手術前のリスク・準備を確認",
         "fields": ["絶食状態", "投薬歴", "アレルギー確認"],
         "whenNeeded": "手術実施時に必須",
-        "aiReason": "手術安全性の確認として自動選定"
+        "aiReason": "手術安全性の確認として自動選定",
+        "conditions": ["surgery"]
       },
       {
         "id": "surgery_explanation",
@@ -182,7 +210,8 @@
         "purpose": "患者が手術内容を理解するため",
         "fields": ["手術方法", "期待される効果", "リスク"],
         "whenNeeded": "手術実施時に提供",
-        "aiReason": "患者教育の基本資料として自動選定"
+        "aiReason": "患者教育の基本資料として自動選定",
+        "conditions": ["surgery"]
       },
       {
         "id": "post_surgery_guide",
@@ -191,7 +220,8 @@
         "purpose": "退院後の傷口ケア・制限事項の説明",
         "fields": ["傷口管理", "活動制限", "投薬管理"],
         "whenNeeded": "手術患者の退院時に提供",
-        "aiReason": "術後合併症予防として自動選定"
+        "aiReason": "術後合併症予防として自動選定",
+        "conditions": ["surgery"]
       }
     ],
     "hce": [
@@ -366,13 +396,24 @@
     ],
     "transfer": [
       {
-        "id": "referral_letter",
-        "name": "診療情報提供書（紹介状）",
-        "description": "転院先への情報共有",
-        "purpose": "転院先の医師が診療履歴を把握",
+        "id": "referral_letter_external",
+        "name": "診療情報提供書（院外）",
+        "description": "院外への転院時の情報共有",
+        "purpose": "院外転院先の医師が診療履歴を把握",
+        "fields": ["診断名", "治療内容", "投薬情報", "検査結果"],
+        "whenNeeded": "院外転院時に転院先に提出必須",
+        "aiReason": "院外転院のため詳細な情報共有が必須",
+        "conditions": ["transfer", "transfer.external"]
+      },
+      {
+        "id": "referral_letter_internal",
+        "name": "診療情報提供書（院内/同グループ）",
+        "description": "同グループ内での転院時の情報共有",
+        "purpose": "グループ内転院先の医師が診療履歴を把握",
         "fields": ["診断名", "治療内容", "投薬情報"],
-        "whenNeeded": "転院時に転院先に提出必須",
-        "aiReason": "連携医療の情報共有に必須"
+        "whenNeeded": "グループ内転院時に提出",
+        "aiReason": "グループ内転院のため簡略化された情報共有",
+        "conditions": ["transfer", "transfer.internal"]
       },
       {
         "id": "discharge_summary",
@@ -381,7 +422,8 @@
         "purpose": "入院中の診療経過を転院先に報告",
         "fields": ["入院経過", "治療内容", "今後の方針"],
         "whenNeeded": "転院時に転院先に提出必須",
-        "aiReason": "継続医療の円滑化に必須"
+        "aiReason": "継続医療の円滑化に必須",
+        "conditions": ["transfer"]
       },
       {
         "id": "medication_info",
@@ -390,7 +432,8 @@
         "purpose": "転院先で使用中の薬剤情報を把握",
         "fields": ["薬剤名", "用量", "用法"],
         "whenNeeded": "転院時に必須",
-        "aiReason": "薬剤相互作用確認のため必須"
+        "aiReason": "薬剤相互作用確認のため必須",
+        "conditions": ["transfer"]
       },
       {
         "id": "test_data",
@@ -427,6 +470,38 @@
       "question": "加入している医療保険の給付金を請求しますか？",
       "key": "claim",
       "type": "yesno"
+    }
+  ],
+  "aiBranchQuestions": [
+    {
+      "id": "anesthesia_type",
+      "ask": "麻酔方法は全身と局所のどちらを希望しますか？",
+      "type": "single",
+      "showIf": ["surgery"],
+      "options": [
+        { "label": "全身麻酔", "set": ["anesthesia.general"], "unset": ["anesthesia.local"] },
+        { "label": "局所麻酔", "set": ["anesthesia.local"], "unset": ["anesthesia.general"] },
+        { "label": "未定", "set": [], "unset": [] }
+      ],
+      "affects": ["麻酔同意書（全身麻酔）", "麻酔同意書（局所麻酔）"]
+    },
+    {
+      "id": "family_cosign",
+      "ask": "同意の署名はご家族の署名も取得しますか？",
+      "type": "yesno",
+      "showIf": ["surgery"],
+      "yes": { "set": ["family.co_sign"] },
+      "no": { "unset": ["family.co_sign"] },
+      "affects": ["家族署名シート"]
+    },
+    {
+      "id": "transfer_scope",
+      "ask": "転院は同一グループ内ですか？（院外なら「いいえ」）",
+      "type": "yesno",
+      "showIf": ["transfer"],
+      "yes": { "set": ["transfer.internal"], "unset": ["transfer.external"] },
+      "no": { "set": ["transfer.external"], "unset": ["transfer.internal"] },
+      "affects": ["診療情報提供書（院外）", "診療情報提供書（院内/同グループ）"]
     }
   ],
   "modes": {

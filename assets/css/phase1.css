@@ -365,6 +365,169 @@
   animation: none;
 }
 
+/* =============================
+   AI 可変質問パネル
+   ============================= */
+
+.ai-hypothesis-panel {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.ai-hypothesis-panel h3 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  color: #374151;
+}
+
+.ai-hypothesis-log {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #6b7280;
+}
+
+.ai-hypothesis-log p {
+  margin: 8px 0;
+  padding-left: 24px;
+  position: relative;
+}
+
+.ai-hypothesis-log p::before {
+  content: "💡";
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.ai-branch-questions {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.4s ease-out 0.2s both;
+}
+
+.ai-branch-questions h3 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+  color: #1f2937;
+}
+
+.branch-description {
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.branch-question-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.branch-question-item {
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border-left: 4px solid #8b5cf6;
+}
+
+.branch-question-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 12px;
+}
+
+.branch-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.branch-option-btn {
+  padding: 10px 20px;
+  border: 2px solid #e5e7eb;
+  background: white;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.branch-option-btn:hover {
+  border-color: #8b5cf6;
+  background: #f3f4f6;
+  color: #7c3aed;
+}
+
+.branch-option-btn.selected {
+  border-color: #8b5cf6;
+  background: #8b5cf6;
+  color: white;
+}
+
+.branch-option-btn:disabled {
+  opacity: 0.5;
+  cursor: not-started;
+}
+
+.ai-confirm-log {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  border-left: 4px solid #10b981;
+  animation: fadeInUp 0.4s ease-out 0.4s both;
+}
+
+.ai-confirm-log h3 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  color: #065f46;
+}
+
+.ai-confirm-log-content {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #047857;
+}
+
+.ai-confirm-log-content p {
+  margin: 8px 0;
+  padding-left: 24px;
+  position: relative;
+}
+
+.ai-confirm-log-content p::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: bold;
+}
+
+.simulation-note {
+  margin-top: 24px;
+  padding: 16px;
+  background: #fffbeb;
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+}
+
+.simulation-note p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #92400e;
+  line-height: 1.6;
+}
+
 /* 結果サマリー */
 .result-summary {
   background: white;
@@ -740,5 +903,201 @@
   #skipInputBtn {
     font-size: 0.95rem;
     padding: 12px 24px;
+  }
+}
+
+/* =============================
+   アクションボタン（右下）
+   ============================= */
+
+.action-buttons {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 100;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  min-width: 220px;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+.action-icon {
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+}
+
+.action-text {
+  flex: 1;
+}
+
+.btn-smart-action {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.btn-smart-action:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.btn-ai-action {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+}
+
+.btn-ai-action:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+.btn-summary-action {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.btn-summary-action:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+/* アクションボタンのモバイル対応 */
+@media (max-width: 900px) {
+  .action-buttons {
+    bottom: 16px;
+    right: 16px;
+    gap: 10px;
+  }
+
+  .action-btn {
+    min-width: auto;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    border-radius: 10px;
+  }
+
+  .action-icon {
+    font-size: 1.1rem;
+  }
+
+  .action-text {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .action-buttons {
+    bottom: 12px;
+    right: 12px;
+    gap: 8px;
+  }
+
+  .action-btn {
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    min-width: auto;
+  }
+
+  .action-icon {
+    font-size: 1rem;
+  }
+
+  .action-text {
+    display: none;
+  }
+
+  .action-btn {
+    width: 48px;
+    height: 48px;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+  }
+}
+
+/* =============================
+   Reduced Motion 対応
+   ============================= */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .fade-in,
+  .fade-out,
+  .ai-hypothesis-panel,
+  .ai-branch-questions,
+  .ai-confirm-log {
+    animation: none !important;
+  }
+
+  .header-badge.pulse strong {
+    animation: none !important;
+  }
+
+  .branch-option-btn {
+    transition: none !important;
+  }
+}
+
+/* =============================
+   モバイル - AI質問パネル
+   ============================= */
+
+@media (max-width: 768px) {
+  .ai-hypothesis-panel,
+  .ai-branch-questions,
+  .ai-confirm-log {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .ai-hypothesis-panel h3,
+  .ai-branch-questions h3,
+  .ai-confirm-log h3 {
+    font-size: 1rem;
+  }
+
+  .branch-question-text {
+    font-size: 0.9rem;
+  }
+
+  .branch-option-btn {
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+
+  .simulation-note {
+    padding: 12px;
+    margin-top: 16px;
+  }
+
+  .simulation-note p {
+    font-size: 0.8rem;
   }
 }
