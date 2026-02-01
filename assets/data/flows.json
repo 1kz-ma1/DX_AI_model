@@ -232,7 +232,8 @@
         "purpose": "医療費の自己負担額を限度内に抑える",
         "fields": ["被保険者情報", "世帯主情報", "所得区分"],
         "whenNeeded": "医療費が高額の場合に申請推奨",
-        "aiReason": "医療費が高額なため申請をお勧めします"
+        "aiReason": "医療費が高額なため申請をお勧めします",
+        "conditions": ["hce"]
       },
       {
         "id": "income_verification",
@@ -241,7 +242,8 @@
         "purpose": "自己負担限度額の決定に必要",
         "fields": ["年間所得", "税務署印"],
         "whenNeeded": "高額療養費申請時に必須",
-        "aiReason": "自己負担額の算定に必須"
+        "aiReason": "自己負担額の算定に必須",
+        "conditions": ["hce"]
       },
       {
         "id": "my_number",
@@ -250,7 +252,8 @@
         "purpose": "本人確認・制度申請のため",
         "fields": ["マイナンバー", "顔写真"],
         "whenNeeded": "制度申請時に本人確認として必須",
-        "aiReason": "本人確認の一次資料として自動選定"
+        "aiReason": "本人確認の一次資料として自動選定",
+        "conditions": ["hce"]
       },
       {
         "id": "payment_proof",
@@ -259,7 +262,8 @@
         "purpose": "実払い医療費の証明",
         "fields": ["支払い日", "金額", "領収印"],
         "whenNeeded": "高額療養費請求時に必須",
-        "aiReason": "医療費の実績確認として必須"
+        "aiReason": "医療費の実績確認として必須",
+        "conditions": ["hce"]
       },
       {
         "id": "medical_notice",
@@ -268,7 +272,8 @@
         "purpose": "年間医療費の把握・確定申告用",
         "fields": ["診療月", "医療機関名", "支払い額"],
         "whenNeeded": "確定申告時に参考情報として使用",
-        "aiReason": "医療費控除の証拠資料として活用可"
+        "aiReason": "医療費控除の証拠資料として活用可",
+        "conditions": ["hce"]
       }
     ],
     "claim": [
@@ -288,7 +293,8 @@
         "purpose": "入院・治療内容を医学的に証明",
         "fields": ["診断名", "治療期間", "医師署名"],
         "whenNeeded": "保険給付請求時に保険会社が要求",
-        "aiReason": "給付金の受給要件を満たす証拠として必須"
+        "aiReason": "給付金の受給要件を満たす証拠として必須",
+        "conditions": ["claim"]
       },
       {
         "id": "admission_certificate",
@@ -297,7 +303,8 @@
         "purpose": "入院事実を病院が公式に証明",
         "fields": ["入院日", "退院日", "入院期間"],
         "whenNeeded": "給付金請求・会社への報告時に必須",
-        "aiReason": "入院事実の公式証明として必須"
+        "aiReason": "入院事実の公式証明として必須",
+        "conditions": ["claim"]
       },
       {
         "id": "insurance_policy",
@@ -306,7 +313,8 @@
         "purpose": "保険加入を証明・契約内容を確認",
         "fields": ["保険商品名", "保険番号", "有効期限"],
         "whenNeeded": "保険給付請求時に提出",
-        "aiReason": "保険加入の確認に必須"
+        "aiReason": "保険加入の確認に必須",
+        "conditions": ["claim"]
       },
       {
         "id": "id_verification",
@@ -315,7 +323,8 @@
         "purpose": "給付金受取人の本人確認",
         "fields": ["氏名", "生年月日", "発行機関"],
         "whenNeeded": "給付金受け取り時に本人確認として必須",
-        "aiReason": "本人確認の必須資料"
+        "aiReason": "本人確認の必須資料",
+        "conditions": ["claim"]
       }
     ],
     "proxy": [
@@ -326,7 +335,8 @@
         "purpose": "代理人の代理権を法的に明確化",
         "fields": ["本人署名", "代理人氏名", "委任内容"],
         "whenNeeded": "代理人が手続きする場合に必須",
-        "aiReason": "代理人手続きの法的根拠として必須"
+        "aiReason": "代理人手続きの法的根拠として必須",
+        "conditions": ["proxy"]
       },
       {
         "id": "proxy_id",
@@ -335,7 +345,8 @@
         "purpose": "代理人の本人確認",
         "fields": ["氏名", "生年月日", "発行機関"],
         "whenNeeded": "代理人手続き時に本人確認として必須",
-        "aiReason": "代理人の身元確認に必須"
+        "aiReason": "代理人の身元確認に必須",
+        "conditions": ["proxy"]
       },
       {
         "id": "relationship_proof",
@@ -344,7 +355,8 @@
         "purpose": "本人と代理人の関係を証明",
         "fields": ["世帯構成", "続柄", "発行日"],
         "whenNeeded": "代理人が親族でない場合に必須",
-        "aiReason": "代理関係の妥当性を確認するため"
+        "aiReason": "代理関係の妥当性を確認するため",
+        "conditions": ["proxy"]
       },
       {
         "id": "proxy_documents",
@@ -353,7 +365,8 @@
         "purpose": "各病院の規定する代理手続き書式",
         "fields": ["代理権確認", "手続き内容"],
         "whenNeeded": "代理人が病院で手続きする場合に必須",
-        "aiReason": "代理手続きの統一フォーマットとして必須"
+        "aiReason": "代理手続きの統一フォーマットとして必須",
+        "conditions": ["proxy"]
       }
     ],
     "expensive": [
@@ -364,7 +377,8 @@
         "purpose": "10万円超の医療費を証明",
         "fields": ["支払い日", "金額", "領収印"],
         "whenNeeded": "医療費が10万円超の場合に必須",
-        "aiReason": "高額医療の事実確認に必須"
+        "aiReason": "高額医療の事実確認に必須",
+        "conditions": ["expensive"]
       },
       {
         "id": "medical_detail",
@@ -373,7 +387,8 @@
         "purpose": "診療科別・項目別の費用内訳を把握",
         "fields": ["診療科", "点数", "金額"],
         "whenNeeded": "医療費分析・確定申告時に参考",
-        "aiReason": "医療費控除の根拠資料として活用可"
+        "aiReason": "医療費控除の根拠資料として活用可",
+        "conditions": ["expensive"]
       },
       {
         "id": "hce_pre_application",
@@ -382,7 +397,8 @@
         "purpose": "医療費が高額な場合、入院中に限度額を超えた分を戻す",
         "fields": ["被保険者情報", "予想医療費"],
         "whenNeeded": "医療費が10万円超と予想される場合に申請推奨",
-        "aiReason": "高額医療費対策として事前申請をお勧めします"
+        "aiReason": "高額医療費対策として事前申請をお勧めします",
+        "conditions": ["expensive"]
       },
       {
         "id": "limit_certificate",
@@ -391,7 +407,8 @@
         "purpose": "自己負担額を限度額内に抑える",
         "fields": ["有効期限", "限度額", "自己負担額"],
         "whenNeeded": "医療費が高額な場合に未取得なら早急に申請",
-        "aiReason": "自己負担を軽減するため必須"
+        "aiReason": "自己負担を軽減するため必須",
+        "conditions": ["expensive"]
       }
     ],
     "transfer": [
@@ -442,7 +459,8 @@
         "purpose": "転院先での診断に必要なデータ共有",
         "fields": ["検査項目", "検査値", "正常値"],
         "whenNeeded": "転院時に必須",
-        "aiReason": "客観的医療情報として必須"
+        "aiReason": "客観的医療情報として必須",
+        "conditions": ["transfer"]
       },
       {
         "id": "transfer_specific",
@@ -451,7 +469,8 @@
         "purpose": "転院先の独自要件対応",
         "fields": ["受け入れ確認", "紹介形式"],
         "whenNeeded": "転院先の要件に応じて必須",
-        "aiReason": "転院先の要件対応に必須"
+        "aiReason": "転院先の要件対応に必須",
+        "conditions": ["transfer"]
       }
     ]
   },
