@@ -586,13 +586,17 @@ class HospitalizationDXApp {
     if (answer.set) {
       answer.set.forEach(flag => {
         this.derivedFlags[flag] = true;
+        console.log(`✓ フラグ設定: ${flag} = true`);
       });
     }
     if (answer.unset) {
       answer.unset.forEach(flag => {
         this.derivedFlags[flag] = false;
+        console.log(`✗ フラグ解除: ${flag} = false`);
       });
     }
+
+    console.log('現在のderivedFlags:', this.derivedFlags);
 
     // 回答を記録
     this.branchAnswers[question.id] = {
@@ -686,18 +690,26 @@ class HospitalizationDXApp {
 
   // 条件に基づいて書類をフィルタリング
   filterDocumentsByConditions(documents) {
+    console.log('📋 書類フィルタリング開始');
+    console.log('checklist:', this.checklist);
+    console.log('derivedFlags:', this.derivedFlags);
+    
     return documents.filter(doc => {
       if (!doc.conditions || doc.conditions.length === 0) {
         return true; // 条件なし = 常に表示
       }
 
       // 全ての条件を満たす必要がある（AND条件）
-      return doc.conditions.every(condition => {
+      const result = doc.conditions.every(condition => {
         // 否定条件（"!"で始まる）の処理
         if (condition.startsWith('!')) {
           const flagName = condition.substring(1);
+          const checklistValue = this.checklist[flagName];
+          const derivedValue = this.derivedFlags[flagName];
+          const shouldShow = !checklistValue && !derivedValue;
+          console.log(`  ${doc.name}: 条件[${condition}] checklist=${checklistValue} derived=${derivedValue} → ${shouldShow ? '表示' : '非表示'}`);
           // フラグがfalseまたは未定義なら表示
-          return !this.checklist[flagName] && !this.derivedFlags[flagName];
+          return shouldShow;
         }
         
         // 肯定条件の処理
@@ -711,6 +723,9 @@ class HospitalizationDXApp {
         }
         return false;
       });
+      
+      console.log(`  ${doc.name}: 最終判定 → ${result ? '✓表示' : '✗削除'}`);
+      return result;
     });
   }
 
