@@ -80,31 +80,72 @@
     },
     {
       "id": "claim",
-      "label": "医療保険の給付金を請求する",
+      "label": "医療保険を請求する",
       "key": "claim"
+    },
+    {
+      "id": "proxy",
+      "label": "代理人として手続きする",
+      "key": "proxy"
+    },
+    {
+      "id": "expensive",
+      "label": "入院費が10万円を超えた",
+      "key": "expensive"
+    },
+    {
+      "id": "transfer",
+      "label": "退院後に転院する予定がある",
+      "key": "transfer"
     }
   ],
   "documents": {
-    "common": [
+    "base": [
       { "id": "discharge_certificate", "name": "退院証明書", "description": "入院期間を証明する書類" },
       { "id": "payment_detail", "name": "支払い明細", "description": "病院の医療費請求書" },
-      { "id": "medical_info", "name": "診療情報提供書", "description": "医師による診断情報（転院時など）" }
+      { "id": "medical_info", "name": "診療情報提供書", "description": "必要に応じて発行" },
+      { "id": "prescription", "name": "処方箋", "description": "退院時の薬の処方" },
+      { "id": "discharge_guide", "name": "退院後の生活指導書", "description": "退院後の注意事項" }
     ],
     "surgery": [
       { "id": "surgery_consent", "name": "手術同意書", "description": "手術実施に対する同意書" },
       { "id": "anesthesia_consent", "name": "麻酔同意書", "description": "麻酔に対する同意書" },
       { "id": "pre_surgery_checklist", "name": "術前チェックリスト", "description": "手術前の確認事項" },
-      { "id": "surgery_explanation", "name": "手術説明書", "description": "医師による手術説明資料" }
+      { "id": "surgery_explanation", "name": "手術説明書", "description": "医師による手術説明資料" },
+      { "id": "post_surgery_guide", "name": "術後の処置に関する説明書", "description": "任意：術後のケア方法" }
     ],
     "hce": [
       { "id": "hce_application", "name": "限度額認定証の申請書", "description": "高額療養費制度の申請用紙" },
-      { "id": "my_number", "name": "マイナンバー確認資料", "description": "マイナンバーカードのコピー（任意）" },
-      { "id": "income_verification", "name": "所得区分の確認書類", "description": "税務証明書など" }
+      { "id": "income_verification", "name": "所得区分の確認書類", "description": "課税証明書など" },
+      { "id": "my_number", "name": "マイナンバー確認資料", "description": "マイナンバーカードのコピー" },
+      { "id": "payment_proof", "name": "支払証明書", "description": "病院の領収書" },
+      { "id": "medical_notice", "name": "医療費通知", "description": "任意：健康保険組合からの通知" }
     ],
     "claim": [
       { "id": "claim_form", "name": "医療保険の給付金請求書", "description": "保険会社への給付金請求書" },
       { "id": "medical_certificate", "name": "診断書（医師の証明書）", "description": "医師による診断証明書" },
-      { "id": "admission_certificate", "name": "入院証明書", "description": "病院が発行する入院の証明" }
+      { "id": "admission_certificate", "name": "入院証明書", "description": "病院が発行する入院の証明" },
+      { "id": "insurance_policy", "name": "保険証券の写し", "description": "加入している保険の証明" },
+      { "id": "id_verification", "name": "受取人の本人確認書類", "description": "免許証やマイナンバーカード" }
+    ],
+    "proxy": [
+      { "id": "power_of_attorney", "name": "委任状", "description": "代理人に権限を委任する書類" },
+      { "id": "proxy_id", "name": "代理人の本人確認書類", "description": "免許証など" },
+      { "id": "relationship_proof", "name": "続柄の証明", "description": "住民票など" },
+      { "id": "proxy_documents", "name": "代理提出用書類一式", "description": "病院によって形式が異なる" }
+    ],
+    "expensive": [
+      { "id": "payment_proof_expensive", "name": "支払証明書", "description": "医療機関発行の領収書" },
+      { "id": "medical_detail", "name": "医療費明細書", "description": "詳細な費用の内訳" },
+      { "id": "hce_pre_application", "name": "高額療養費の事前申請書", "description": "制度利用のための申請" },
+      { "id": "limit_certificate", "name": "限度額認定証", "description": "未取得の場合は申請が必要" }
+    ],
+    "transfer": [
+      { "id": "referral_letter", "name": "診療情報提供書（紹介状）", "description": "転院先への情報共有" },
+      { "id": "discharge_summary", "name": "退院サマリー", "description": "入院中の経過まとめ" },
+      { "id": "medication_info", "name": "持参薬の情報", "description": "薬剤情報提供書" },
+      { "id": "test_data", "name": "検査データ", "description": "CD or 報告書" },
+      { "id": "transfer_specific", "name": "転院先が求める独自書類", "description": "受け入れ確認など" }
     ]
   },
   "aiFlow": [

@@ -12,7 +12,10 @@ class HospitalizationDXApp {
     this.checklist = {
       surgery: false,
       hce: false,
-      claim: false
+      claim: false,
+      proxy: false,
+      expensive: false,
+      transfer: false
     };
     this.init();
   }
@@ -348,7 +351,7 @@ class HospitalizationDXApp {
     container.innerHTML = '';
 
     // 基本書類
-    const docs = [...this.flowsData.documents.common];
+    const docs = [...this.flowsData.documents.base];
 
     // チェックリスト項目に基づく書類追加
     const warnings = [];
@@ -369,6 +372,24 @@ class HospitalizationDXApp {
       docs.push(...this.flowsData.documents.claim);
     } else {
       warnings.push('医療保険請求：チェックで判定');
+    }
+
+    if (this.checklist.proxy) {
+      docs.push(...this.flowsData.documents.proxy);
+    } else {
+      warnings.push('代理人による手続き：チェックで判定');
+    }
+
+    if (this.checklist.expensive) {
+      docs.push(...this.flowsData.documents.expensive);
+    } else {
+      warnings.push('高額医療費申請：チェックで判定');
+    }
+
+    if (this.checklist.transfer) {
+      docs.push(...this.flowsData.documents.transfer);
+    } else {
+      warnings.push('転院の予定：チェックで判定');
     }
 
     // 書類表示
@@ -430,6 +451,24 @@ class HospitalizationDXApp {
       aiResponse += '✗ 医療保険請求は不要です\n';
     }
 
+    if (this.checklist.proxy) {
+      aiResponse += '✓ 代理人が手続きを行います\n';
+    } else {
+      aiResponse += '✗ ご本人が手続きされます\n';
+    }
+
+    if (this.checklist.expensive) {
+      aiResponse += '✓ 高額医療費申請を行います\n';
+    } else {
+      aiResponse += '✗ 高額医療費申請は不要です\n';
+    }
+
+    if (this.checklist.transfer) {
+      aiResponse += '✓ 転院を予定されています\n';
+    } else {
+      aiResponse += '✗ 転院の予定はありません\n';
+    }
+
     aiResponse += '\n必要な書類を最小限に整理しました...';
 
     // Typing アニメーション実行
@@ -438,20 +477,35 @@ class HospitalizationDXApp {
     // 書類パネルを表示
     await new Promise(resolve => setTimeout(resolve, 500));
     await fadeIn(docsPanel, 300);
+base];
 
-    // 必要な書類を生成
-    const necessaryDocs = this.generateNecessaryDocuments();
-    const container = document.getElementById('aiDocuments');
-    container.innerHTML = '';
+    if (this.checklist.surgery) {
+      docs.push(...this.flowsData.documents.surgery);
+    }
 
-    necessaryDocs.forEach(doc => {
-      const item = this.createDocumentItem(doc);
-      container.appendChild(item);
-    });
+    if (this.checklist.hce) {
+      docs.push(...this.flowsData.documents.hce);
+    }
 
-    this.updateStats(necessaryDocs.length);
-  }
+    if (this.checklist.claim) {
+      docs.push(...this.flowsData.documents.claim);
+    }
 
+    if (this.checklist.proxy) {
+      docs.push(...this.flowsData.documents.proxy);
+    }
+
+    if (this.checklist.expensive) {
+      docs.push(...this.flowsData.documents.expensive);
+    }
+
+    if (this.checklist.transfer) {base,
+      ...this.flowsData.documents.surgery,
+      ...this.flowsData.documents.hce,
+      ...this.flowsData.documents.claim,
+      ...this.flowsData.documents.proxy,
+      ...this.flowsData.documents.expensive,
+      ...this.flowsData.documents.transfer
   /**
    * 必要な書類を生成（AI版）
    */
