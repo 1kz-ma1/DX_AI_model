@@ -525,15 +525,6 @@
       "affects": ["麻酔同意書（全身麻酔）", "麻酔同意書（局所麻酔）"]
     },
     {
-      "id": "family_cosign",
-      "ask": "同意の署名はご家族の署名も取得しますか？",
-      "type": "yesno",
-      "showIf": ["surgery"],
-      "yes": { "set": ["family.co_sign"] },
-      "no": { "unset": ["family.co_sign"] },
-      "affects": ["家族署名シート"]
-    },
-    {
       "id": "mynumber_used",
       "ask": "入院時にマイナンバーカードを利用して保険資格の確認を行いましたか？",
       "type": "single",
