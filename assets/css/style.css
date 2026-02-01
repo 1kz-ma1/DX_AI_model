@@ -24,6 +24,8 @@ body {
   justify-content: center;
   z-index: 1000;
   animation: fadeInIntro 0.4s ease-in;
+  overflow-y: auto;
+  padding: 20px;
 }
 
 @keyframes fadeInIntro {
@@ -45,6 +47,8 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   animation: slideUpIntro 0.5s ease-out;
+  margin: auto;
+  max-height: calc(100vh - 40px);
 }
 
 @keyframes slideUpIntro {
@@ -76,6 +80,8 @@ body {
   padding: 40px;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  max-height: calc(100vh - 40px);
   justify-content: center;
   gap: 20px;
 }
@@ -175,12 +181,18 @@ body {
 
 /* レスポンシブ - 導入画面 */
 @media (max-width: 768px) {
+  .intro-screen {
+    padding: 10px;
+  }
+
   .intro-content {
     grid-template-columns: 1fr;
+    max-height: calc(100vh - 20px);
   }
 
   .intro-text {
-    padding: 30px;
+    padding: 24px;
+    max-height: none;
   }
 
   .intro-text h1 {
