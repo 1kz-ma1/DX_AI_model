@@ -360,20 +360,24 @@ class HospitalizationDXApp {
     switch (this.currentMode) {
       case 'plain':
         const plainDocs = this.getPlainDocuments();
+        const plainStats = this.calculateDetailedInputFields(plainDocs, 'plain');
         currentDocs = plainDocs.length;
-        currentInput = this.calculateInputFields(plainDocs);
+        currentInput = plainStats.manualFields; // 手入力項目数を表示
         currentWarn = 0;
         break;
       case 'smart':
         const smartResult = this.getSmartDocumentsAndWarnings();
-        currentDocs = smartResult.documents.length;
-        currentInput = this.calculateInputFields(smartResult.documents);
+        const smartDocs = [...smartResult.baseDocs, ...smartResult.conditionalDocs];
+        const smartStats = this.calculateDetailedInputFields(smartDocs, 'smart');
+        currentDocs = smartDocs.length;
+        currentInput = smartStats.manualFields; // 手入力項目数を表示
         currentWarn = smartResult.warnings.length;
         break;
       case 'ai':
         const aiDocs = this.getAiDocuments();
+        const aiStats = this.calculateDetailedInputFields(aiDocs, 'ai');
         currentDocs = aiDocs.length;
-        currentInput = this.calculateInputFields(aiDocs);
+        currentInput = aiStats.manualFields; // 手入力項目数を表示
         currentWarn = 0;
         break;
     }
@@ -1115,24 +1119,24 @@ class HospitalizationDXApp {
   updateMetrics() {
     // Plain: チェックリストで選択された全書類
     const plainDocs = this.getAllDocuments();
-    const plainCount = plainDocs.length;
-    const plainInput = this.calculateInputFields(plainDocs);
+    const plainStats = this.calculateDetailedInputFields(plainDocs, 'plain');
     
     // Smart: チェックリストで選択された書類（手動判断あり）
     const { baseDocs, conditionalDocs, warnings } = this.getSmartDocumentsAndWarnings();
     const smartDocs = [...baseDocs, ...conditionalDocs];
-    const smartCount = smartDocs.length;
-    const smartInput = this.calculateInputFields(smartDocs);
+    const smartStats = this.calculateDetailedInputFields(smartDocs, 'smart');
     
     // AI: チェックリストで選択された書類から、AI質問回答（derivedFlags）でフィルタリング
     const aiDocs = this.getAiDocuments();
-    const aiCount = aiDocs.length;
-    const aiInput = this.calculateInputFields(aiDocs);
+    const aiStats = this.calculateDetailedInputFields(aiDocs, 'ai');
     
     const maxWarn = Math.max(1, warnings.length);
 
-    this.updateMetricRow('Docs', plainCount, smartCount, aiCount, plainCount);
-    this.updateMetricRow('Input', plainInput, smartInput, aiInput, plainInput);
+    // 書類数
+    this.updateMetricRow('Docs', plainDocs.length, smartDocs.length, aiDocs.length, plainDocs.length);
+    // 手入力項目数（重要指標）
+    this.updateMetricRow('Input', plainStats.manualFields, smartStats.manualFields, aiStats.manualFields, plainStats.manualFields);
+    // 警告数
     this.updateMetricRow('Warn', 0, warnings.length, 0, maxWarn);
   }
 
@@ -1211,6 +1215,81 @@ class HospitalizationDXApp {
       // inputFieldsが無い場合はfieldsの長さを使用（フォールバック）
       return total + (doc.fields ? doc.fields.length : 0);
     }, 0);
+  }
+
+  // 詳細な入力項目計算（source属性ベース）
+  calculateDetailedInputFields(documents, mode) {
+    let totalFields = 0;
+    let manualFields = 0;
+    let autoFields = 0;
+    const mynumberUsed = this.derivedFlags['mynumber.used'] || false;
+
+    documents.forEach(doc => {
+      if (doc.fieldDetails && doc.fieldDetails.length > 0) {
+        // fieldDetails があればそれを使用
+        doc.fieldDetails.forEach(field => {
+          if (field.required !== false) {
+            totalFields++;
+            if (this.isManualInput(field, mode, mynumberUsed)) {
+              manualFields++;
+            } else {
+              autoFields++;
+            }
+          }
+        });
+      } else if (doc.inputFields && doc.inputFields[mode] !== undefined) {
+        // inputFields があればそれを使用（後方互換性）
+        const count = doc.inputFields[mode];
+        totalFields += doc.fields ? doc.fields.length : count;
+        manualFields += count;
+        autoFields += (doc.fields ? doc.fields.length : count) - count;
+      } else {
+        // フォールバック
+        const count = doc.fields ? doc.fields.length : 0;
+        totalFields += count;
+        manualFields += count;
+      }
+    });
+
+    return { totalFields, manualFields, autoFields };
+  }
+
+  // 項目が手入力かどうかを判定
+  isManualInput(field, mode, mynumberUsed) {
+    const source = field.source;
+
+    // マイナンバー項目
+    if (source === 'mynumber') {
+      return !mynumberUsed || mode === 'plain';
+    }
+
+    // 共通項目（shared）
+    if (source === 'shared') {
+      return mode === 'plain'; // plainでは毎回入力、smart/aiでは初回のみ（集計では0扱い）
+    }
+
+    // AI補完項目
+    if (source === 'ai') {
+      return mode !== 'ai'; // aiモードでのみ自動
+    }
+
+    // 派生項目（derived）
+    if (source === 'derived') {
+      return mode === 'plain'; // smart/aiでは自動計算
+    }
+
+    // ユーザー入力（user）
+    if (source === 'user') {
+      return true; // 常に手入力
+    }
+
+    // optional（任意項目）
+    if (source === 'optional') {
+      return false; // 任意なので基本カウントしない
+    }
+
+    // デフォルトは手入力扱い
+    return true;
   }
 
   // 現在のモードで表示されている書類を取得

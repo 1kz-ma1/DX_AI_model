@@ -107,6 +107,16 @@
         "description": "入院期間を証明する書類",
         "purpose": "健康保険や勤務先への報告用",
         "fields": ["入院日", "退院日", "診断名", "医師署名"],
+        "fieldDetails": [
+          { "id": "patient_name", "label": "患者氏名", "source": "shared", "required": true },
+          { "id": "patient_id", "label": "患者ID", "source": "shared", "required": true },
+          { "id": "admission_date", "label": "入院日", "source": "shared", "required": true },
+          { "id": "discharge_date", "label": "退院日", "source": "shared", "required": true },
+          { "id": "diagnosis", "label": "診断名", "source": "ai", "required": true },
+          { "id": "treatment", "label": "治療内容", "source": "ai", "required": true },
+          { "id": "doctor_name", "label": "担当医名", "source": "derived", "required": true },
+          { "id": "doctor_sign", "label": "医師署名", "source": "user", "required": true }
+        ],
         "inputFields": { "plain": 8, "smart": 4, "ai": 2 },
         "whenNeeded": "全ケース必須",
         "aiReason": "入院・退院の日付確認で自動選定",
@@ -162,6 +172,14 @@
         "description": "国民健康保険証・社会保険証等",
         "purpose": "保険資格の確認",
         "fields": ["保険者名称", "被保険者番号", "有効期限"],
+        "fieldDetails": [
+          { "id": "insurer_name", "label": "保険者名称", "source": "mynumber", "required": true },
+          { "id": "insurer_no", "label": "保険者番号", "source": "mynumber", "required": true },
+          { "id": "insured_no", "label": "被保険者番号", "source": "mynumber", "required": true },
+          { "id": "insured_symbol", "label": "被保険者記号", "source": "mynumber", "required": true },
+          { "id": "valid_from", "label": "有効期限（開始）", "source": "mynumber", "required": true },
+          { "id": "valid_to", "label": "有効期限（終了）", "source": "mynumber", "required": true }
+        ],
         "inputFields": { "plain": 6, "smart": 3, "ai": 0 },
         "whenNeeded": "入院手続き時に原則必須",
         "aiReason": "保険資格確認の基本資料",
