@@ -49,8 +49,9 @@ class HospitalizationDXApp {
       this.setupIntroScreen();
       this.initializeUI();
       this.attachEventListeners();
-      this.restoreStateFromStorage();
-      this.restoreStateFromUrl();
+      // 状態復元を無効化 - 常にPlainモードから開始
+      // this.restoreStateFromStorage();
+      // this.restoreStateFromUrl();
       this.setLoading(false);
     } catch (error) {
       console.error('Failed to load flows.json:', error);
@@ -58,8 +59,9 @@ class HospitalizationDXApp {
       this.showLoadError(true);
       this.initializeUI();
       this.attachEventListeners();
-      this.restoreStateFromStorage();
-      this.restoreStateFromUrl();
+      // 状態復元を無効化
+      // this.restoreStateFromStorage();
+      // this.restoreStateFromUrl();
       this.setLoading(false);
     }
   }
@@ -92,6 +94,11 @@ class HospitalizationDXApp {
       alert('必須項目を入力してください。');
       return;
     }
+
+    // 常にPlainモードから開始（状態リセット）
+    this.currentMode = 'plain';
+    this.derivedFlags = {};
+    this.branchAnswers = {};
 
     const step1 = document.getElementById('step1');
     const step2 = document.getElementById('step2');
@@ -1404,7 +1411,14 @@ class HospitalizationDXApp {
 
   // スキップを確定してステップ2へ
   confirmSkip() {
+    this.fillFormWithDefaults();
     this.closePreviewModal();
+    
+    // 常にPlainモードから開始
+    this.currentMode = 'plain';
+    this.derivedFlags = {};
+    this.branchAnswers = {};
+    
     this.transitionToStep2(true); // バリデーションをスキップ
   }
 
