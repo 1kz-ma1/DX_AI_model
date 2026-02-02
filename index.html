@@ -122,11 +122,10 @@
         </div>
       </header>
 
-      <!-- モバイル用タブ（入力・チェック・結果） -->
+      <!-- モバイル用タブ（入力・結果の2ステップ） -->
       <div class="mobile-tabs" role="tablist" aria-label="表示切り替え">
-        <button class="mobile-tab active" role="tab" aria-selected="true" data-action="go-input">入力</button>
-        <button class="mobile-tab" role="tab" aria-selected="false" data-target="checklist">チェック</button>
-        <button class="mobile-tab" role="tab" aria-selected="false" data-target="result">結果</button>
+        <button class="mobile-tab active" role="tab" aria-selected="true" data-action="go-input">📝 入力</button>
+        <button class="mobile-tab" role="tab" aria-selected="false" data-target="result">📊 結果</button>
       </div>
 
       <!-- DXステージ切替ボタン -->
@@ -145,8 +144,12 @@
         </button>
       </div>
 
-      <!-- メトリクス比較バー -->
-      <div id="metricsContainer" class="metrics-container">
+      <!-- メトリクス比較バー（折りたたみ可能） -->
+      <div class="collapsible-header" id="metricsToggle" role="button" tabindex="0" aria-expanded="false">
+        <h3 style="margin: 0; font-size: 1rem; font-weight: 600;">📊 モード比較グラフ</h3>
+        <span class="collapse-icon">▶</span>
+      </div>
+      <div id="metricsContainer" class="metrics-container collapsible-content" style="display: none;">
         <div class="metric-card">
           <div class="metric-label">提出書類</div>
           <div class="metric-row">
@@ -317,6 +320,10 @@
               <span class="toggle-icon">✕</span>
             </button>
             <div class="action-buttons">
+              <button id="switchToPlainBtn" class="action-btn btn-plain-action" title="電子化（Plain）状態に戻す">
+                <span class="action-icon">📄</span>
+                <span class="action-text">電子化状態に戻す</span>
+              </button>
               <button id="switchToSmartBtn" class="action-btn btn-smart-action" title="共通部分を自動入力してスマートに">
                 <span class="action-icon">⚡</span>
                 <span class="action-text">共通部分を自動入力する</span>
@@ -337,6 +344,6 @@
   </div>
 
   <script src="assets/js/typing.js"></script>
-  <script src="assets/js/app.js?v=7"></script>
+  <script src="assets/js/app.js?v=9"></script>
 </body>
 </html>

@@ -269,6 +269,15 @@ class HospitalizationDXApp {
     });
 
     // アクションボタンのイベントリスナー
+    document.getElementById('switchToPlainBtn').addEventListener('click', () => {
+      this.switchMode('plain');
+      // モバイルの場合は結果タブに切り替え
+      if (window.innerWidth <= 900) {
+        this.setActiveMobileTab('result');
+        this.showMobileSection('result');
+      }
+    });
+
     document.getElementById('switchToSmartBtn').addEventListener('click', () => {
       this.switchMode('smart');
       // モバイルの場合は結果タブに切り替え
@@ -290,6 +299,51 @@ class HospitalizationDXApp {
     document.getElementById('showSummaryBtn').addEventListener('click', () => {
       this.showSummary();
     });
+
+    // 折りたたみ機能の初期化
+    this.initCollapsibles();
+  }
+
+  // 折りたたみ機能の初期化
+  initCollapsibles() {
+    // メトリクスグラフの折りたたみ
+    const metricsToggle = document.getElementById('metricsToggle');
+    const metricsContainer = document.getElementById('metricsContainer');
+    
+    if (metricsToggle && metricsContainer) {
+      metricsToggle.addEventListener('click', () => {
+        const isExpanded = metricsToggle.getAttribute('aria-expanded') === 'true';
+        metricsToggle.setAttribute('aria-expanded', !isExpanded);
+        metricsContainer.style.display = isExpanded ? 'none' : 'block';
+      });
+
+      // Enterキーでも動作
+      metricsToggle.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          metricsToggle.click();
+        }
+      });
+    }
+
+    // チェックリストの折りたたみ（もし存在する場合）
+    const checklistToggle = document.getElementById('checklistToggle');
+    const checklistContent = document.getElementById('checklistContent');
+    
+    if (checklistToggle && checklistContent) {
+      checklistToggle.addEventListener('click', () => {
+        const isExpanded = checklistToggle.getAttribute('aria-expanded') === 'true';
+        checklistToggle.setAttribute('aria-expanded', !isExpanded);
+        checklistContent.style.display = isExpanded ? 'none' : 'block';
+      });
+
+      checklistToggle.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          checklistToggle.click();
+        }
+      });
+    }
   }
 
   validateForm() {

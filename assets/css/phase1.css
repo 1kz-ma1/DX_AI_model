@@ -1004,6 +1004,15 @@
   flex: 1;
 }
 
+.btn-plain-action {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.btn-plain-action:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
 .btn-smart-action {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
@@ -1165,5 +1174,95 @@
 
   .simulation-note p {
     font-size: 0.8rem;
+  }
+}
+
+/* ============================================ */
+/* 折りたたみ機能（モバイル最適化） */
+/* ============================================ */
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.collapsible-header:hover {
+  background: #f1f5f9;
+}
+
+.collapsible-header:active {
+  background: #e2e8f0;
+}
+
+.collapse-icon {
+  font-size: 1rem;
+  transition: transform 0.3s ease;
+  color: #64748b;
+}
+
+.collapsible-header[aria-expanded="true"] .collapse-icon {
+  transform: rotate(90deg);
+}
+
+.collapsible-content {
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.collapsible-content[style*="display: none"] {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* スマホ版グラフの最適化（縦並び1本棒グラフ） */
+@media (max-width: 900px) {
+  .metrics-container {
+    padding: 0;
+  }
+
+  .metric-card {
+    margin-bottom: 20px;
+  }
+
+  .metric-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .metric-row-label {
+    min-width: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .metric-bar {
+    flex: 1;
+    height: 24px;
+    background: #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .metric-bar-fill {
+    height: 100%;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .metric-row-value {
+    min-width: 35px;
+    text-align: right;
+    font-weight: 700;
+    font-size: 1rem;
   }
 }
