@@ -1113,19 +1113,20 @@ class HospitalizationDXApp {
   }
 
   updateMetrics() {
-    // 書類数を計算
-    const plainCount = this.getAllDocuments().length;
-    const { conditionalDocs, warnings } = this.getSmartDocumentsAndWarnings();
-    const smartCount = this.flowsData.documents.base.length + conditionalDocs.length;
-    const aiCount = this.getAiDocuments().length;
-    
-    // 入力項目数を動的に計算
-    const plainDocs = this.getPlainDocuments();
-    const smartDocs = this.getSmartDocuments();
-    const aiDocs = this.getAiDocuments();
-    
+    // Plain: チェックリストで選択された全書類
+    const plainDocs = this.getAllDocuments();
+    const plainCount = plainDocs.length;
     const plainInput = this.calculateInputFields(plainDocs);
+    
+    // Smart: チェックリストで選択された書類（手動判断あり）
+    const { baseDocs, conditionalDocs, warnings } = this.getSmartDocumentsAndWarnings();
+    const smartDocs = [...baseDocs, ...conditionalDocs];
+    const smartCount = smartDocs.length;
     const smartInput = this.calculateInputFields(smartDocs);
+    
+    // AI: チェックリストで選択された書類から、AI質問回答（derivedFlags）でフィルタリング
+    const aiDocs = this.getAiDocuments();
+    const aiCount = aiDocs.length;
     const aiInput = this.calculateInputFields(aiDocs);
     
     const maxWarn = Math.max(1, warnings.length);
