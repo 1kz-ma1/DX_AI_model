@@ -219,7 +219,7 @@
       </div>
 
       <!-- スマホ用：チェックリスト（折りたたみ可能） -->
-      <div class="mobile-checklist-section" style="display: none;">
+      <div class="mobile-checklist-section">
         <div class="collapsible-header" id="mobileChecklistToggle" role="button" tabindex="0" aria-expanded="true">
           <h2 style="margin: 0; font-size: 1.1rem; font-weight: 600;">✅ 該当する項目をチェック</h2>
           <span class="collapse-icon">▼</span>
@@ -233,7 +233,7 @@
       </div>
 
       <!-- スマホ用：必要書類（折りたたみ可能） -->
-      <div class="mobile-result-section" style="display: none;">
+      <div class="mobile-result-section">
         <div class="collapsible-header" id="mobileResultToggle" role="button" tabindex="0" aria-expanded="false">
           <h2 style="margin: 0; font-size: 1.1rem; font-weight: 600;">📋 必要書類一覧</h2>
           <span class="collapse-icon">▶</span>
@@ -336,8 +336,8 @@
 
           <!-- アクションボタン -->
           <div class="action-buttons-container">
-            <button id="actionMenuToggle" class="action-menu-toggle" title="メニューを開く/閉じる" aria-label="アクションメニュー" aria-expanded="true">
-              <span class="toggle-icon">✕</span>
+            <button id="actionMenuToggle" class="action-menu-toggle" title="メニューを開く/閉じる" aria-label="アクションメニュー" aria-expanded="false">
+              <span class="toggle-icon">☰</span>
             </button>
             <div class="action-buttons">
               <button id="switchToPlainBtn" class="action-btn btn-plain-action" title="電子化（Plain）状態に戻す">
@@ -364,6 +364,6 @@
   </div>
 
   <script src="assets/js/typing.js"></script>
-  <script src="assets/js/app.js?v=10"></script>
+  <script src="assets/js/app.js?v=11"></script>
 </body>
 </html>

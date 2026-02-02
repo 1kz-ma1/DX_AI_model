@@ -144,6 +144,18 @@ class HospitalizationDXApp {
     this.generateChecklist();
     this.initMobileTabs();
     this.renderMode('plain');
+    this.initActionMenu(); // アクションメニューの初期化
+  }
+
+  initActionMenu() {
+    // アクションメニューをデフォルトで閉じた状態に設定
+    const actionButtons = document.querySelector('.action-buttons');
+    const menuToggle = document.getElementById('actionMenuToggle');
+    if (actionButtons && menuToggle) {
+      actionButtons.classList.add('collapsed');
+      menuToggle.classList.add('collapsed');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
   }
 
   generateBaseForm() {
