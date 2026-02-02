@@ -1,0 +1,171 @@
+/* home.css - ハブ画面のリング/グリッドUI */
+
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 0;
+}
+
+.site-header {
+  background: rgba(255, 255, 255, 0.95);
+  padding: var(--space-lg) 0;
+  box-shadow: var(--shadow-md);
+}
+
+.site-header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-header h1 {
+  font-size: var(--font-size-2xl);
+  color: var(--color-gray-800);
+}
+
+.profile-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.profile-link:hover {
+  text-decoration: underline;
+}
+
+.hub-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-lg);
+}
+
+.hub-intro {
+  text-align: center;
+  color: white;
+  margin-bottom: var(--space-2xl);
+}
+
+.hub-intro h2 {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--space-md);
+}
+
+.hub-intro p {
+  font-size: var(--font-size-lg);
+  opacity: 0.9;
+}
+
+/* ドメインハブ: デスクトップはリング、モバイルはグリッド */
+.domain-hub {
+  position: relative;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* リング配置（デスクトップ） */
+@media (min-width: 769px) {
+  .domain-hub {
+    /* SVG or CSS transform で円環配置 */
+  }
+  
+  .domain-node {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-xl);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: var(--color-gray-800);
+  }
+  
+  .domain-node:hover {
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  .domain-node.center {
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .domain-node.center .domain-emoji {
+    font-size: 4rem;
+  }
+}
+
+/* グリッド配置（モバイル） */
+@media (max-width: 768px) {
+  .domain-hub {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+    min-height: auto;
+  }
+  
+  .domain-node {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--color-gray-800);
+    box-shadow: var(--shadow-lg);
+    min-height: 140px;
+    transition: all 0.2s ease;
+  }
+  
+  .domain-node:active {
+    transform: scale(0.95);
+  }
+  
+  .domain-node.center {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+  }
+}
+
+.domain-emoji {
+  font-size: 3rem;
+  margin-bottom: var(--space-sm);
+}
+
+.domain-name {
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-xs);
+  text-align: center;
+}
+
+.domain-desc {
+  font-size: var(--font-size-xs);
+  opacity: 0.8;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.hub-note {
+  text-align: center;
+  color: white;
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-2xl);
+  opacity: 0.9;
+  line-height: 1.6;
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DX×AI 分野ハブ</title>
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>🏛️ DX×AI 体験アプリ</h1>
+      <nav>
+        <a href="#" id="changeProfileLink" class="profile-link">前提条件を変更する</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="hub-container">
+    <div class="hub-intro">
+      <h2>分野を選んで体験してください</h2>
+      <p>各分野でDX・AI導入による効率化を比較できます</p>
+    </div>
+
+    <!-- デスクトップ: リング配置 / モバイル: グリッド -->
+    <div id="domainHub" class="domain-hub" role="navigation" aria-label="分野選択">
+      <!-- home.jsで動的生成 -->
+    </div>
+
+    <div class="hub-note">
+      <p>※ 本デモは制度・施設運用の単純化・誇張を含みます。実際の効果は環境により異なります。</p>
+    </div>
+  </main>
+
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/home.js"></script>
+</body>
+</html>

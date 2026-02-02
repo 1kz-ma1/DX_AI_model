@@ -1,0 +1,590 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "defaultMode": "plain"
+  },
+  "domains": [
+    {
+      "id": "administration",
+      "name": "行政DX",
+      "emoji": "🏛️",
+      "intro": "住民票・各種申請・補助金手続などの再設計デモ",
+      "description": "「同じ情報を何度も書かされる」をなくす設計",
+      "checklist": [
+        {"id": "proxy", "label": "代理申請を行う", "key": "proxy"},
+        {"id": "subsidy", "label": "補助金申請を行う", "key": "subsidy"},
+        {"id": "move", "label": "転居手続きを行う", "key": "move"}
+      ],
+      "documents": {
+        "base": [
+          {
+            "id": "residence_certificate",
+            "name": "住民票の写し",
+            "description": "住所・世帯構成の証明",
+            "inputFields": [
+              {"id": "household_head", "label": "世帯主氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "address", "label": "住所", "source": "mynumber", "requiredIf": null},
+              {"id": "family_members", "label": "世帯員", "source": "mynumber", "requiredIf": null},
+              {"id": "purpose", "label": "使用目的", "source": "user", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "seal_certificate",
+            "name": "印鑑登録証明書",
+            "description": "実印の証明",
+            "inputFields": [
+              {"id": "registrant_name", "label": "登録者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "seal_image", "label": "印影", "source": "shared", "requiredIf": null},
+              {"id": "registration_date", "label": "登録日", "source": "mynumber", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "tax_certificate",
+            "name": "課税証明書",
+            "description": "所得・税額の証明",
+            "inputFields": [
+              {"id": "taxpayer_name", "label": "納税者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "annual_income", "label": "年間所得", "source": "mynumber", "requiredIf": null},
+              {"id": "tax_amount", "label": "税額", "source": "mynumber", "requiredIf": null},
+              {"id": "fiscal_year", "label": "年度", "source": "shared", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "subsidy_application",
+            "name": "補助金申請書",
+            "description": "各種補助金の申請",
+            "inputFields": [
+              {"id": "applicant_name", "label": "申請者氏名", "source": "mynumber", "requiredIf": "subsidy"},
+              {"id": "subsidy_type", "label": "補助金種別", "source": "ai", "requiredIf": "subsidy"},
+              {"id": "project_desc", "label": "事業内容", "source": "user", "requiredIf": "subsidy"},
+              {"id": "budget", "label": "事業予算", "source": "user", "requiredIf": "subsidy"},
+              {"id": "expected_effect", "label": "期待される効果", "source": "ai", "requiredIf": "subsidy"}
+            ]
+          },
+          {
+            "id": "move_notification",
+            "name": "転入・転出届",
+            "description": "住所変更の届出",
+            "inputFields": [
+              {"id": "mover_name", "label": "転居者氏名", "source": "mynumber", "requiredIf": "move"},
+              {"id": "old_address", "label": "旧住所", "source": "mynumber", "requiredIf": "move"},
+              {"id": "new_address", "label": "新住所", "source": "user", "requiredIf": "move"},
+              {"id": "move_date", "label": "転居日", "source": "user", "requiredIf": "move"},
+              {"id": "household_members", "label": "同居家族", "source": "mynumber", "requiredIf": "move"}
+            ]
+          },
+          {
+            "id": "proxy_authorization",
+            "name": "委任状",
+            "description": "代理人による申請の委任",
+            "inputFields": [
+              {"id": "principal_name", "label": "委任者氏名", "source": "mynumber", "requiredIf": "proxy"},
+              {"id": "agent_name", "label": "代理人氏名", "source": "user", "requiredIf": "proxy"},
+              {"id": "authorized_matters", "label": "委任事項", "source": "ai", "requiredIf": "proxy"},
+              {"id": "principal_signature", "label": "委任者署名", "source": "user", "requiredIf": "proxy"}
+            ]
+          }
+        ]
+      },
+      "aiFlow": {
+        "questions": [
+          {
+            "id": "application_purpose",
+            "text": "申請の目的を教えてください",
+            "options": [
+              {"value": "employment", "label": "就職・転職"},
+              {"value": "loan", "label": "ローン・融資"},
+              {"value": "school", "label": "入学・転校"},
+              {"value": "other", "label": "その他"}
+            ]
+          },
+          {
+            "id": "urgency_admin",
+            "text": "書類の必要時期は？",
+            "options": [
+              {"value": "immediate", "label": "即日"},
+              {"value": "week", "label": "1週間以内"},
+              {"value": "month", "label": "1ヶ月以内"}
+            ]
+          }
+        ]
+      },
+      "modes": {
+        "plain": {
+          "title": "①電子化",
+          "description": "紙をデジタルに置き換えた状態"
+        },
+        "smart": {
+          "title": "②工夫",
+          "description": "共通項目の自動入力・条件分岐"
+        },
+        "ai": {
+          "title": "③AI導入",
+          "description": "AI対話による補完・統合"
+        }
+      }
+    },
+    {
+      "id": "medical",
+      "name": "医療DX",
+      "emoji": "🏥",
+      "intro": "入院・退院・高額療養費・保険請求の再設計デモ",
+      "description": "入院手続きの「書類地獄」をなくす",
+      "checklist": [
+        {"id": "surgery", "label": "手術を受けた", "key": "surgery"},
+        {"id": "hce", "label": "高額療養費制度を申請する", "key": "hce"},
+        {"id": "claim", "label": "医療保険を請求する", "key": "claim"},
+        {"id": "proxy", "label": "代理人として手続きする", "key": "proxy"},
+        {"id": "expensive", "label": "入院費が10万円を超えた", "key": "expensive"},
+        {"id": "transfer", "label": "退院後に転院する予定がある", "key": "transfer"}
+      ],
+      "documents": {
+        "base": [
+          {
+            "id": "discharge_certificate",
+            "name": "退院証明書",
+            "description": "入院期間を証明する書類",
+            "inputFields": [
+              {"id": "patient_name", "label": "患者氏名", "source": "shared", "requiredIf": null},
+              {"id": "patient_id", "label": "患者ID", "source": "shared", "requiredIf": null},
+              {"id": "admission_date", "label": "入院日", "source": "shared", "requiredIf": null},
+              {"id": "discharge_date", "label": "退院日", "source": "shared", "requiredIf": null},
+              {"id": "diagnosis", "label": "診断名", "source": "ai", "requiredIf": null},
+              {"id": "treatment", "label": "治療内容", "source": "ai", "requiredIf": null},
+              {"id": "doctor_name", "label": "担当医名", "source": "derived", "requiredIf": null},
+              {"id": "doctor_sign", "label": "医師署名", "source": "user", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "health_insurance_copy",
+            "name": "健康保険証の写し",
+            "description": "国民健康保険証・社会保険証等",
+            "inputFields": [
+              {"id": "insurer_name", "label": "保険者名称", "source": "mynumber", "requiredIf": null},
+              {"id": "insurer_no", "label": "保険者番号", "source": "mynumber", "requiredIf": null},
+              {"id": "insured_no", "label": "被保険者番号", "source": "mynumber", "requiredIf": null},
+              {"id": "insured_symbol", "label": "被保険者記号", "source": "mynumber", "requiredIf": null},
+              {"id": "valid_from", "label": "有効期限（開始）", "source": "mynumber", "requiredIf": null},
+              {"id": "valid_to", "label": "有効期限（終了）", "source": "mynumber", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "surgery_consent",
+            "name": "手術同意書",
+            "description": "手術実施に対する同意書",
+            "inputFields": [
+              {"id": "surgery_name", "label": "手術名", "source": "ai", "requiredIf": "surgery"},
+              {"id": "surgery_date", "label": "手術予定日", "source": "shared", "requiredIf": "surgery"},
+              {"id": "risk_explanation", "label": "リスク説明", "source": "ai", "requiredIf": "surgery"},
+              {"id": "patient_sign", "label": "患者署名", "source": "user", "requiredIf": "surgery"},
+              {"id": "consent_date", "label": "同意日", "source": "derived", "requiredIf": "surgery"}
+            ]
+          },
+          {
+            "id": "hce_application",
+            "name": "限度額認定証の申請書",
+            "description": "高額療養費制度の申請用紙",
+            "inputFields": [
+              {"id": "insured_name", "label": "被保険者氏名", "source": "mynumber", "requiredIf": "hce"},
+              {"id": "householder_name", "label": "世帯主氏名", "source": "mynumber", "requiredIf": "hce"},
+              {"id": "income_bracket", "label": "所得区分", "source": "mynumber", "requiredIf": "hce"},
+              {"id": "app_date", "label": "申請日", "source": "derived", "requiredIf": "hce"}
+            ]
+          },
+          {
+            "id": "claim_form",
+            "name": "民間医療保険の請求書",
+            "description": "保険会社への請求用紙",
+            "inputFields": [
+              {"id": "policy_no", "label": "証券番号", "source": "user", "requiredIf": "claim"},
+              {"id": "claim_amount", "label": "請求金額", "source": "shared", "requiredIf": "claim"},
+              {"id": "diagnosis_claim", "label": "診断名", "source": "ai", "requiredIf": "claim"},
+              {"id": "treatment_dates", "label": "治療期間", "source": "shared", "requiredIf": "claim"},
+              {"id": "claimant_sign", "label": "請求者署名", "source": "user", "requiredIf": "claim"}
+            ]
+          },
+          {
+            "id": "proxy_form",
+            "name": "代理人届出書",
+            "description": "代理人が手続きする際の届出",
+            "inputFields": [
+              {"id": "proxy_name", "label": "代理人氏名", "source": "user", "requiredIf": "proxy"},
+              {"id": "proxy_relation", "label": "続柄", "source": "user", "requiredIf": "proxy"},
+              {"id": "proxy_id_copy", "label": "代理人の本人確認書類", "source": "user", "requiredIf": "proxy"},
+              {"id": "patient_consent", "label": "患者の委任状", "source": "user", "requiredIf": "proxy"}
+            ]
+          }
+        ]
+      },
+      "aiFlow": {
+        "questions": [
+          {
+            "id": "anesthesia_type",
+            "text": "手術時の麻酔はどちらを選択しますか？",
+            "options": [
+              {"value": "general", "label": "全身麻酔"},
+              {"value": "local", "label": "局所麻酔"},
+              {"value": "none", "label": "該当なし"}
+            ]
+          },
+          {
+            "id": "family_consent",
+            "text": "ご家族の同意書は必要ですか？",
+            "options": [
+              {"value": "yes", "label": "必要"},
+              {"value": "no", "label": "不要"}
+            ]
+          }
+        ]
+      },
+      "modes": {
+        "plain": {
+          "title": "①電子化（Plain）",
+          "description": "紙の書類を電子フォームに置き換えた状態"
+        },
+        "smart": {
+          "title": "②工夫（Smart）",
+          "description": "共通項目の自動入力と条件分岐で書類を削減"
+        },
+        "ai": {
+          "title": "③AI導入",
+          "description": "AI対話で必要書類を最小限に絞り込み"
+        }
+      }
+    },
+    {
+      "id": "education",
+      "name": "教育DX",
+      "emoji": "📚",
+      "intro": "転校・就学支援・進学手続きの再設計デモ",
+      "description": "保護者が何度も同じ書類を提出する負担を削減",
+      "checklist": [
+        {"id": "transfer", "label": "転校手続きを行う", "key": "transfer"},
+        {"id": "support", "label": "就学支援金を申請する", "key": "support"},
+        {"id": "disability", "label": "特別支援教育を希望する", "key": "disability"}
+      ],
+      "documents": {
+        "base": [
+          {
+            "id": "enrollment_form",
+            "name": "入学届",
+            "description": "学校への入学申込書",
+            "inputFields": [
+              {"id": "student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": null},
+              {"id": "student_birth", "label": "生年月日", "source": "mynumber", "requiredIf": null},
+              {"id": "parent_name", "label": "保護者氏名", "source": "shared", "requiredIf": null},
+              {"id": "address", "label": "住所", "source": "mynumber", "requiredIf": null},
+              {"id": "phone", "label": "電話番号", "source": "shared", "requiredIf": null},
+              {"id": "emergency_contact", "label": "緊急連絡先", "source": "user", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "residence_certificate",
+            "name": "住民票の写し",
+            "description": "住所確認用",
+            "inputFields": [
+              {"id": "household_head", "label": "世帯主氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "address_proof", "label": "現住所", "source": "mynumber", "requiredIf": null},
+              {"id": "family_members", "label": "世帯構成", "source": "mynumber", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "transfer_certificate",
+            "name": "在学証明書",
+            "description": "前の学校からの転校証明",
+            "inputFields": [
+              {"id": "prev_school", "label": "前籍校名", "source": "shared", "requiredIf": "transfer"},
+              {"id": "prev_grade", "label": "学年", "source": "shared", "requiredIf": "transfer"},
+              {"id": "transfer_date", "label": "転校日", "source": "shared", "requiredIf": "transfer"},
+              {"id": "principal_sign", "label": "校長印", "source": "user", "requiredIf": "transfer"}
+            ]
+          },
+          {
+            "id": "support_application",
+            "name": "就学支援金申請書",
+            "description": "授業料支援の申請",
+            "inputFields": [
+              {"id": "income_info", "label": "世帯年収", "source": "mynumber", "requiredIf": "support"},
+              {"id": "tax_certificate", "label": "課税証明書番号", "source": "mynumber", "requiredIf": "support"},
+              {"id": "bank_account", "label": "振込口座", "source": "user", "requiredIf": "support"}
+            ]
+          },
+          {
+            "id": "special_needs_form",
+            "name": "特別支援教育申込書",
+            "description": "特別支援が必要な場合",
+            "inputFields": [
+              {"id": "support_type", "label": "支援内容", "source": "ai", "requiredIf": "disability"},
+              {"id": "medical_opinion", "label": "医師の意見書", "source": "user", "requiredIf": "disability"},
+              {"id": "past_support", "label": "過去の支援歴", "source": "shared", "requiredIf": "disability"}
+            ]
+          }
+        ]
+      },
+      "aiFlow": {
+        "questions": [
+          {
+            "id": "grade_level",
+            "text": "お子様の学年を教えてください",
+            "options": [
+              {"value": "elementary", "label": "小学生"},
+              {"value": "junior_high", "label": "中学生"},
+              {"value": "high_school", "label": "高校生"}
+            ]
+          },
+          {
+            "id": "guardian_count",
+            "text": "保護者は何名ですか？",
+            "options": [
+              {"value": "single", "label": "1名（ひとり親）"},
+              {"value": "double", "label": "2名"}
+            ]
+          }
+        ]
+      },
+      "modes": {
+        "plain": {
+          "title": "①電子化（Plain）",
+          "description": "紙の書類を電子フォームに置き換えた状態"
+        },
+        "smart": {
+          "title": "②工夫（Smart）",
+          "description": "学校・自治体間の情報共有で重複入力を削減"
+        },
+        "ai": {
+          "title": "③AI導入",
+          "description": "マイナンバー連携とAI対話で手続きを簡略化"
+        }
+      }
+    },
+    {
+      "id": "logistics",
+      "name": "物流DX",
+      "emoji": "📦",
+      "intro": "輸出入通関・配送手配の再設計デモ",
+      "description": "貿易書類の「紙・FAX・メール地獄」を解消",
+      "checklist": [
+        {"id": "export", "label": "輸出を行う", "key": "export"},
+        {"id": "import", "label": "輸入を行う", "key": "import"},
+        {"id": "dangerous", "label": "危険物を含む", "key": "dangerous"},
+        {"id": "cold_chain", "label": "冷蔵・冷凍が必要", "key": "cold_chain"}
+      ],
+      "documents": {
+        "base": [
+          {
+            "id": "invoice",
+            "name": "商業送り状（Invoice）",
+            "description": "取引内容の明細",
+            "inputFields": [
+              {"id": "seller_name", "label": "売主名", "source": "shared", "requiredIf": null},
+              {"id": "buyer_name", "label": "買主名", "source": "shared", "requiredIf": null},
+              {"id": "product_desc", "label": "商品説明", "source": "ai", "requiredIf": null},
+              {"id": "quantity", "label": "数量", "source": "shared", "requiredIf": null},
+              {"id": "unit_price", "label": "単価", "source": "shared", "requiredIf": null},
+              {"id": "total_amount", "label": "合計金額", "source": "derived", "requiredIf": null},
+              {"id": "incoterms", "label": "貿易条件", "source": "shared", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "packing_list",
+            "name": "梱包明細書（Packing List）",
+            "description": "荷物の詳細情報",
+            "inputFields": [
+              {"id": "package_count", "label": "梱包個数", "source": "shared", "requiredIf": null},
+              {"id": "gross_weight", "label": "総重量", "source": "shared", "requiredIf": null},
+              {"id": "net_weight", "label": "正味重量", "source": "derived", "requiredIf": null},
+              {"id": "dimensions", "label": "寸法", "source": "shared", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "export_declaration",
+            "name": "輸出申告書",
+            "description": "税関への輸出申告",
+            "inputFields": [
+              {"id": "hs_code", "label": "HSコード", "source": "ai", "requiredIf": "export"},
+              {"id": "export_license", "label": "輸出許可番号", "source": "shared", "requiredIf": "export"},
+              {"id": "destination_country", "label": "仕向国", "source": "shared", "requiredIf": "export"},
+              {"id": "customs_value", "label": "課税価格", "source": "derived", "requiredIf": "export"}
+            ]
+          },
+          {
+            "id": "import_declaration",
+            "name": "輸入申告書",
+            "description": "税関への輸入申告",
+            "inputFields": [
+              {"id": "hs_code_import", "label": "HSコード", "source": "ai", "requiredIf": "import"},
+              {"id": "origin_country", "label": "原産国", "source": "shared", "requiredIf": "import"},
+              {"id": "duty_rate", "label": "関税率", "source": "ai", "requiredIf": "import"},
+              {"id": "import_tax", "label": "輸入税額", "source": "derived", "requiredIf": "import"}
+            ]
+          },
+          {
+            "id": "dangerous_goods_form",
+            "name": "危険物明細書",
+            "description": "危険物の詳細申告",
+            "inputFields": [
+              {"id": "un_number", "label": "国連番号", "source": "ai", "requiredIf": "dangerous"},
+              {"id": "hazard_class", "label": "危険物クラス", "source": "ai", "requiredIf": "dangerous"},
+              {"id": "flash_point", "label": "引火点", "source": "user", "requiredIf": "dangerous"},
+              {"id": "emergency_contact", "label": "緊急連絡先", "source": "shared", "requiredIf": "dangerous"}
+            ]
+          },
+          {
+            "id": "cold_chain_cert",
+            "name": "温度管理証明書",
+            "description": "冷蔵・冷凍輸送の証明",
+            "inputFields": [
+              {"id": "temp_range", "label": "保管温度帯", "source": "ai", "requiredIf": "cold_chain"},
+              {"id": "monitoring_device", "label": "温度記録装置", "source": "shared", "requiredIf": "cold_chain"},
+              {"id": "quality_cert", "label": "品質保証書", "source": "user", "requiredIf": "cold_chain"}
+            ]
+          }
+        ]
+      },
+      "aiFlow": {
+        "questions": [
+          {
+            "id": "cargo_type",
+            "text": "輸送する貨物の種類は？",
+            "options": [
+              {"value": "general", "label": "一般貨物"},
+              {"value": "food", "label": "食品"},
+              {"value": "electronics", "label": "電子機器"},
+              {"value": "chemicals", "label": "化学品"}
+            ]
+          },
+          {
+            "id": "urgency",
+            "text": "配送の緊急度は？",
+            "options": [
+              {"value": "express", "label": "至急（航空便）"},
+              {"value": "standard", "label": "通常（海上便）"}
+            ]
+          }
+        ]
+      },
+      "modes": {
+        "plain": {
+          "title": "①電子化（Plain）",
+          "description": "紙・FAXをPDF・メールに置き換えた状態"
+        },
+        "smart": {
+          "title": "②工夫（Smart）",
+          "description": "EDI連携で重複データ入力を削減"
+        },
+        "ai": {
+          "title": "③AI導入",
+          "description": "AIがHSコード・関税率を自動判定、書類を自動生成"
+        }
+      }
+    },
+    {
+      "id": "disaster",
+      "name": "災害対応DX",
+      "emoji": "🚨",
+      "intro": "被災者支援・罹災証明・義援金申請の再設計デモ",
+      "description": "災害時の「役所に並ぶ」「同じ説明を繰り返す」を解消",
+      "checklist": [
+        {"id": "damage_report", "label": "被害報告を行う", "key": "damage_report"},
+        {"id": "certificate", "label": "罹災証明書を申請する", "key": "certificate"},
+        {"id": "relief_fund", "label": "義援金を申請する", "key": "relief_fund"},
+        {"id": "temporary_housing", "label": "仮設住宅を希望する", "key": "temporary_housing"}
+      ],
+      "documents": {
+        "base": [
+          {
+            "id": "damage_notification",
+            "name": "被害届出書",
+            "description": "被災状況の第一報",
+            "inputFields": [
+              {"id": "victim_name", "label": "被災者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "property_address", "label": "被災物件住所", "source": "mynumber", "requiredIf": null},
+              {"id": "damage_date", "label": "被災日時", "source": "user", "requiredIf": null},
+              {"id": "damage_type", "label": "被害の種類", "source": "ai", "requiredIf": null},
+              {"id": "damage_photos", "label": "被害写真", "source": "user", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "residence_proof",
+            "name": "住民票の写し",
+            "description": "被災地居住の証明",
+            "inputFields": [
+              {"id": "resident_name", "label": "住民氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "resident_address", "label": "住所", "source": "mynumber", "requiredIf": null},
+              {"id": "move_in_date", "label": "転入日", "source": "mynumber", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "disaster_certificate",
+            "name": "罹災証明書",
+            "description": "被害程度の公式証明",
+            "inputFields": [
+              {"id": "damage_level", "label": "被害程度", "source": "ai", "requiredIf": "certificate"},
+              {"id": "inspection_date", "label": "調査日", "source": "derived", "requiredIf": "certificate"},
+              {"id": "inspector_name", "label": "調査員名", "source": "derived", "requiredIf": "certificate"},
+              {"id": "official_seal", "label": "公印", "source": "derived", "requiredIf": "certificate"}
+            ]
+          },
+          {
+            "id": "relief_application",
+            "name": "義援金申請書",
+            "description": "災害義援金の受給申請",
+            "inputFields": [
+              {"id": "bank_info", "label": "振込先口座", "source": "user", "requiredIf": "relief_fund"},
+              {"id": "household_size", "label": "世帯人数", "source": "mynumber", "requiredIf": "relief_fund"},
+              {"id": "certificate_copy", "label": "罹災証明書の写し", "source": "shared", "requiredIf": "relief_fund"}
+            ]
+          },
+          {
+            "id": "housing_application",
+            "name": "仮設住宅入居申込書",
+            "description": "応急仮設住宅の申込",
+            "inputFields": [
+              {"id": "family_composition", "label": "世帯構成", "source": "mynumber", "requiredIf": "temporary_housing"},
+              {"id": "special_needs", "label": "特別な配慮", "source": "ai", "requiredIf": "temporary_housing"},
+              {"id": "preferred_location", "label": "希望地域", "source": "user", "requiredIf": "temporary_housing"},
+              {"id": "pet_info", "label": "ペットの有無", "source": "user", "requiredIf": "temporary_housing"}
+            ]
+          }
+        ]
+      },
+      "aiFlow": {
+        "questions": [
+          {
+            "id": "disaster_type",
+            "text": "被災した災害の種類は？",
+            "options": [
+              {"value": "earthquake", "label": "地震"},
+              {"value": "flood", "label": "水害"},
+              {"value": "typhoon", "label": "台風"},
+              {"value": "fire", "label": "火災"}
+            ]
+          },
+          {
+            "id": "living_status",
+            "text": "現在の居住状況は？",
+            "options": [
+              {"value": "at_home", "label": "自宅"},
+              {"value": "evacuation", "label": "避難所"},
+              {"value": "relatives", "label": "親戚宅"}
+            ]
+          }
+        ]
+      },
+      "modes": {
+        "plain": {
+          "title": "①電子化（Plain）",
+          "description": "役所窓口の紙書類を電子申請に置き換えた状態"
+        },
+        "smart": {
+          "title": "②工夫（Smart）",
+          "description": "行政機関間の情報連携で重複申請を削減"
+        },
+        "ai": {
+          "title": "③AI導入",
+          "description": "AIが被害状況を判定、必要な支援を自動提案"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>分野体験 - DX×AI アプリ</title>
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/domain.css">
+</head>
+<body>
+  <header class="domain-header">
+    <div class="container">
+      <nav class="breadcrumb">
+        <a href="home.html" class="breadcrumb-link">← ハブに戻る</a>
+      </nav>
+      <h1 id="domainTitle" class="domain-title">
+        <span id="domainEmoji"></span>
+        <span id="domainName"></span>
+      </h1>
+      <p id="domainIntro" class="domain-intro"></p>
+    </div>
+  </header>
+
+  <main class="domain-main">
+    <div class="container">
+      <!-- モード切替 -->
+      <nav class="mode-switcher" role="tablist" aria-label="DXステージ選択">
+        <button class="mode-btn active" data-mode="plain" role="tab" aria-selected="true">
+          <span class="mode-label">①電子化</span>
+          <span class="mode-desc">Plain</span>
+        </button>
+        <button class="mode-btn" data-mode="smart" role="tab" aria-selected="false">
+          <span class="mode-label">②工夫</span>
+          <span class="mode-desc">Smart</span>
+        </button>
+        <button class="mode-btn" data-mode="ai" role="tab" aria-selected="false">
+          <span class="mode-label">③AI導入</span>
+          <span class="mode-desc">AI</span>
+        </button>
+      </nav>
+
+      <!-- 2カラムレイアウト -->
+      <div class="domain-layout">
+        <!-- 左: チェックリスト -->
+        <aside class="domain-sidebar">
+          <section class="checklist-section">
+            <h2>✅ 条件設定</h2>
+            <div id="checklistContainer" class="checklist">
+              <!-- domain.jsで生成 -->
+            </div>
+          </section>
+
+          <section class="profile-section">
+            <h3>前提条件</h3>
+            <div id="profileDisplay" class="profile-display">
+              <!-- domain.jsで生成 -->
+            </div>
+          </section>
+        </aside>
+
+        <!-- 右: 結果表示 -->
+        <section class="domain-content">
+          <div class="content-header">
+            <h2 id="modeTitle"></h2>
+            <p id="modeDesc" class="mode-description"></p>
+          </div>
+
+          <!-- 可視化（積み上げ棒） -->
+          <div class="viz-container">
+            <h3>📊 入力項目の削減状況</h3>
+            <div id="vizCanvas" class="viz-canvas">
+              <!-- viz.jsで生成 -->
+            </div>
+            <div class="viz-legend">
+              <span class="legend-item"><span class="legend-color manual"></span>手入力</span>
+              <span class="legend-item"><span class="legend-color auto"></span>自動</span>
+              <span class="legend-item"><span class="legend-color removed"></span>不要</span>
+            </div>
+          </div>
+
+          <!-- 書類カード -->
+          <div class="documents-section">
+            <h3>📋 必要書類</h3>
+            <div id="documentsContainer" class="documents-grid">
+              <!-- domain.jsで生成 -->
+            </div>
+          </div>
+
+          <!-- AI対話パネル（AIモード時のみ表示） -->
+          <div id="aiDialogPanel" class="ai-dialog-panel" style="display: none;">
+            <h3>🤖 AI対話による絞り込み</h3>
+            <div id="aiQuestions" class="ai-questions">
+              <!-- domain.jsで生成 -->
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 注意書き -->
+      <div class="domain-disclaimer">
+        <p><strong>※ デモ前提について</strong></p>
+        <p>本デモは制度・施設運用の単純化・誇張を含みます。実際の効果は法令・医療機関・保険者・自治体の体制により異なります。マイナンバーカードで一元管理できる範囲も各機関で異なります。</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/viz.js"></script>
+  <script src="assets/js/domain.js"></script>
+</body>
+</html>
