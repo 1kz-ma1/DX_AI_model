@@ -49,6 +49,7 @@ class HospitalizationDXApp {
       this.setupIntroScreen();
       this.initializeUI();
       this.attachEventListeners();
+      this.initBackToTop(); // ページ上部に戻るボタンの初期化
       // 状態復元を無効化 - 常にPlainモードから開始
       // this.restoreStateFromStorage();
       // this.restoreStateFromUrl();
@@ -59,6 +60,7 @@ class HospitalizationDXApp {
       this.showLoadError(true);
       this.initializeUI();
       this.attachEventListeners();
+      this.initBackToTop(); // ページ上部に戻るボタンの初期化
       // 状態復元を無効化
       // this.restoreStateFromStorage();
       // this.restoreStateFromUrl();
@@ -156,6 +158,28 @@ class HospitalizationDXApp {
       menuToggle.classList.add('collapsed');
       menuToggle.setAttribute('aria-expanded', 'false');
     }
+  }
+
+  initBackToTop() {
+    const backToTopBtn = document.getElementById('backToTopBtn');
+    if (!backToTopBtn) return;
+
+    // スクロールイベントで表示/非表示を制御
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTopBtn.classList.add('visible');
+      } else {
+        backToTopBtn.classList.remove('visible');
+      }
+    });
+
+    // クリックでページトップにスムーススクロール
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
   }
 
   generateBaseForm() {
