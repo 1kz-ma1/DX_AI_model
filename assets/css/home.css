@@ -8,7 +8,7 @@ body {
 
 .site-header {
   background: rgba(255, 255, 255, 0.95);
-  padding: var(--space-lg) 0;
+  padding: var(--spacing-lg) 0;
   box-shadow: var(--shadow-md);
 }
 
@@ -37,18 +37,18 @@ body {
 .hub-container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: var(--space-2xl) var(--space-lg);
+  padding: var(--spacing-2xl) var(--spacing-lg);
 }
 
 .hub-intro {
   text-align: center;
   color: white;
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--spacing-2xl);
 }
 
 .hub-intro h2 {
   font-size: var(--font-size-3xl);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--spacing-md);
 }
 
 .hub-intro p {
@@ -112,14 +112,14 @@ body {
   .domain-hub {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-lg);
+    gap: var(--spacing-lg);
     min-height: auto;
   }
   
   .domain-node {
     background: white;
     border-radius: var(--radius-xl);
-    padding: var(--space-lg);
+    padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -144,13 +144,13 @@ body {
 
 .domain-emoji {
   font-size: 3rem;
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--spacing-sm);
 }
 
 .domain-name {
   font-weight: 700;
   font-size: var(--font-size-lg);
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--spacing-xs);
   text-align: center;
 }
 
@@ -165,7 +165,7 @@ body {
   text-align: center;
   color: white;
   font-size: var(--font-size-sm);
-  margin-top: var(--space-2xl);
+  margin-top: var(--spacing-2xl);
   opacity: 0.9;
   line-height: 1.6;
 }

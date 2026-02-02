@@ -387,6 +387,14 @@
     grid-template-columns: 1fr;
   }
 
+  .domain-sidebar {
+    order: 2;
+  }
+
+  .domain-content {
+    order: 1;
+  }
+
   .domain-title {
     font-size: 1.5rem;
   }
@@ -395,7 +403,15 @@
     flex-direction: column;
   }
 
+  .mode-btn {
+    padding: var(--spacing-md);
+  }
+
   .documents-grid {
     grid-template-columns: 1fr;
+  }
+
+  .viz-canvas {
+    min-height: 250px;
   }
 }

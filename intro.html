@@ -5,86 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>はじめに - DX×AI 体験アプリ</title>
   <link rel="stylesheet" href="assets/css/base.css">
-  <style>
-    /* TODO: intro専用スタイル（最小限） */
-    body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .intro-container {
-      max-width: 600px;
-      background: white;
-      border-radius: 16px;
-      padding: 40px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    }
-    .intro-header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .intro-header h1 {
-      font-size: 1.8rem;
-      color: #1f2937;
-      margin-bottom: 12px;
-    }
-    .disclaimer {
-      background: #fef3c7;
-      border: 1px solid #fcd34d;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 24px;
-      font-size: 0.85rem;
-      color: #92400e;
-      line-height: 1.6;
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #374151;
-    }
-    .form-group input[type="checkbox"] {
-      margin-right: 8px;
-    }
-    .form-group select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-    .btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-    }
-    .skip-link {
-      display: block;
-      text-align: center;
-      margin-top: 16px;
-      color: #6b7280;
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-  </style>
+  <link rel="stylesheet" href="assets/css/intro.css">
 </head>
 <body>
   <main class="intro-container">
@@ -99,7 +20,6 @@
     </div>
 
     <form id="profileForm">
-      <!-- TODO: intro.js で動的に生成 -->
       <div class="form-group">
         <label>
           <input type="checkbox" id="myna" name="myna" value="1">
@@ -121,7 +41,7 @@
         </label>
       </div>
 
-      <div class="form-group">
+      <div class="form-group select-group">
         <label for="persona">利用者区分</label>
         <select id="persona" name="persona">
           <option value="citizen">市民（個人）</option>

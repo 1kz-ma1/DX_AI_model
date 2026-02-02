@@ -64,6 +64,12 @@ function initUI() {
   document.getElementById('domainName').textContent = currentDomain.name;
   document.getElementById('domainIntro').textContent = currentDomain.description || '';
   
+  // ハブに戻るボタン
+  document.getElementById('backToHub').addEventListener('click', (e) => {
+    e.preventDefault();
+    navigate('home.html');
+  });
+  
   // モード切替ボタン
   document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.addEventListener('click', () => switchMode(btn.dataset.mode));
