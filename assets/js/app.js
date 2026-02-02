@@ -1017,6 +1017,17 @@ class HospitalizationDXApp {
     return docs;
   }
 
+  // Plainモードで表示される全書類を取得
+  getPlainDocuments() {
+    return this.getAllDocuments();
+  }
+
+  // Smartモードで表示される書類を取得（条件付きのもののみ、警告なし）
+  getSmartDocuments() {
+    const { baseDocs, conditionalDocs } = this.getSmartDocumentsAndWarnings();
+    return [...baseDocs, ...conditionalDocs];
+  }
+
   getAiDocuments() {
     // 全書類を取得してconditionsでフィルタリング
     const allDocs = this.getAllDocuments();
