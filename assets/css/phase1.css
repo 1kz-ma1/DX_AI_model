@@ -1272,6 +1272,11 @@
     display: block;
   }
 
+  /* PC版チェックリストを非表示 */
+  .column-left {
+    display: none !important;
+  }
+
   /* モバイル結果ヘッダー */
   .mobile-result-header {
     display: flex;
