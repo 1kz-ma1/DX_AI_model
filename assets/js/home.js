@@ -30,31 +30,49 @@ function renderDomainHub(domains) {
   if (isDesktop) {
     // 中心からの距離
     const radius = 220;
-    const centerX = 0;
-    const centerY = 0;
     
-    domains.forEach((domain, index) => {
+    // 行政DXを最初に中央に配置
+    const admin = domains.find(d => d.id === 'administration');
+    if (admin) {
+      const centerNode = document.createElement('a');
+      centerNode.className = 'domain-node center';
+      centerNode.href = '#';
+      centerNode.setAttribute('role', 'button');
+      centerNode.setAttribute('aria-label', `${admin.name}の体験へ移動`);
+      
+      centerNode.style.left = 'calc(50% - 90px)';
+      centerNode.style.top = 'calc(50% - 90px)';
+      
+      centerNode.innerHTML = `
+        <div class="domain-emoji">${admin.emoji}</div>
+        <div class="domain-name">${admin.name}</div>
+        <div class="domain-desc">${admin.description || ''}</div>
+      `;
+      
+      centerNode.addEventListener('click', (e) => {
+        e.preventDefault();
+        navigate('domain.html', { d: admin.id, mode: 'plain' });
+      });
+      
+      hub.appendChild(centerNode);
+    }
+    
+    // その他の分野を円環配置
+    const otherDomains = domains.filter(d => d.id !== 'administration');
+    otherDomains.forEach((domain, index) => {
       const node = document.createElement('a');
-      node.className = `domain-node ${domain.id === 'administration' ? 'center' : ''}`;
+      node.className = 'domain-node';
       node.href = '#';
       node.setAttribute('role', 'button');
       node.setAttribute('aria-label', `${domain.name}の体験へ移動`);
       
-      // 中央ノード以外は円環配置
-      if (domain.id !== 'administration') {
-        const otherDomains = domains.filter(d => d.id !== 'administration');
-        const otherIndex = otherDomains.findIndex(d => d.id === domain.id);
-        const angle = (otherIndex / otherDomains.length) * 2 * Math.PI - Math.PI / 2;
-        const x = centerX + radius * Math.cos(angle);
-        const y = centerY + radius * Math.sin(angle);
-        
-        node.style.left = `calc(50% + ${x}px - 70px)`;
-        node.style.top = `calc(50% + ${y}px - 70px)`;
-      } else {
-        // 中央ノード
-        node.style.left = 'calc(50% - 90px)';
-        node.style.top = 'calc(50% - 90px)';
-      }
+      // 12時の位置を起点に時計回りに配置
+      const angle = (index / otherDomains.length) * 2 * Math.PI - Math.PI / 2;
+      const x = radius * Math.cos(angle);
+      const y = radius * Math.sin(angle);
+      
+      node.style.left = `calc(50% + ${x}px - 70px)`;
+      node.style.top = `calc(50% + ${y}px - 70px)`;
       
       node.innerHTML = `
         <div class="domain-emoji">${domain.emoji}</div>
