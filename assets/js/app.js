@@ -359,20 +359,21 @@ class HospitalizationDXApp {
 
     switch (this.currentMode) {
       case 'plain':
-        currentDocs = allDocs.length;
-        currentInput = this.flowsData?.baseQuestions?.length || 8;
+        const plainDocs = this.getPlainDocuments();
+        currentDocs = plainDocs.length;
+        currentInput = this.calculateInputFields(plainDocs);
         currentWarn = 0;
         break;
       case 'smart':
         const smartResult = this.getSmartDocumentsAndWarnings();
         currentDocs = smartResult.documents.length;
-        currentInput = 3; // 自動入力後
+        currentInput = this.calculateInputFields(smartResult.documents);
         currentWarn = smartResult.warnings.length;
         break;
       case 'ai':
         const aiDocs = this.getAiDocuments();
         currentDocs = aiDocs.length;
-        currentInput = 3; // AI質問数
+        currentInput = this.calculateInputFields(aiDocs);
         currentWarn = 0;
         break;
     }
@@ -1171,7 +1172,37 @@ class HospitalizationDXApp {
 
   updateStats(count, maxDocs) {
     const statsPanel = document.getElementById('docStats');
-    statsPanel.innerHTML = `<p>📊 必要書類: <strong>${count}</strong> 件 / 全体: ${maxDocs} 件</p>`;
+    
+    // 現在表示されている書類から入力項目数を計算
+    const currentDocs = this.getCurrentDocuments();
+    const inputFieldsCount = this.calculateInputFields(currentDocs);
+    const maxInputFields = this.calculateInputFields(this.getAllDocuments());
+    
+    statsPanel.innerHTML = `<p>📊 必要書類: <strong>${count}</strong> 件 / 全体: ${maxDocs} 件 | 入力項目: <strong>${inputFieldsCount}</strong> 項目 / 最大: ${maxInputFields} 項目</p>`;
+  }
+
+  // 入力項目数を計算
+  calculateInputFields(documents) {
+    const mode = this.currentMode;
+    return documents.reduce((total, doc) => {
+      if (doc.inputFields && doc.inputFields[mode] !== undefined) {
+        return total + doc.inputFields[mode];
+      }
+      // inputFieldsが無い場合はfieldsの長さを使用（フォールバック）
+      return total + (doc.fields ? doc.fields.length : 0);
+    }, 0);
+  }
+
+  // 現在のモードで表示されている書類を取得
+  getCurrentDocuments() {
+    if (this.currentMode === 'plain') {
+      return this.getPlainDocuments();
+    } else if (this.currentMode === 'smart') {
+      return this.getSmartDocuments();
+    } else if (this.currentMode === 'ai') {
+      return this.getAiDocuments();
+    }
+    return [];
   }
 
   initMobileTabs() {
