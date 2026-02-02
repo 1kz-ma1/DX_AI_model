@@ -1280,22 +1280,18 @@ class HospitalizationDXApp {
     const plainStats = this.calculateDetailedInputFields(plainDocs, 'plain');
     
     // Smart: チェックリストで選択された書類（手動判断あり）
-    const { baseDocs, conditionalDocs, warnings } = this.getSmartDocumentsAndWarnings();
+    const { baseDocs, conditionalDocs } = this.getSmartDocumentsAndWarnings();
     const smartDocs = [...baseDocs, ...conditionalDocs];
     const smartStats = this.calculateDetailedInputFields(smartDocs, 'smart');
     
     // AI: チェックリストで選択された書類から、AI質問回答（derivedFlags）でフィルタリング
     const aiDocs = this.getAiDocuments();
     const aiStats = this.calculateDetailedInputFields(aiDocs, 'ai');
-    
-    const maxWarn = Math.max(1, warnings.length);
 
     // 書類数
     this.updateMetricRow('Docs', plainDocs.length, smartDocs.length, aiDocs.length, plainDocs.length);
     // 手入力項目数（重要指標）
     this.updateMetricRow('Input', plainStats.manualFields, smartStats.manualFields, aiStats.manualFields, plainStats.manualFields);
-    // 警告数
-    this.updateMetricRow('Warn', 0, warnings.length, 0, maxWarn);
   }
 
   updateMetricRow(prefix, plainValue, smartValue, aiValue, maxValue) {
