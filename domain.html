@@ -37,7 +37,67 @@
           <span class="mode-label">③AI導入</span>
           <span class="mode-desc">AI</span>
         </button>
+        <button class="mode-btn" data-mode="summary" role="tab" aria-selected="false">
+          <span class="mode-label">④まとめ</span>
+          <span class="mode-desc">Summary</span>
+        </button>
       </nav>
+
+      <!-- メトリクス比較バー（折りたたみ可能） -->
+      <div class="collapsible-header" id="metricsToggle" role="button" tabindex="0" aria-expanded="false">
+        <h3 style="margin: 0; font-size: 1rem; font-weight: 600;">📊 モード比較グラフ</h3>
+        <span class="collapse-icon">▶</span>
+      </div>
+      <div id="metricsContainer" class="metrics-container collapsible-content" style="display: none;">
+        <div class="metric-card">
+          <div class="metric-label">提出書類</div>
+          <div class="metric-row">
+            <span class="metric-row-label">Plain</span>
+            <div class="metric-bar">
+              <div id="metricDocsPlain" class="metric-bar-fill plain"></div>
+            </div>
+            <span id="metricDocsPlainValue" class="metric-row-value">-</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-row-label">Smart</span>
+            <div class="metric-bar">
+              <div id="metricDocsSmart" class="metric-bar-fill smart"></div>
+            </div>
+            <span id="metricDocsSmartValue" class="metric-row-value">-</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-row-label">AI</span>
+            <div class="metric-bar">
+              <div id="metricDocsAi" class="metric-bar-fill ai"></div>
+            </div>
+            <span id="metricDocsAiValue" class="metric-row-value">-</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">入力項目</div>
+          <div class="metric-row">
+            <span class="metric-row-label">Plain</span>
+            <div class="metric-bar">
+              <div id="metricInputPlain" class="metric-bar-fill plain"></div>
+            </div>
+            <span id="metricInputPlainValue" class="metric-row-value">-</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-row-label">Smart</span>
+            <div class="metric-bar">
+              <div id="metricInputSmart" class="metric-bar-fill smart"></div>
+            </div>
+            <span id="metricInputSmartValue" class="metric-row-value">-</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-row-label">AI</span>
+            <div class="metric-bar">
+              <div id="metricInputAi" class="metric-bar-fill ai"></div>
+            </div>
+            <span id="metricInputAiValue" class="metric-row-value">-</span>
+          </div>
+        </div>
+      </div>
 
       <!-- 2カラムレイアウト -->
       <div class="domain-layout">
@@ -45,13 +105,14 @@
         <aside class="domain-sidebar">
           <section class="checklist-section">
             <h2>✅ 条件設定</h2>
+            <p class="checklist-description">以下の項目に該当する場合はチェックしてください。必要書類が自動で変わります。</p>
             <div id="checklistContainer" class="checklist">
               <!-- domain.jsで生成 -->
             </div>
           </section>
 
           <section class="profile-section">
-            <h3>前提条件</h3>
+            <h3>👤 前提条件</h3>
             <div id="profileDisplay" class="profile-display">
               <!-- domain.jsで生成 -->
             </div>
@@ -65,33 +126,138 @@
             <p id="modeDesc" class="mode-description"></p>
           </div>
 
-          <!-- 可視化（積み上げ棒） -->
-          <div class="viz-container">
-            <h3>📊 入力項目の削減状況</h3>
-            <div id="vizCanvas" class="viz-canvas">
-              <!-- viz.jsで生成 -->
+          <!-- Plain/Smart/AIモードの結果パネル -->
+          <div id="modeResultContainer">
+            <!-- Plain モード -->
+            <div id="plainResult" class="result-panel result-plain">
+              <h3>📋 必要書類一覧</h3>
+              <div id="plainDocuments" class="documents-list">
+                <!-- ドキュメント一覧は domain.js で生成 -->
+              </div>
             </div>
-            <div class="viz-legend">
-              <span class="legend-item"><span class="legend-color manual"></span>手入力</span>
-              <span class="legend-item"><span class="legend-color auto"></span>自動</span>
-              <span class="legend-item"><span class="legend-color removed"></span>不要</span>
+
+            <!-- Smart モード -->
+            <div id="smartResult" class="result-panel result-smart" style="display: none;">
+              <h3>📋 必要書類（スマート判定）</h3>
+              <div id="smartDocuments" class="documents-list">
+                <!-- ドキュメント一覧は domain.js で生成 -->
+              </div>
+              <div class="smart-note" id="smartWarningsSection" style="display: none;">
+                <p>⚠️ 以下の項目は手動判断が必要です</p>
+                <ul id="smartWarnings"></ul>
+              </div>
+            </div>
+
+            <!-- AI モード -->
+            <div id="aiResult" class="result-panel result-ai" style="display: none;">
+              <!-- 仮説ログ -->
+              <div id="aiHypothesisPanel" class="ai-hypothesis-panel" style="display: none;" aria-live="polite">
+                <h3>🤖 AI が状況を分析中...</h3>
+                <div id="aiHypothesisLog" class="ai-hypothesis-log"></div>
+              </div>
+
+              <!-- 可変質問パネル -->
+              <div id="aiBranchQuestions" class="ai-branch-questions" style="display: none;" aria-live="polite">
+                <h3>📝 詳細を確認します</h3>
+                <p class="branch-description">より正確に必要書類を絞り込むため、いくつか質問させてください。</p>
+                <div id="branchQuestionContainer" class="branch-question-container">
+                  <!-- 質問は動的に生成 -->
+                </div>
+              </div>
+
+              <!-- 確定ログ -->
+              <div id="aiConfirmLog" class="ai-confirm-log" style="display: none;" aria-live="polite">
+                <h3>✅ 判断結果</h3>
+                <div id="aiConfirmLogContent" class="ai-confirm-log-content"></div>
+              </div>
+
+              <!-- 書類リスト -->
+              <div id="aiDocumentsPanel" style="display: none;">
+                <h3>📋 あなたに必要な書類（最小セット）</h3>
+                <div id="aiDocuments" class="documents-list ai-documents">
+                  <!-- ドキュメント一覧は domain.js で生成 -->
+                </div>
+                <div class="simulation-note">
+                  <p>💡 本デモは一般的な想定に基づくシミュレーションです。実際の運用は各機関の指示に従ってください。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Summary モード -->
+            <div id="summaryResult" class="result-panel result-summary" style="display: none;">
+              <h3>📊 全体のまとめ</h3>
+              
+              <!-- 積み上げ棒グラフ -->
+              <div class="viz-container">
+                <h4>入力項目の削減状況</h4>
+                <div id="summaryVizCanvas" class="viz-canvas">
+                  <!-- viz.jsで生成 -->
+                </div>
+                <div class="viz-legend">
+                  <span class="legend-item"><span class="legend-color manual"></span>手入力</span>
+                  <span class="legend-item"><span class="legend-color auto"></span>自動</span>
+                  <span class="legend-item"><span class="legend-color removed"></span>不要</span>
+                </div>
+              </div>
+
+              <!-- 統計サマリー -->
+              <div class="summary-stats">
+                <div class="stat-card">
+                  <div class="stat-label">提出書類数</div>
+                  <div class="stat-comparison">
+                    <div class="stat-item">
+                      <span class="stat-mode">Plain</span>
+                      <span class="stat-value" id="summaryDocsPlain">-</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-mode">Smart</span>
+                      <span class="stat-value" id="summaryDocsSmart">-</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-mode">AI</span>
+                      <span class="stat-value highlight" id="summaryDocsAi">-</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">入力項目数</div>
+                  <div class="stat-comparison">
+                    <div class="stat-item">
+                      <span class="stat-mode">Plain</span>
+                      <span class="stat-value" id="summaryInputPlain">-</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-mode">Smart</span>
+                      <span class="stat-value" id="summaryInputSmart">-</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-mode">AI</span>
+                      <span class="stat-value highlight" id="summaryInputAi">-</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 削減効果 -->
+              <div class="reduction-highlight">
+                <h4>🎯 AI導入による削減効果</h4>
+                <div class="reduction-stats">
+                  <div class="reduction-item">
+                    <span class="reduction-label">書類削減率</span>
+                    <span class="reduction-value" id="summaryDocsReduction">-</span>
+                  </div>
+                  <div class="reduction-item">
+                    <span class="reduction-label">入力削減率</span>
+                    <span class="reduction-value" id="summaryInputReduction">-</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- 書類カード -->
-          <div class="documents-section">
-            <h3>📋 必要書類</h3>
-            <div id="documentsContainer" class="documents-grid">
-              <!-- domain.jsで生成 -->
-            </div>
-          </div>
-
-          <!-- AI対話パネル（AIモード時のみ表示） -->
-          <div id="aiDialogPanel" class="ai-dialog-panel" style="display: none;">
-            <h3>🤖 AI対話による絞り込み</h3>
-            <div id="aiQuestions" class="ai-questions">
-              <!-- domain.jsで生成 -->
-            </div>
+          <!-- 統計情報 -->
+          <div class="stats-panel" id="statsPanel">
+            <p id="docStats"></p>
           </div>
         </section>
       </div>
