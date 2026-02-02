@@ -59,16 +59,14 @@ body {
 /* ドメインハブ: デスクトップはリング、モバイルはグリッド */
 .domain-hub {
   position: relative;
-  min-height: 500px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 600px;
+  width: 100%;
 }
 
 /* リング配置（デスクトップ） */
 @media (min-width: 769px) {
   .domain-hub {
-    /* SVG or CSS transform で円環配置 */
+    min-height: 600px;
   }
   
   .domain-node {
@@ -94,11 +92,11 @@ body {
   }
   
   .domain-node.center {
+    position: absolute;
     width: 180px;
     height: 180px;
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     color: white;
-    position: relative;
     z-index: 10;
   }
   
