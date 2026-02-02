@@ -3,352 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>入院手続き DX × AI 体験アプリ</title>
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/phase1.css">
+  <meta http-equiv="refresh" content="0; url=intro.html">
+  <title>DX × AI 多分野ポータル - リダイレクト中...</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    a {
+      color: white;
+      text-decoration: underline;
+      font-size: 0.9rem;
+    }
+  </style>
+  <script>
+    // JavaScriptによる即座のリダイレクト（meta refreshのバックアップ）
+    window.location.replace('intro.html');
+  </script>
 </head>
 <body>
-  <!-- ローディング（スケルトン） -->
-  <div id="loadingScreen" class="loading-screen" style="display: none;">
-    <div class="loading-card">
-      <div class="skeleton-line title"></div>
-      <div class="skeleton-line"></div>
-      <div class="skeleton-line"></div>
-      <div class="skeleton-grid">
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-      </div>
-    </div>
+  <div class="container">
+    <h1>🚀 DX × AI 多分野ポータル</h1>
+    <p>新しいシステムにリダイレクトしています...</p>
+    <div class="spinner"></div>
+    <p style="margin-top: 2rem; font-size: 0.9rem;">
+      自動的に移動しない場合は<a href="intro.html">こちらをクリック</a>
+    </p>
+    <p style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.7;">
+      旧医療デモ（v15）は<a href="medical_v15.html">こちら</a>
+    </p>
   </div>
-
-  <!-- 読み込みエラー表示 -->
-  <div id="loadError" class="load-error" style="display: none;">
-    <p>読み込みに失敗しました。再読み込みしてください。</p>
-    <button id="reloadBtn" class="btn btn-secondary">再読み込み</button>
-  </div>
-
-  <!-- 導入画面 -->
-  <div id="introScreen" class="intro-screen">
-    <div class="intro-content">
-      <div class="intro-image">
-        <img src="assets/img/papers.png" alt="書類整理のイメージ">
-      </div>
-      <div class="intro-text">
-        <h1>🏥 入院手続き DX × AI 体験アプリ</h1>
-        <p class="intro-subtitle">退院に向けた書類整理をスマートに</p>
-        <div class="intro-description">
-          <p>入院手続きでは、同じ情報を何度も書かされていませんか？</p>
-          <p>このアプリは、その複雑さを<strong>DX × AI</strong>の視点から解決するデモです。</p>
-        </div>
-        <div class="intro-stages">
-          <h3>3つの段階を体験できます</h3>
-          <ul>
-            <li><span class="stage-num">①</span> <strong>電子化</strong> - 紙をそのままWebに置き換えた状態</li>
-            <li><span class="stage-num">②</span> <strong>工夫</strong> - 共通項目の自動入力で効率化</li>
-            <li><span class="stage-num">③</span> <strong>AI導入</strong> - 最小限の入力で自動整理</li>
-          </ul>
-        </div>
-        <button id="startBtn" class="btn btn-start">体験を始める</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ステップ1：基本情報入力 -->
-  <div id="step1" class="step-screen" style="display: none;">
-    <div class="container step-container">
-      <header class="header">
-        <h1>🏥 入院手続き DX × AI 体験アプリ</h1>
-        <p class="step-indicator">ステップ 1/2：基本情報の入力</p>
-      </header>
-
-      <div class="step-content">
-        <section class="form-section">
-          <h2>📝 基本情報を入力してください</h2>
-          <p class="form-description">退院に向けた必要書類を整理するため、基本情報を入力してください。<br>※この工程はページ下部からスキップできます。</p>
-          
-          <!-- 警告カード -->
-          <div class="notice-card" style="margin-bottom: 24px; padding: 16px; background: #fffbea; border-left: 4px solid #f59e0b; border-radius: 8px;">
-            <div style="display: flex; align-items: flex-start; gap: 12px;">
-              <span style="font-size: 24px; flex-shrink: 0;">💡</span>
-              <div style="flex: 1;">
-                <p style="margin: 0 0 8px 0; font-weight: 600; color: #92400e;">本アプリはデモ・体験用のモデルアプリです</p>
-                <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6; color: #78350f;">
-                  <li>入力された個人情報は一切保存・送信されません（ブラウザ内のみで動作します）</li>
-                  <li>実際の個人情報を入力する必要はありません。仮の情報でお試しください</li>
-                  <li>実際の運用は医療機関の指示に従ってください</li>
-                </ul>
-                <p style="margin: 8px 0 0 0; font-size: 13px; color: #92400e;">※ ページ最下部にある、「入力画面スキップ→」ボタンからスキップできます。</p>
-              </div>
-            </div>
-          </div>
-
-          <form id="baseForm" class="form">
-            <!-- フォーム項目は app.js で動的生成 -->
-          </form>
-          <button id="nextToStep2Btn" class="btn btn-primary btn-large">次のステップへ進む →</button>
-          <button id="skipInputBtn" class="btn btn-secondary btn-large" style="margin-top: 12px;">入力画面をスキップ →</button>
-        </section>
-      </div>
-    </div>
-  </div>
-
-  <!-- プレビュー画面モーダル -->
-  <div id="previewModal" class="preview-modal" style="display: none;">
-    <div class="preview-content">
-      <h2>📋 入力内容のプレビュー</h2>
-      <p class="preview-description">基本情報は自動入力されました。このまま次のステップへ進みますか？</p>
-      <div id="previewList" class="preview-list">
-        <!-- プレビュー項目は app.js で動的生成 -->
-      </div>
-      <div class="preview-actions">
-        <button id="confirmSkipBtn" class="btn btn-primary btn-large">次の画面へ進む →</button>
-        <button id="cancelSkipBtn" class="btn btn-secondary">キャンセル</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ステップ2：チェックリスト + 必要書類（3モード切替） -->
-  <div id="step2" class="step-screen" style="display: none;">
-    <div class="container">
-      <header class="header">
-        <h1>🏥 入院手続き DX × AI 体験アプリ</h1>
-        <p class="step-indicator">ステップ 2/2：必要書類の確認</p>
-        <!-- 数値バッジ -->
-        <div class="header-metrics" id="headerMetrics">
-          <span class="header-badge" id="headerDocsBadge">📋 提出書類: <strong>-</strong></span>
-          <span class="header-badge" id="headerInputBadge">✏️ 入力項目: <strong>-</strong></span>
-          <span class="header-badge" id="headerWarnBadge">⚠️ 要判断: <strong>-</strong></span>
-        </div>
-      </header>
-
-      <!-- DXステージ切替ボタン -->
-      <div class="mode-switcher">
-        <button class="mode-btn active" data-mode="plain">
-          <span class="mode-label">①電子化</span>
-          <span class="mode-desc">Plain</span>
-        </button>
-        <button class="mode-btn" data-mode="smart">
-          <span class="mode-label">②工夫</span>
-          <span class="mode-desc">Smart</span>
-        </button>
-        <button class="mode-btn" data-mode="ai">
-          <span class="mode-label">③AI導入</span>
-          <span class="mode-desc">AI</span>
-        </button>
-        <a href="summary.html" class="mode-btn summary-btn" title="全体のまとめを見る">
-          <span class="mode-label">④まとめ</span>
-          <span class="mode-desc">Summary</span>
-        </a>
-      </div>
-
-      <!-- メトリクス比較バー（折りたたみ可能） -->
-      <div class="collapsible-header" id="metricsToggle" role="button" tabindex="0" aria-expanded="false">
-        <h3 style="margin: 0; font-size: 1rem; font-weight: 600;">📊 モード比較グラフ</h3>
-        <span class="collapse-icon">▶</span>
-      </div>
-      <div id="metricsContainer" class="metrics-container collapsible-content" style="display: none;">
-        <div class="metric-card">
-          <div class="metric-label">提出書類</div>
-          <div class="metric-row">
-            <span class="metric-row-label">Plain</span>
-            <div class="metric-bar">
-              <div id="metricDocsPlain" class="metric-bar-fill plain"></div>
-            </div>
-            <span id="metricDocsPlainValue" class="metric-row-value">-</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-row-label">Smart</span>
-            <div class="metric-bar">
-              <div id="metricDocsSmart" class="metric-bar-fill smart"></div>
-            </div>
-            <span id="metricDocsSmartValue" class="metric-row-value">-</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-row-label">AI</span>
-            <div class="metric-bar">
-              <div id="metricDocsAi" class="metric-bar-fill ai"></div>
-            </div>
-            <span id="metricDocsAiValue" class="metric-row-value">-</span>
-          </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">入力項目</div>
-          <div class="metric-row">
-            <span class="metric-row-label">Plain</span>
-            <div class="metric-bar">
-              <div id="metricInputPlain" class="metric-bar-fill plain"></div>
-            </div>
-            <span id="metricInputPlainValue" class="metric-row-value">-</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-row-label">Smart</span>
-            <div class="metric-bar">
-              <div id="metricInputSmart" class="metric-bar-fill smart"></div>
-            </div>
-            <span id="metricInputSmartValue" class="metric-row-value">-</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-row-label">AI</span>
-            <div class="metric-bar">
-              <div id="metricInputAi" class="metric-bar-fill ai"></div>
-            </div>
-            <span id="metricInputAiValue" class="metric-row-value">-</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- スマホ用：チェックリスト（折りたたみ可能） -->
-      <div class="mobile-checklist-section">
-        <div class="collapsible-header" id="mobileChecklistToggle" role="button" tabindex="0" aria-expanded="true">
-          <h2 style="margin: 0; font-size: 1.1rem; font-weight: 600;">✅ 該当する項目をチェック</h2>
-          <span class="collapse-icon">▼</span>
-        </div>
-        <div class="collapsible-content" id="mobileChecklistContent" style="display: block;">
-          <p class="checklist-description" style="font-size: 0.9rem; color: #64748b; margin: 12px 0;">該当する場合はチェック。必要書類が自動で変わります。</p>
-          <div id="mobileChecklistContainer" class="checklist">
-            <!-- チェックリスト項目は app.js で動的生成 -->
-          </div>
-        </div>
-      </div>
-
-      <!-- スマホ用：必要書類（折りたたみ可能） -->
-      <div class="mobile-result-section">
-        <div class="collapsible-header" id="mobileResultToggle" role="button" tabindex="0" aria-expanded="false">
-          <h2 style="margin: 0; font-size: 1.1rem; font-weight: 600;">📋 必要書類一覧</h2>
-          <span class="collapse-icon">▶</span>
-        </div>
-        <div class="collapsible-content" id="mobileResultContent" style="display: none;">
-          <div id="mobileResultContainer">
-            <!-- 結果は app.js で動的生成 -->
-          </div>
-        </div>
-      </div>
-
-      <!-- メインコンテンツ（2カラム） -->
-      <div class="main-content step2-layout">
-        
-        <!-- 左：チェックリスト -->
-        <section id="checklistSection" class="column column-left" role="region" aria-label="チェックリスト">
-          <h2>✅ 退院に向けた確認</h2>
-          <p class="checklist-description">以下の項目に該当する場合はチェックしてください。必要書類が自動で変わります。</p>
-          <div id="checklistContainer" class="checklist">
-            <!-- チェックリスト項目は app.js で動的生成 -->
-          </div>
-          <button id="backToStep1Btn" class="btn btn-secondary">← 基本情報に戻る</button>
-        </section>
-
-        <!-- 右：DX段階の体験画面 -->
-        <section id="resultSection" class="column column-right" role="region" aria-label="結果表示">
-          <h2 id="modeTitle">①電子化（Plain）</h2>
-          <p id="modeDesc" class="mode-description"></p>
-
-          <!-- Plain / Smart / AI の結果表示 -->
-          <div id="resultContainer" class="result-container">
-            <!-- Plain モード：すべての書類を表示 -->
-            <div id="plainResult" class="result-panel result-plain">
-              <h3>📋 必要書類一覧</h3>
-              <div id="plainDocuments" class="documents-list">
-                <!-- ドキュメント一覧は app.js で生成 -->
-              </div>
-            </div>
-
-            <!-- Smart モード：分岐判定表示 -->
-            <div id="smartResult" class="result-panel result-smart" style="display: none;">
-              <h3>📋 必要書類（スマート判定）</h3>
-              <div id="smartDocuments" class="documents-list">
-                <!-- ドキュメント一覧は app.js で生成 -->
-              </div>
-              <div class="smart-note">
-                <p>⚠️ 以下の項目は手動判断が必要です</p>
-                <ul id="smartWarnings"></ul>
-              </div>
-            </div>
-
-            <!-- AI モード：対話パネル + 最小書類 -->
-            <div id="aiResult" class="result-panel result-ai" style="display: none;">
-              <!-- 仮説ログ -->
-              <div id="aiHypothesisPanel" class="ai-hypothesis-panel" style="display: none;" aria-live="polite">
-                <h3>🤖 AI が状況を分析中...</h3>
-                <div id="aiHypothesisLog" class="ai-hypothesis-log"></div>
-              </div>
-
-              <!-- 可変質問パネル -->
-              <div id="aiBranchQuestions" class="ai-branch-questions" style="display: none;" aria-live="polite">
-                <h3>📝 詳細を確認します</h3>
-                <p class="branch-description">より正確に必要書類を絞り込むため、いくつか質問させてください。</p>
-                <div id="branchQuestionContainer" class="branch-question-container">
-                  <!-- 質問は動的に生成 -->
-                </div>
-              </div>
-
-              <!-- 確定ログ -->
-              <div id="aiConfirmLog" class="ai-confirm-log" style="display: none;" aria-live="polite">
-                <h3>✅ 判断結果</h3>
-                <div id="aiConfirmLogContent" class="ai-confirm-log-content"></div>
-              </div>
-
-              <!-- 旧対話パネル（後方互換用） -->
-              <div id="aiDialogPanel" class="ai-dialog-panel" style="display: none;">
-                <h3>🤖 AI が状況を整理中...</h3>
-                <pre id="aiJudgmentLog" class="ai-judgment-log"></pre>
-                <pre id="aiTypingText" class="ai-typing-text"></pre>
-              </div>
-              
-              <!-- 書類リスト -->
-              <div id="aiDocumentsPanel" style="display: none;">
-                <h3>📋 あなたに必要な書類（最小セット）</h3>
-                <div id="aiDocuments" class="documents-list ai-documents">
-                  <!-- ドキュメント一覧は app.js で生成 -->
-                </div>
-                <div class="simulation-note">
-                  <p>💡 本デモは一般的な想定に基づくシミュレーションです。実際の運用は医療機関の指示に従ってください。</p>
-                  <p>※ マイナンバーカードで一元管理できる範囲は、医療機関・保険者・自治体により異なります。</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 統計情報 -->
-          <div class="stats-panel">
-            <p id="docStats"></p>
-          </div>
-
-          <!-- アクションボタン -->
-          <div class="action-buttons-container">
-            <button id="actionMenuToggle" class="action-menu-toggle" title="メニューを開く/閉じる" aria-label="アクションメニュー" aria-expanded="false">
-              <span class="toggle-icon">☰</span>
-            </button>
-            <div class="action-buttons">
-              <button id="switchToPlainBtn" class="action-btn btn-plain-action" title="電子化（Plain）状態に戻す">
-                <span class="action-icon">📄</span>
-                <span class="action-text">電子化状態に戻す</span>
-              </button>
-              <button id="switchToSmartBtn" class="action-btn btn-smart-action" title="共通部分を自動入力してスマートに">
-                <span class="action-icon">⚡</span>
-                <span class="action-text">共通部分を自動入力する</span>
-              </button>
-              <button id="switchToAiBtn" class="action-btn btn-ai-action" title="AIで最適化して最小限に">
-                <span class="action-icon">🤖</span>
-                <span class="action-text">AIを導入する</span>
-              </button>
-              <button id="showSummaryBtn" class="action-btn btn-summary-action" title="全体のまとめを見る">
-                <span class="action-icon">📊</span>
-                <span class="action-text">まとめ</span>
-              </button>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
-  </div>
-
-  <!-- ページ上部に戻るボタン -->
-  <button id="backToTopBtn" class="back-to-top" aria-label="ページ上部に戻る" title="ページ上部に戻る">
-    <span class="back-to-top-icon">↑</span>
-  </button>
-
-  <script src="assets/js/typing.js"></script>
-  <script src="assets/js/app.js?v=15"></script>
 </body>
 </html>
