@@ -230,17 +230,24 @@ function calculateStatsForMode(mode) {
  * モード別削減判定
  */
 function shouldBeReducedInMode(field, mode) {
-  const details = field.fieldDetails;
-  if (!details) return false;
+  // sourceを取得（field.source または field.fieldDetails.source）
+  const source = field.source || field.fieldDetails?.source;
   
-  const source = details.source;
+  if (!source) return false;
+  
+  if (mode === 'plain') {
+    // Plainモードは全て手入力
+    return false;
+  }
   
   if (mode === 'smart') {
+    // Smartモード: shared, derived が自動化
     if (source === 'shared' && profile.online) return true;
     if (source === 'derived') return true;
   }
   
   if (mode === 'ai') {
+    // AIモード: Smart + mynumber + ai
     if (source === 'shared' && profile.online) return true;
     if (source === 'derived') return true;
     if (source === 'mynumber' && profile.myna) return true;
