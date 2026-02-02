@@ -100,7 +100,12 @@ function navigate(url, additionalParams = {}) {
   const merged = mergeWithProfile();
   const params = { ...merged, ...additionalParams };
   
-  const urlObj = new URL(url, window.location.origin);
+  // 相対パスの場合は現在のディレクトリをベースにする
+  const currentPath = window.location.pathname;
+  const currentDir = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+  const basePath = window.location.origin + currentDir;
+  
+  const urlObj = new URL(url, basePath);
   Object.keys(params).forEach(key => {
     if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
       urlObj.searchParams.set(key, params[key]);
