@@ -122,12 +122,6 @@
         </div>
       </header>
 
-      <!-- モバイル用タブ（入力・結果の2ステップ） -->
-      <div class="mobile-tabs" role="tablist" aria-label="表示切り替え">
-        <button class="mobile-tab active" role="tab" aria-selected="true" data-action="go-input">📝 入力</button>
-        <button class="mobile-tab" role="tab" aria-selected="false" data-target="result">📊 結果</button>
-      </div>
-
       <!-- DXステージ切替ボタン -->
       <div class="mode-switcher">
         <button class="mode-btn active" data-mode="plain">
@@ -224,6 +218,33 @@
         </div>
       </div>
 
+      <!-- スマホ用：チェックリスト（折りたたみ可能） -->
+      <div class="mobile-checklist-section" style="display: none;">
+        <div class="collapsible-header" id="mobileChecklistToggle" role="button" tabindex="0" aria-expanded="true">
+          <h2 style="margin: 0; font-size: 1.1rem; font-weight: 600;">✅ 該当する項目をチェック</h2>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="collapsible-content" id="mobileChecklistContent">
+          <p class="checklist-description" style="font-size: 0.9rem; color: #64748b; margin: 12px 0;">該当する場合はチェック。必要書類が自動で変わります。</p>
+          <div id="mobileChecklistContainer" class="checklist">
+            <!-- チェックリスト項目は app.js で動的生成 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- スマホ用：必要書類（折りたたみ可能） -->
+      <div class="mobile-result-section" style="display: none;">
+        <div class="collapsible-header" id="mobileResultToggle" role="button" tabindex="0" aria-expanded="false">
+          <h2 style="margin: 0; font-size: 1.1rem; font-weight: 600;">📋 必要書類一覧</h2>
+          <span class="collapse-icon">▶</span>
+        </div>
+        <div class="collapsible-content" id="mobileResultContent" style="display: none;">
+          <div id="mobileResultContainer">
+            <!-- 結果は app.js で動的生成 -->
+          </div>
+        </div>
+      </div>
+
       <!-- メインコンテンツ（2カラム） -->
       <div class="main-content step2-layout">
         
@@ -234,7 +255,6 @@
           <div id="checklistContainer" class="checklist">
             <!-- チェックリスト項目は app.js で動的生成 -->
           </div>
-          <button id="showResultBtn" class="btn btn-primary mobile-only" style="margin-bottom: 12px;">結果を表示する →</button>
           <button id="backToStep1Btn" class="btn btn-secondary">← 基本情報に戻る</button>
         </section>
 
@@ -344,6 +364,6 @@
   </div>
 
   <script src="assets/js/typing.js"></script>
-  <script src="assets/js/app.js?v=9"></script>
+  <script src="assets/js/app.js?v=10"></script>
 </body>
 </html>

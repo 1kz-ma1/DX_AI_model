@@ -1265,4 +1265,68 @@
     font-weight: 700;
     font-size: 1rem;
   }
+
+  /* モバイル専用セクション */
+  .mobile-checklist-section,
+  .mobile-result-section {
+    display: block;
+  }
+
+  /* モバイル結果ヘッダー */
+  .mobile-result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+  }
+
+  .mobile-mode-badge {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+  }
+
+  .mobile-doc-count {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* モバイル書類リスト */
+  .mobile-documents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mobile-doc-item {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .mobile-doc-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1f2937;
+    margin-bottom: 4px;
+  }
+
+  .mobile-doc-desc {
+    font-size: 0.85rem;
+    color: #6b7280;
+    line-height: 1.4;
+  }
+}
+
+/* デスクトップではモバイル専用セクションを隠す */
+@media (min-width: 901px) {
+  .mobile-checklist-section,
+  .mobile-result-section {
+    display: none !important;
+  }
 }

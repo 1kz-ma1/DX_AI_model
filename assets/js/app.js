@@ -194,10 +194,18 @@ class HospitalizationDXApp {
   }
 
   generateChecklist() {
+    // PC用チェックリスト
     const container = document.getElementById('checklistContainer');
     container.innerHTML = '';
 
+    // スマホ用チェックリスト
+    const mobileContainer = document.getElementById('mobileChecklistContainer');
+    if (mobileContainer) {
+      mobileContainer.innerHTML = '';
+    }
+
     this.flowsData.checklist.forEach(item => {
+      // PC用
       const label = document.createElement('label');
       label.className = 'checklist-item';
 
@@ -206,8 +214,12 @@ class HospitalizationDXApp {
       input.id = item.id;
       input.addEventListener('change', (e) => {
         this.checklist[item.key] = e.target.checked;
+        // スマホ用チェックボックスも同期
+        const mobileInput = document.getElementById('mobile-' + item.id);
+        if (mobileInput) mobileInput.checked = e.target.checked;
         // リアルタイム更新
         this.renderMode(this.currentMode);
+        this.renderMobileResult(); // スマホ用結果も更新
         this.persistState();
       });
 
@@ -218,6 +230,34 @@ class HospitalizationDXApp {
       label.appendChild(input);
       label.appendChild(labelText);
       container.appendChild(label);
+
+      // スマホ用（同じ内容）
+      if (mobileContainer) {
+        const mobileLabel = document.createElement('label');
+        mobileLabel.className = 'checklist-item';
+
+        const mobileInput = document.createElement('input');
+        mobileInput.type = 'checkbox';
+        mobileInput.id = 'mobile-' + item.id;
+        mobileInput.addEventListener('change', (e) => {
+          this.checklist[item.key] = e.target.checked;
+          // PC用チェックボックスも同期
+          const pcInput = document.getElementById(item.id);
+          if (pcInput) pcInput.checked = e.target.checked;
+          // リアルタイム更新
+          this.renderMode(this.currentMode);
+          this.renderMobileResult(); // スマホ用結果も更新
+          this.persistState();
+        });
+
+        const mobileLabelText = document.createElement('label');
+        mobileLabelText.htmlFor = 'mobile-' + item.id;
+        mobileLabelText.textContent = item.label;
+
+        mobileLabel.appendChild(mobileInput);
+        mobileLabel.appendChild(mobileLabelText);
+        mobileContainer.appendChild(mobileLabel);
+      }
     });
   }
 
@@ -235,13 +275,6 @@ class HospitalizationDXApp {
 
     document.getElementById('backToStep1Btn').addEventListener('click', () => {
       this.transitionBackToStep1();
-    });
-
-    // モバイル専用「結果を表示する」ボタン
-    const showResultBtn = document.getElementById('showResultBtn');
-    showResultBtn.addEventListener('click', () => {
-      this.setActiveMobileTab('result');
-      this.showMobileSection('result');
     });
 
     // スキップボタンのイベントリスナー
@@ -317,7 +350,6 @@ class HospitalizationDXApp {
         metricsContainer.style.display = isExpanded ? 'none' : 'block';
       });
 
-      // Enterキーでも動作
       metricsToggle.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -326,21 +358,40 @@ class HospitalizationDXApp {
       });
     }
 
-    // チェックリストの折りたたみ（もし存在する場合）
-    const checklistToggle = document.getElementById('checklistToggle');
-    const checklistContent = document.getElementById('checklistContent');
+    // スマホ用チェックリストの折りたたみ
+    const mobileChecklistToggle = document.getElementById('mobileChecklistToggle');
+    const mobileChecklistContent = document.getElementById('mobileChecklistContent');
     
-    if (checklistToggle && checklistContent) {
-      checklistToggle.addEventListener('click', () => {
-        const isExpanded = checklistToggle.getAttribute('aria-expanded') === 'true';
-        checklistToggle.setAttribute('aria-expanded', !isExpanded);
-        checklistContent.style.display = isExpanded ? 'none' : 'block';
+    if (mobileChecklistToggle && mobileChecklistContent) {
+      mobileChecklistToggle.addEventListener('click', () => {
+        const isExpanded = mobileChecklistToggle.getAttribute('aria-expanded') === 'true';
+        mobileChecklistToggle.setAttribute('aria-expanded', !isExpanded);
+        mobileChecklistContent.style.display = isExpanded ? 'none' : 'block';
       });
 
-      checklistToggle.addEventListener('keypress', (e) => {
+      mobileChecklistToggle.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          checklistToggle.click();
+          mobileChecklistToggle.click();
+        }
+      });
+    }
+
+    // スマホ用必要書類の折りたたみ
+    const mobileResultToggle = document.getElementById('mobileResultToggle');
+    const mobileResultContent = document.getElementById('mobileResultContent');
+    
+    if (mobileResultToggle && mobileResultContent) {
+      mobileResultToggle.addEventListener('click', () => {
+        const isExpanded = mobileResultToggle.getAttribute('aria-expanded') === 'true';
+        mobileResultToggle.setAttribute('aria-expanded', !isExpanded);
+        mobileResultContent.style.display = isExpanded ? 'none' : 'block';
+      });
+
+      mobileResultToggle.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          mobileResultToggle.click();
         }
       });
     }
@@ -404,6 +455,47 @@ class HospitalizationDXApp {
 
     this.updateMetrics();
     this.updateHeaderBadges(); // ヘッダーバッジを更新
+    this.renderMobileResult(); // モバイル結果セクションを更新
+  }
+
+  // モバイル結果セクションを描画
+  renderMobileResult() {
+    const container = document.getElementById('mobileResultContainer');
+    if (!container) return;
+
+    let documents = [];
+    let modeLabel = '';
+
+    switch (this.currentMode) {
+      case 'plain':
+        documents = this.getPlainDocuments();
+        modeLabel = '電子化状態';
+        break;
+      case 'smart':
+        const smartResult = this.getSmartDocumentsAndWarnings();
+        documents = [...smartResult.baseDocs, ...smartResult.conditionalDocs];
+        modeLabel = '工夫時';
+        break;
+      case 'ai':
+        documents = this.getAiDocuments();
+        modeLabel = 'AI導入時';
+        break;
+    }
+
+    container.innerHTML = `
+      <div class="mobile-result-header">
+        <span class="mobile-mode-badge">${modeLabel}</span>
+        <span class="mobile-doc-count">${documents.length}件の書類</span>
+      </div>
+      <div class="mobile-documents-list">
+        ${documents.map(doc => `
+          <div class="mobile-doc-item">
+            <div class="mobile-doc-name">${doc.name}</div>
+            ${doc.description ? `<div class="mobile-doc-desc">${doc.description}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    `;
   }
 
   // ヘッダーバッジを更新
