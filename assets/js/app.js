@@ -1113,17 +1113,25 @@ class HospitalizationDXApp {
   }
 
   updateMetrics() {
+    // 書類数を計算
     const plainCount = this.getAllDocuments().length;
     const { conditionalDocs, warnings } = this.getSmartDocumentsAndWarnings();
     const smartCount = this.flowsData.documents.base.length + conditionalDocs.length;
     const aiCount = this.getAiDocuments().length;
-    const inputCount = this.flowsData.baseQuestions.length;
-    const smartInput = Math.max(3, Math.round(inputCount * 0.6));
-    const aiInput = Math.max(2, Math.round(inputCount * 0.3));
+    
+    // 入力項目数を動的に計算
+    const plainDocs = this.getPlainDocuments();
+    const smartDocs = this.getSmartDocuments();
+    const aiDocs = this.getAiDocuments();
+    
+    const plainInput = this.calculateInputFields(plainDocs);
+    const smartInput = this.calculateInputFields(smartDocs);
+    const aiInput = this.calculateInputFields(aiDocs);
+    
     const maxWarn = Math.max(1, warnings.length);
 
     this.updateMetricRow('Docs', plainCount, smartCount, aiCount, plainCount);
-    this.updateMetricRow('Input', inputCount, smartInput, aiInput, inputCount);
+    this.updateMetricRow('Input', plainInput, smartInput, aiInput, plainInput);
     this.updateMetricRow('Warn', 0, warnings.length, 0, maxWarn);
   }
 
