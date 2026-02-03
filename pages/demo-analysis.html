@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DX×AI分析 - 社会全体への波及効果</title>
+  <link rel="stylesheet" href="../assets/css/common.css">
+  <link rel="stylesheet" href="../assets/css/demo-analysis.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  <script src="../assets/js/state.js"></script>
+  <script src="../assets/js/demo-analysis.js"></script>
+</head>
+<body>
+  <!-- ヘッダー -->
+  <header class="analysis-header">
+    <h1>🌍 社会全体への波及効果分析</h1>
+    <div class="breadcrumb">
+      <a href="#" id="backToDomain">← 分野一覧</a> > DX×AI導入シミュレーション
+    </div>
+  </header>
+
+  <!-- モード選択セクション -->
+  <section class="mode-selector">
+    <button class="mode-btn" data-mode="plain">
+      📋 Plain（現状維持）
+    </button>
+    <button class="mode-btn" data-mode="smart">
+      💡 Smart（工夫活用）
+    </button>
+    <button class="mode-btn" data-mode="ai">
+      🤖 AI（完全自動化）
+    </button>
+  </section>
+
+  <!-- メトリクスカード -->
+  <div class="metrics-container">
+    <div class="metric-card reduction">
+      <div class="metric-label">処理件数削減</div>
+      <div class="metric-value" id="reductionPercentage">--%</div>
+      <div class="metric-detail" id="reductionDetail">件数削減</div>
+    </div>
+
+    <div class="metric-card time">
+      <div class="metric-label">時間削減</div>
+      <div class="metric-value" id="timeSaving">--時間</div>
+      <div class="metric-detail" id="timeSavingDetail">年間削減</div>
+    </div>
+
+    <div class="metric-card cost">
+      <div class="metric-label">コスト削減</div>
+      <div class="metric-value" id="costSaving">￥--</div>
+      <div class="metric-detail" id="costSavingDetail">月額削減</div>
+    </div>
+
+    <div class="metric-card admin">
+      <div class="metric-label">行政DXの波及</div>
+      <div class="metric-value" id="adminImpact">+0%</div>
+      <div class="metric-detail" id="adminImpactDetail">全体への効果</div>
+    </div>
+  </div>
+
+  <!-- グラフセクション -->
+  <div class="charts-container">
+    <div class="chart-wrapper">
+      <h3 class="chart-title">📊 処理件数の削減効果</h3>
+      <canvas id="volumeChart"></canvas>
+    </div>
+
+    <div class="chart-wrapper">
+      <h3 class="chart-title">⏱️ 時間削減の効果</h3>
+      <canvas id="timeChart"></canvas>
+    </div>
+  </div>
+
+  <!-- 分野別詳細 -->
+  <h2 class="section-title">📋 分野別の詳細指標</h2>
+  <div id="domainDetailsGrid"></div>
+
+  <!-- 行政DXの波及効果 -->
+  <h2 class="section-title">🏛️ 行政DXが他分野に与える影響</h2>
+  <div id="impactDetails">
+    <ul></ul>
+  </div>
+
+  <!-- アクションボタン -->
+  <div class="action-buttons">
+    <button class="btn btn-secondary" id="backToDomainBtn">
+      ← 分野一覧に戻る
+    </button>
+    <button class="btn btn-primary" id="backToHubBtn">
+      🏠 ホームに戻る
+    </button>
+  </div>
+
+  <!-- フッター -->
+  <footer style="text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.875rem;">
+    <p>本分析は、全人口30万人の自治体におけるシミュレーション結果です。</p>
+    <p>実際の導入効果は、自治体規模や既存システムにより異なります。</p>
+  </footer>
+</body>
+</html>

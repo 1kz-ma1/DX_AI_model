@@ -100,19 +100,42 @@ function initUI() {
   document.getElementById('domainName').textContent = currentDomain.name;
   document.getElementById('domainIntro').textContent = currentDomain.description || '';
   
+  // デモモード時は体験モード選択セクションを非表示
+  const experienceModeSelector = document.getElementById('experienceModeSelector');
+  if (experienceMode === 'demo') {
+    if (experienceModeSelector) {
+      experienceModeSelector.style.display = 'none';
+    }
+  }
+  
   // 分野一覧に戻るボタン
   document.getElementById('backToHub').addEventListener('click', (e) => {
     e.preventDefault();
-    navigate('home.html');
+    // experienceModeを保持して遷移
+    navigate('home.html', { experience: experienceMode });
   });
   
   // 体験モード切り替えボタン
   document.querySelectorAll('.toggle-btn').forEach(btn => {
+    // 初期状態を設定
+    if (btn.dataset.experience === experienceMode) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+    
     btn.addEventListener('click', () => {
       const newMode = btn.dataset.experience;
       switchExperienceMode(newMode);
     });
   });
+  
+  // 説明文の初期表示を設定
+  document.querySelectorAll('.description-content').forEach(desc => {
+    desc.classList.remove('active');
+  });
+  const initialDesc = document.getElementById(experienceMode === 'game' ? 'gameDescription' : 'demoDescription');
+  if (initialDesc) initialDesc.classList.add('active');
   
   // モード切替ボタン
   document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -125,6 +148,19 @@ function initUI() {
       btn.setAttribute('aria-selected', 'false');
     }
   });
+  
+  // デモモード時：分野クリック→分析ページへのイベントリスナー追加
+  if (experienceMode === 'demo') {
+    const domainHeaderLink = document.querySelector('.domain-header');
+    if (domainHeaderLink) {
+      domainHeaderLink.style.cursor = 'pointer';
+      domainHeaderLink.addEventListener('click', (e) => {
+        // ボタンではなくヘッダークリック時のみ反応
+        if (e.target.closest('button') || e.target.closest('nav')) return;
+        navigateToAnalysis();
+      });
+    }
+  }
   
   // 折りたたみトグル
   const metricsToggle = document.getElementById('metricsToggle');
@@ -145,11 +181,30 @@ function initUI() {
 }
 
 /**
+ * デモモード：分析ページへナビゲート
+ */
+function navigateToAnalysis() {
+  navigate('demo-analysis.html', { 
+    mode: currentMode, 
+    domain: currentDomain.id 
+  });
+}
+
+/**
  * プロファイル表示
  */
 function renderProfile() {
   const container = document.getElementById('profileDisplay');
   if (!container) return;
+  
+  // デモモード時はペルソナ情報全体を非表示
+  const profileSection = container.closest('.profile-section');
+  if (experienceMode === 'demo') {
+    if (profileSection) {
+      profileSection.style.display = 'none';
+    }
+    return;
+  }
   
   const items = [
     { label: 'マイナカード', value: profile.myna ? 'あり' : 'なし' },

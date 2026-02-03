@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const params = getParams();
     if (params.experience === 'demo') {
       experienceMode = 'demo';
+      // デモモード時はペルソナをクリア
+      const profile = loadProfile() || {};
+      profile.character = null;
+      saveProfile(profile);
     }
     
     // domains.jsonとcharacters.jsonを読み込み

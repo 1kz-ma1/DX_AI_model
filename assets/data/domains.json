@@ -1,7 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "defaultMode": "plain"
+    "defaultMode": "plain",
+    "demoMetaInfo": {
+      "description": "デモモード: 社会全体のデータ流通を俯瞰する体験。一日あたりの各分野の処理件数、削減率、時間削減、コスト削減を可視化。行政DXが他分野に与える影響も考慮。",
+      "populationBase": 300000,
+      "timeUnit": "日",
+      "costPerHour": 3000
+    }
   },
   "domains": [
     {
@@ -312,6 +318,33 @@
           "title": "③AI導入",
           "description": "AI対話による補完・統合"
         }
+      },
+      "demoMetrics": {
+        "dailyVolume": 5000,
+        "description": "一日あたりの体領親室、各種証明書発行、診断書等の処理件数",
+        "reductionRates": {
+          "plain": 0,
+          "smart": 0.35,
+          "ai": 0.80
+        },
+        "timeReductionRates": {
+          "plain": 0,
+          "smart": 0.40,
+          "ai": 0.85
+        },
+        "costReductionPercentage": {
+          "plain": 0,
+          "smart": 0.35,
+          "ai": 0.75
+        },
+        "averageTimePerCase": 18,
+        "administrativeDependency": 1.0,
+        "impactOnOtherDomains": {
+          "medical": 0.9,
+          "education": 0.85,
+          "logistics": 0.2,
+          "disaster": 0.7
+        }
       }
     },
     {
@@ -605,6 +638,33 @@
           "title": "③AI導入",
           "description": "AI対話で必要書類を最小限に絞り込み"
         }
+      },
+      "demoMetrics": {
+        "dailyVolume": 2800,
+        "description": "一日あたりの診療報酬請求、保険費残額計算、医療費助成成賑等の処理件数",
+        "reductionRates": {
+          "plain": 0,
+          "smart": 0.40,
+          "ai": 0.75
+        },
+        "timeReductionRates": {
+          "plain": 0,
+          "smart": 0.45,
+          "ai": 0.80
+        },
+        "costReductionPercentage": {
+          "plain": 0,
+          "smart": 0.40,
+          "ai": 0.70
+        },
+        "averageTimePerCase": 20,
+        "administrativeDependency": 0.9,
+        "impactOnOtherDomains": {
+          "administration": 0.1,
+          "education": 0.3,
+          "logistics": 0.05,
+          "disaster": 0.4
+        }
       }
     },
     {
@@ -885,6 +945,33 @@
           "title": "③AI導入",
           "description": "マイナンバー連携とAI対話で手続きを簡略化"
         }
+      },
+      "demoMetrics": {
+        "dailyVolume": 920,
+        "description": "一日あたりの成績管理、会通知表、転校等の処理件数",
+        "reductionRates": {
+          "plain": 0,
+          "smart": 0.30,
+          "ai": 0.70
+        },
+        "timeReductionRates": {
+          "plain": 0,
+          "smart": 0.35,
+          "ai": 0.75
+        },
+        "costReductionPercentage": {
+          "plain": 0,
+          "smart": 0.30,
+          "ai": 0.65
+        },
+        "averageTimePerCase": 15,
+        "administrativeDependency": 0.85,
+        "impactOnOtherDomains": {
+          "administration": 0.05,
+          "medical": 0.15,
+          "logistics": 0.1,
+          "disaster": 0.2
+        }
       }
     },
     {
@@ -1157,6 +1244,33 @@
         "ai": {
           "title": "③AI導入",
           "description": "AIがHSコード・関税率を自動判定、書類を自動生成"
+        }
+      },
+      "demoMetrics": {
+        "dailyVolume": 48000,
+        "description": "一日あたりの配送伝票、梱包、返品処理の数量",
+        "reductionRates": {
+          "plain": 0,
+          "smart": 0.25,
+          "ai": 0.60
+        },
+        "timeReductionRates": {
+          "plain": 0,
+          "smart": 0.30,
+          "ai": 0.70
+        },
+        "costReductionPercentage": {
+          "plain": 0,
+          "smart": 0.25,
+          "ai": 0.60
+        },
+        "averageTimePerCase": 3,
+        "administrativeDependency": 0.15,
+        "impactOnOtherDomains": {
+          "administration": 0.02,
+          "medical": 0.02,
+          "education": 0.01,
+          "disaster": 0.05
         }
       }
     },
@@ -1431,6 +1545,33 @@
         "ai": {
           "title": "③AI導入",
           "description": "AIが被害状況を判定、必要な支援を自動提案"
+        }
+      },
+      "demoMetrics": {
+        "dailyVolume": 1200,
+        "description": "一日あたりの避難所登録、支援対象者確認、施設事後処理の件数",
+        "reductionRates": {
+          "plain": 0,
+          "smart": 0.35,
+          "ai": 0.75
+        },
+        "timeReductionRates": {
+          "plain": 0,
+          "smart": 0.40,
+          "ai": 0.80
+        },
+        "costReductionPercentage": {
+          "plain": 0,
+          "smart": 0.35,
+          "ai": 0.70
+        },
+        "averageTimePerCase": 10,
+        "administrativeDependency": 0.75,
+        "impactOnOtherDomains": {
+          "administration": 0.1,
+          "medical": 0.2,
+          "education": 0.1,
+          "logistics": 0.1
         }
       }
     }

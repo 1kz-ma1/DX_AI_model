@@ -118,11 +118,14 @@ function loadSelectedCharacter() {
  * キャラクター固有のデータでDOMAIN_STATSを更新
  */
 function updateDomainStatsFromCharacter(character) {
-  if (!character || !character.domains) return;
+  if (!character || !character.domains) {
+    console.log('No character data - using default DOMAIN_STATS');
+    return;
+  }
   
   Object.keys(character.domains).forEach(domainId => {
     const domainData = character.domains[domainId];
-    if (domainData.fields && domainData.documents) {
+    if (domainData.fields && domainData.documents && DOMAIN_STATS[domainId]) {
       // totalFieldsを更新
       DOMAIN_STATS[domainId].totalFields = domainData.fields;
       
