@@ -277,6 +277,74 @@ body {
   transform: translateY(0);
 }
 
+/* デモモードカード */
+.demo-mode-card {
+  width: 100%;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 3px solid #38bdf8;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  margin-top: var(--spacing-2xl);
+  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.2);
+  transition: all 0.3s ease;
+}
+
+.demo-mode-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(56, 189, 248, 0.3);
+}
+
+.demo-mode-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.demo-mode-icon {
+  font-size: 3rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.demo-mode-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: #0369a1;
+  margin: 0;
+}
+
+.demo-mode-description {
+  font-size: var(--font-size-md);
+  line-height: 1.7;
+  color: #0c4a6e;
+  margin: 0 0 var(--spacing-lg) 0;
+  padding-left: calc(3rem + var(--spacing-md));
+}
+
+.demo-mode-btn {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.demo-mode-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+}
+
+.demo-mode-btn:active {
+  transform: translateY(0);
+}
+
 /* 免責事項 */
 .disclaimer {
   background: var(--color-gray-50);
@@ -318,6 +386,23 @@ body {
 
   .priority-badges {
     justify-content: center;
+  }
+  
+  .demo-mode-card {
+    padding: var(--spacing-xl);
+  }
+  
+  .demo-mode-icon {
+    font-size: 2.5rem;
+  }
+  
+  .demo-mode-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .demo-mode-description {
+    padding-left: 0;
+    font-size: var(--font-size-sm);
   }
 }
 

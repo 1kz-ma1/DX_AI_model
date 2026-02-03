@@ -11,6 +11,9 @@
 }
 
 .breadcrumb {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: center;
   margin-bottom: var(--spacing-sm);
 }
 
@@ -19,12 +22,37 @@
   opacity: 0.9;
   text-decoration: none;
   font-size: 0.9rem;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
 }
 
 .breadcrumb-link:hover {
   opacity: 1;
-  text-decoration: underline;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.strategy-board-link {
+  color: white;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-lg);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.strategy-board-link:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 .domain-title {
@@ -818,5 +846,6 @@
 
 .simulation-note p {
   margin: var(--spacing-xs) 0;
-} 
+}
+ 
  

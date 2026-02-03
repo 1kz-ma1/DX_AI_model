@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>キャラクター選択 - DX×AI 戦略シミュレーター</title>
+  <title>キャラクター選択 - DX×AIが変える、10年後の日本</title>
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/intro.css">
 </head>
 <body>
   <main class="intro-container">
     <header class="intro-header">
-      <h1>🏛️ DX×AI 戦略シミュレーター</h1>
-      <p class="tagline">様々な立場からDXの効果を体験しよう</p>
+      <h1>🏛️ DX×AIが変える、10年後の日本</h1>
+      <p class="tagline">様々な立場から、電子化を超える効果を体験しよう</p>
     </header>
 
     <div class="intro-description">
@@ -23,6 +23,20 @@
       <h2 class="section-title">👥 体験するキャラクターを選択してください</h2>
       <div id="characterGrid" class="character-grid">
         <!-- JSで動的生成 -->
+      </div>
+      
+      <!-- デモモードカード -->
+      <div class="demo-mode-card">
+        <div class="demo-mode-header">
+          <span class="demo-mode-icon">📊</span>
+          <h3 class="demo-mode-title">キャラクターなしで始める（デモモード）</h3>
+        </div>
+        <p class="demo-mode-description">
+          キャラクター選択をスキップして、実際の規模に近いデータ量でDX・AIの効果を自由に体験できます。
+        </p>
+        <button onclick="navigate('home.html?experience=demo')" class="demo-mode-btn">
+          デモモードで始める →
+        </button>
       </div>
     </section>
 
