@@ -1,0 +1,259 @@
+{
+  "characters": [
+    {
+      "id": "housewife",
+      "name": "田中 花子",
+      "emoji": "👩‍👧‍👦",
+      "role": "主婦・市民",
+      "age": 35,
+      "description": "2人の子どもを持つ主婦。最近引っ越しをして、様々な手続きに追われている。",
+      "situation": "引っ越しに伴う住所変更、子どもの転校手続き、医療費助成の申請が必要",
+      "pain_points": [
+        "平日昼間しか窓口が開いていない",
+        "同じ情報を何度も書かされる",
+        "どこに何を提出すればいいか分からない"
+      ],
+      "domains": {
+        "administration": {
+          "priority": "high",
+          "tasks": ["住民票の異動", "マイナンバーカードの住所変更", "児童手当の住所変更"],
+          "frequency": "月1-2回",
+          "documents": 8,
+          "fields": 45
+        },
+        "medical": {
+          "priority": "high",
+          "tasks": ["子どもの医療費助成申請", "健康保険証の住所変更", "予防接種の転入手続き"],
+          "frequency": "月2-3回",
+          "documents": 6,
+          "fields": 38
+        },
+        "education": {
+          "priority": "high",
+          "tasks": ["転校手続き", "就学援助の申請", "学童保育の申し込み"],
+          "frequency": "学期ごと",
+          "documents": 7,
+          "fields": 42
+        },
+        "logistics": {
+          "priority": "medium",
+          "tasks": ["ゴミ出しルールの確認", "粗大ゴミの申し込み"],
+          "frequency": "年数回",
+          "documents": 2,
+          "fields": 8
+        },
+        "disaster": {
+          "priority": "medium",
+          "tasks": ["避難所の確認", "防災メール登録"],
+          "frequency": "年1回",
+          "documents": 2,
+          "fields": 10
+        }
+      }
+    },
+    {
+      "id": "city_staff",
+      "name": "佐藤 太郎",
+      "emoji": "🧑‍💼",
+      "role": "市役所職員",
+      "age": 42,
+      "description": "市役所の住民課で15年勤務。窓口対応と内部事務の両方を担当している。",
+      "situation": "日々多くの市民対応をしながら、データ入力や書類管理に時間を取られている",
+      "pain_points": [
+        "市民が持参する書類の確認に時間がかかる",
+        "複数のシステムに同じデータを入力",
+        "紙の書類の保管スペースが不足"
+      ],
+      "domains": {
+        "administration": {
+          "priority": "critical",
+          "tasks": ["住民票発行", "各種証明書発行", "異動届の受付・入力", "マイナンバー事務"],
+          "frequency": "毎日50-100件",
+          "documents": 15,
+          "fields": 120
+        },
+        "medical": {
+          "priority": "high",
+          "tasks": ["国民健康保険の資格管理", "医療費助成の審査・承認"],
+          "frequency": "毎日20-30件",
+          "documents": 10,
+          "fields": 85
+        },
+        "education": {
+          "priority": "medium",
+          "tasks": ["就学通知の発送", "就学援助の審査"],
+          "frequency": "学期ごと200件",
+          "documents": 8,
+          "fields": 60
+        },
+        "logistics": {
+          "priority": "low",
+          "tasks": ["粗大ゴミ申請の受付"],
+          "frequency": "週10-20件",
+          "documents": 3,
+          "fields": 15
+        },
+        "disaster": {
+          "priority": "medium",
+          "tasks": ["避難所運営マニュアル確認", "緊急連絡網の更新"],
+          "frequency": "月1回",
+          "documents": 5,
+          "fields": 30
+        }
+      }
+    },
+    {
+      "id": "medical_clerk",
+      "name": "山田 美咲",
+      "emoji": "👩‍⚕️",
+      "role": "医療事務員",
+      "age": 28,
+      "description": "総合病院の受付・会計窓口で4年勤務。患者対応とレセプト業務を担当。",
+      "situation": "日々多くの患者さんの受付をしながら、保険確認や診療報酬請求の事務処理に追われている",
+      "pain_points": [
+        "保険証の確認に時間がかかる",
+        "患者情報の入力ミスが心配",
+        "月末のレセプト業務が膨大"
+      ],
+      "domains": {
+        "administration": {
+          "priority": "low",
+          "tasks": ["住所確認", "本人確認"],
+          "frequency": "患者ごと",
+          "documents": 2,
+          "fields": 8
+        },
+        "medical": {
+          "priority": "critical",
+          "tasks": ["患者登録", "保険資格確認", "診療報酬請求", "医療費助成の適用確認"],
+          "frequency": "毎日100-200件",
+          "documents": 14,
+          "fields": 140
+        },
+        "education": {
+          "priority": "none",
+          "tasks": [],
+          "frequency": "なし",
+          "documents": 0,
+          "fields": 0
+        },
+        "logistics": {
+          "priority": "low",
+          "tasks": ["医薬品の在庫確認"],
+          "frequency": "週1回",
+          "documents": 1,
+          "fields": 5
+        },
+        "disaster": {
+          "priority": "medium",
+          "tasks": ["災害時対応マニュアル確認", "緊急連絡先登録"],
+          "frequency": "年2回",
+          "documents": 3,
+          "fields": 15
+        }
+      }
+    },
+    {
+      "id": "teacher",
+      "name": "鈴木 健一",
+      "emoji": "👨‍🏫",
+      "role": "小学校教員",
+      "age": 38,
+      "description": "公立小学校で4年生の担任。30人のクラスを受け持ち、教育指導と事務作業に日々奮闘。",
+      "situation": "授業準備や生徒指導をしながら、出欠管理や保護者対応などの事務作業が多い",
+      "pain_points": [
+        "出欠管理や成績入力に時間を取られる",
+        "保護者への連絡業務が煩雑",
+        "各種書類の作成・提出が多い"
+      ],
+      "domains": {
+        "administration": {
+          "priority": "low",
+          "tasks": ["教職員の住所変更"],
+          "frequency": "年1回程度",
+          "documents": 2,
+          "fields": 10
+        },
+        "medical": {
+          "priority": "medium",
+          "tasks": ["児童の健康診断記録", "保健室利用記録"],
+          "frequency": "週5-10件",
+          "documents": 4,
+          "fields": 25
+        },
+        "education": {
+          "priority": "critical",
+          "tasks": ["出欠管理", "成績入力", "指導要録作成", "保護者面談記録", "就学援助対象者の確認"],
+          "frequency": "毎日30件+",
+          "documents": 15,
+          "fields": 140
+        },
+        "logistics": {
+          "priority": "low",
+          "tasks": ["教材の発注"],
+          "frequency": "月1回",
+          "documents": 2,
+          "fields": 8
+        },
+        "disaster": {
+          "priority": "high",
+          "tasks": ["避難訓練計画", "児童の緊急連絡先確認", "アレルギー情報の管理"],
+          "frequency": "学期ごと",
+          "documents": 6,
+          "fields": 45
+        }
+      }
+    },
+    {
+      "id": "logistics_staff",
+      "name": "高橋 誠",
+      "emoji": "🚛",
+      "role": "物流センター管理者",
+      "age": 45,
+      "description": "地域の物流センターで配送管理を担当。日々多くの荷物の入出庫と配送手配を管理。",
+      "situation": "配送効率化とコスト削減を求められながら、伝票処理や在庫管理に追われている",
+      "pain_points": [
+        "手書き伝票の転記ミスが発生",
+        "配送状況の問い合わせ対応に時間がかかる",
+        "在庫管理システムへの手入力が煩雑"
+      ],
+      "domains": {
+        "administration": {
+          "priority": "medium",
+          "tasks": ["事業所登録", "許認可申請"],
+          "frequency": "年1回",
+          "documents": 4,
+          "fields": 25
+        },
+        "medical": {
+          "priority": "none",
+          "tasks": [],
+          "frequency": "なし",
+          "documents": 0,
+          "fields": 0
+        },
+        "education": {
+          "priority": "none",
+          "tasks": [],
+          "frequency": "なし",
+          "documents": 0,
+          "fields": 0
+        },
+        "logistics": {
+          "priority": "critical",
+          "tasks": ["配送伝票処理", "在庫管理", "配送ルート最適化", "輸送実績報告"],
+          "frequency": "毎日200-500件",
+          "documents": 14,
+          "fields": 130
+        },
+        "disaster": {
+          "priority": "high",
+          "tasks": ["緊急物資配送計画", "災害時の配送拠点確認"],
+          "frequency": "年4回",
+          "documents": 8,
+          "fields": 55
+        }
+      }
+    }
+  ]
+}

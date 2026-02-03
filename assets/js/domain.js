@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // UI初期化
     initUI();
     renderProfile();
-    renderChecklist();
     
     // 全モードの統計を事前計算
     calculateAllModeStats();
@@ -155,23 +154,10 @@ function renderProfile() {
 }
 
 /**
- * チェックリスト描画
+ * チェックリスト描画（削除済み）
  */
 function renderChecklist() {
-  const container = document.getElementById('checklistContainer');
-  if (!container || !currentDomain.checklist) return;
-  
-  container.innerHTML = currentDomain.checklist.map(item => `
-    <div class="checklist-item">
-      <input 
-        type="checkbox" 
-        id="check_${item.id}" 
-        ${checklistState[item.id] ? 'checked' : ''}
-        onchange="handleChecklistChange('${item.id}')"
-      >
-      <label for="check_${item.id}">${item.label}</label>
-    </div>
-  `).join('');
+  // チェックリストは削除されました
 }
 
 /**
@@ -207,11 +193,7 @@ function switchExperienceMode(mode) {
     currentDomain = JSON.parse(JSON.stringify(currentDomainOriginal));
   }
   
-  // チェックリスト状態をリセット
-  checklistState = {};
-  
   // 再レンダリング
-  renderChecklist();
   calculateAllModeStats();
   renderMetricsBar();
   renderContent();
@@ -226,11 +208,6 @@ function switchExperienceMode(mode) {
  */
 function createSimplifiedDomain(originalDomain) {
   const simplified = JSON.parse(JSON.stringify(originalDomain));
-  
-  // チェックリストを3-5項目に削減
-  if (simplified.checklist && simplified.checklist.length > 5) {
-    simplified.checklist = simplified.checklist.slice(0, 5);
-  }
   
   // 書類を3-5件に削減
   if (simplified.documents && simplified.documents.base) {
@@ -263,21 +240,10 @@ function createSimplifiedDomain(originalDomain) {
 }
 
 /**
- * チェックリスト変更ハンドラ
+ * チェックリスト変更ハンドラ（削除済み）
  */
 function handleChecklistChange(itemId) {
-  const checkbox = document.getElementById(`check_${itemId}`);
-  checklistState[itemId] = checkbox.checked;
-  
-  // 履歴記録（隠しポイント用）
-  if (checkbox.checked) {
-    recordChecklistHistory(itemId);
-  }
-  
-  // 統計再計算
-  calculateAllModeStats();
-  renderMetricsBar();
-  renderContent();
+  // チェックリストは削除されました
 }
 
 /**
@@ -703,18 +669,17 @@ const HIDDEN_POINT_CHALLENGES = {
     }
   },
   medical: {
-    description: '緊急時と通常時の両方のチェックリストパターンを試すと、隠しポイントを獲得できます',
+    description: '全てのモード（Plain/Smart/AI）を確認すると、隠しポイントを獲得できます',
     checkCondition: () => {
-      const checkedHistory = JSON.parse(localStorage.getItem('checkedHistory_medical') || '[]');
-      return checkedHistory.includes('emergency') && checkedHistory.length >= 3;
+      const viewHistory = JSON.parse(localStorage.getItem('viewHistory_medical') || '{}');
+      return viewHistory.plain && viewHistory.smart && viewHistory.ai;
     }
   },
   education: {
-    description: '3つ以上のチェックリスト項目を選択した状態でAIモードを確認すると、隠しポイントを獲得できます',
+    description: 'AIモードとSummaryモードの両方を確認すると、隠しポイントを獲得できます',
     checkCondition: () => {
-      const checkedCount = Object.values(checklistState).filter(v => v).length;
       const viewHistory = JSON.parse(localStorage.getItem('viewHistory_education') || '{}');
-      return checkedCount >= 3 && viewHistory.ai;
+      return viewHistory.ai && viewHistory.summary;
     }
   },
   logistics: {
@@ -743,23 +708,6 @@ function recordModeView(mode) {
   const history = JSON.parse(localStorage.getItem(key) || '{}');
   history[mode] = true;
   localStorage.setItem(key, JSON.stringify(history));
-  
-  // チャレンジチェック
-  checkHiddenPointChallenge();
-}
-
-/**
- * チェックリスト履歴を記録
- */
-function recordChecklistHistory(itemId) {
-  if (!currentDomain) return;
-  
-  const key = `checkedHistory_${currentDomain.id}`;
-  const history = JSON.parse(localStorage.getItem(key) || '[]');
-  if (!history.includes(itemId)) {
-    history.push(itemId);
-    localStorage.setItem(key, JSON.stringify(history));
-  }
   
   // チャレンジチェック
   checkHiddenPointChallenge();

@@ -1,12 +1,23 @@
 // home.js - ハブのレンダリング（リング/グリッド）
 
+let charactersData = null;
+
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    // domains.jsonを読み込み
-    const response = await fetch('assets/data/domains.json');
-    if (!response.ok) throw new Error('Failed to load domains.json');
-    const data = await response.json();
+    // domains.jsonとcharacters.jsonを読み込み
+    const [domainsResponse, charactersResponse] = await Promise.all([
+      fetch('assets/data/domains.json'),
+      fetch('assets/data/characters.json')
+    ]);
     
+    if (!domainsResponse.ok) throw new Error('Failed to load domains.json');
+    const data = await domainsResponse.json();
+    
+    if (charactersResponse.ok) {
+      charactersData = await charactersResponse.json();
+    }
+    
+    displayCharacterInfo();
     renderDomainHub(data.domains);
     setupProfileLink();
   } catch (error) {
@@ -19,6 +30,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
   }
 });
+
+/**
+ * キャラクター情報を表示
+ */
+function displayCharacterInfo() {
+  const profile = loadProfile();
+  const bar = document.getElementById('characterInfoBar');
+  if (!bar) return;
+
+  if (!profile || !profile.character || !charactersData) {
+    bar.style.display = 'none';
+    return;
+  }
+
+  const character = charactersData.characters.find(c => c.id === profile.character);
+  if (!character) {
+    bar.style.display = 'none';
+    return;
+  }
+
+  bar.style.display = 'flex';
+  bar.innerHTML = `
+    <div class="character-info-icon">${character.emoji}</div>
+    <div class="character-info-details">
+      <div class="character-info-name">${character.name}として体験中</div>
+      <div class="character-info-role">${character.role}</div>
+    </div>
+    <button onclick="navigate('intro.html')" class="change-character-btn">キャラクターを変更</button>
+  `;
+}
 
 function renderDomainHub(domains) {
   const hub = document.getElementById('domainHub');

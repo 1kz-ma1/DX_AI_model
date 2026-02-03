@@ -44,13 +44,21 @@ const DOMAIN_STATS = {
 };
 
 let domainsData = null;
+let charactersData = null;
+let selectedCharacter = null;
 
 // ========================================
 // 初期化
 // ========================================
 document.addEventListener('DOMContentLoaded', async () => {
-  // domains.jsonを読み込み
-  await loadDomainsData();
+  // domains.jsonとcharacters.jsonを読み込み
+  await Promise.all([
+    loadDomainsData(),
+    loadCharactersData()
+  ]);
+  
+  // プロフィールからキャラクター情報を取得
+  loadSelectedCharacter();
   
   // localStorageから隠しポイント獲得状況を読み込み
   loadHiddenPoints();
@@ -72,6 +80,182 @@ async function loadDomainsData() {
   } catch (error) {
     console.error('Failed to load domains data:', error);
   }
+}
+
+/**
+ * characters.jsonを読み込み
+ */
+async function loadCharactersData() {
+  try {
+    const response = await fetch('assets/data/characters.json');
+    charactersData = await response.json();
+  } catch (error) {
+    console.error('Failed to load characters data:', error);
+  }
+}
+
+/**
+ * 選択されたキャラクター情報を読み込み
+ */
+function loadSelectedCharacter() {
+  const profile = loadProfile();
+  if (profile && profile.character && charactersData) {
+    const character = charactersData.characters.find(c => c.id === profile.character);
+    if (character) {
+      selectedCharacter = character;
+      displayCharacterInfo();
+      addPriorityBadgesToDomains();
+    }
+  } else if (!profile || !profile.character) {
+    // キャラクター未選択の場合は選択画面へ
+    showCharacterRequiredMessage();
+  }
+}
+
+/**
+ * キャラクター情報を表示
+ */
+function displayCharacterInfo() {
+  if (!selectedCharacter) return;
+
+  const container = document.querySelector('.strategy-header');
+  if (!container) return;
+
+  // キャラクター情報カードを作成
+  const characterCard = document.createElement('div');
+  characterCard.className = 'character-info-card';
+  characterCard.innerHTML = `
+    <div class="character-info-header">
+      <div class="character-info-emoji">${selectedCharacter.emoji}</div>
+      <div class="character-info-text">
+        <h3 class="character-info-name">${selectedCharacter.name}</h3>
+        <p class="character-info-role">${selectedCharacter.role} (${selectedCharacter.age}歳)</p>
+      </div>
+    </div>
+    <p class="character-info-situation">${selectedCharacter.situation}</p>
+    <div class="character-info-priorities">
+      ${getPriorityDomainsHTML()}
+    </div>
+  `;
+
+  // ヘッダーの最初に挿入
+  container.insertBefore(characterCard, container.firstChild);
+}
+
+/**
+ * キャラクターの優先度分野のHTMLを生成
+ */
+function getPriorityDomainsHTML() {
+  if (!selectedCharacter) return '';
+
+  const priorityDomains = [];
+  for (const [domainId, domainData] of Object.entries(selectedCharacter.domains)) {
+    if (domainData.priority === 'critical' || domainData.priority === 'high') {
+      const domainInfo = getDomainInfo(domainId);
+      priorityDomains.push({
+        id: domainId,
+        name: domainInfo.name,
+        priority: domainData.priority,
+        frequency: domainData.frequency
+      });
+    }
+  }
+
+  if (priorityDomains.length === 0) return '';
+
+  return `
+    <div class="priority-info-title">重点分野</div>
+    <div class="priority-domains-list">
+      ${priorityDomains.map(d => `
+        <span class="priority-domain-badge ${d.priority}">
+          ${d.name} <span class="priority-frequency">(${d.frequency})</span>
+        </span>
+      `).join('')}
+    </div>
+  `;
+}
+
+/**
+ * 分野情報を取得
+ */
+function getDomainInfo(domainId) {
+  const names = {
+    administration: '行政手続き',
+    medical: '医療',
+    education: '教育',
+    logistics: '物流',
+    disaster: '防災'
+  };
+  return { name: names[domainId] || domainId };
+}
+
+/**
+ * 各分野カードに優先度バッジを追加
+ */
+function addPriorityBadgesToDomains() {
+  if (!selectedCharacter) return;
+
+  Object.entries(selectedCharacter.domains).forEach(([domainId, domainData]) => {
+    const priority = domainData.priority;
+    if (priority === 'none' || priority === 'low') return;
+
+    const card = document.querySelector(`.domain-card[data-domain="${domainId}"]`);
+    if (!card) return;
+
+    const header = card.querySelector('.domain-header');
+    if (!header) return;
+
+    // 既存のバッジがあれば削除
+    const existingBadge = header.querySelector('.domain-priority-badge');
+    if (existingBadge) existingBadge.remove();
+
+    // 優先度バッジを作成
+    const badge = document.createElement('span');
+    badge.className = `domain-priority-badge ${priority}`;
+    
+    const priorityText = {
+      critical: '⚠️ 重要',
+      high: '⭐ 優先',
+      medium: '📌 関連'
+    }[priority] || '';
+    
+    badge.innerHTML = `<span class="priority-text">${priorityText}</span>`;
+    
+    // h3の後に挿入
+    const h3 = header.querySelector('h3');
+    if (h3) {
+      h3.after(badge);
+    }
+
+    // 重要度に応じてカードを強調
+    if (priority === 'critical') {
+      card.style.borderColor = '#ef4444';
+      card.style.borderWidth = '3px';
+    } else if (priority === 'high') {
+      card.style.borderColor = '#f97316';
+      card.style.borderWidth = '2px';
+    }
+  });
+}
+
+/**
+ * キャラクター未選択時のメッセージ表示
+ */
+function showCharacterRequiredMessage() {
+  const container = document.querySelector('.strategy-header');
+  if (!container) return;
+
+  const message = document.createElement('div');
+  message.className = 'character-required-message';
+  message.innerHTML = `
+    <div class="message-icon">⚠️</div>
+    <h3>キャラクターを選択してください</h3>
+    <p>このシミュレーターを体験するには、まずキャラクターを選択する必要があります。</p>
+    <button onclick="navigate('intro.html')" class="back-to-intro-btn">
+      キャラクター選択画面へ戻る
+    </button>
+  `;
+  container.insertBefore(message, container.firstChild);
 }
 
 /**
@@ -100,6 +284,11 @@ function saveHiddenPoints() {
  * UI初期化
  */
 function initUI() {
+  // キャラクターの優先度を分野カードに表示
+  if (selectedCharacter) {
+    addPriorityIndicators();
+  }
+  
   // モード選択ラジオボタンのイベント
   document.querySelectorAll('input[type="radio"]').forEach(radio => {
     radio.addEventListener('change', handleModeChange);
@@ -135,11 +324,51 @@ function initUI() {
     saveBtn.addEventListener('click', handleSave);
   }
   
+  // 次へボタン
+  const nextBtn = document.getElementById('nextBtn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', handleNext);
+  }
+  
   // 共有ボタン
   const shareBtn = document.getElementById('shareBtn');
   if (shareBtn) {
     shareBtn.addEventListener('click', handleShare);
   }
+}
+
+/**
+ * 分野カードに優先度インジケーターを追加
+ */
+function addPriorityIndicators() {
+  if (!selectedCharacter) return;
+
+  document.querySelectorAll('.domain-card').forEach(card => {
+    const domainId = card.dataset.domain;
+    const domainData = selectedCharacter.domains[domainId];
+    
+    if (!domainData || domainData.priority === 'none' || domainData.priority === 'low') return;
+
+    // 優先度バッジを作成
+    const badge = document.createElement('div');
+    badge.className = `domain-priority-badge ${domainData.priority}`;
+    
+    let priorityText = '';
+    if (domainData.priority === 'critical') priorityText = '最優先';
+    else if (domainData.priority === 'high') priorityText = '重要';
+    else if (domainData.priority === 'medium') priorityText = '関連';
+    
+    badge.innerHTML = `
+      <span class="priority-icon">${domainData.priority === 'critical' ? '⚠️' : '✓'}</span>
+      <span class="priority-text">${priorityText} (${domainData.frequency})</span>
+    `;
+
+    // ドメインヘッダーに追加
+    const header = card.querySelector('.domain-header');
+    if (header) {
+      header.appendChild(badge);
+    }
+  });
 }
 
 /**
@@ -619,6 +848,17 @@ function handleSave() {
 }
 
 /**
+ * 次へハンドラ（home.htmlへ遷移）
+ */
+function handleNext() {
+  // 戦略を保存
+  handleSave();
+  
+  // ホーム画面（ドメインハブ）へ遷移
+  navigate('home.html');
+}
+
+/**
  * 共有ハンドラ
  */
 function handleShare() {
@@ -640,8 +880,12 @@ function handleShare() {
     totalTimeSaved += stats.paperTime - electronicTime;
   });
   
+  const characterInfo = selectedCharacter ? `
+👤 体験キャラクター: ${selectedCharacter.name}（${selectedCharacter.role}）
+` : '';
+  
   const message = `🎮 DX×AI戦略シミュレーター
-
+${characterInfo}
 私の戦略:
 💰 使用ポイント: ${usedPoints}/${availablePoints}pt
 💳 マイナンバー: ${strategyState.mynumberEnabled ? '導入済み' : '未導入'}

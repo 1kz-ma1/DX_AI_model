@@ -40,6 +40,58 @@ body {
   padding: var(--spacing-2xl) var(--spacing-lg);
 }
 
+/* キャラクター情報バー */
+.character-info-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  background: rgba(255, 255, 255, 0.95);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.character-info-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.character-info-details {
+  flex: 1;
+}
+
+.character-info-name {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-bottom: var(--spacing-xs);
+}
+
+.character-info-role {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.change-character-btn {
+  background: white;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.change-character-btn:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
 .hub-intro {
   text-align: center;
   color: white;

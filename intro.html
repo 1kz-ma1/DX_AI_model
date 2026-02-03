@@ -3,11 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>はじめに - DX×AI 戦略シミュレーター</title>
+  <title>キャラクター選択 - DX×AI 戦略シミュレーター</title>
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/intro.css">
 </head>
 <body>
+  <main class="intro-container">
+    <div class="story-section">
+      <div class="story-header">
+        <h1>🏛️ DX×AI 戦略シミュレーター</h1>
+        <p class="tagline">様々な立場からDXの効果を体験しよう</p>
+      </div>
+
+      <div class="intro-description">
+        <p>このシミュレーターでは、異なる役割・立場の人物を選んで、それぞれが日常で直面する手続きや業務における<strong>DX・AI導入の効果</strong>を体験できます。</p>
+        <p>あなたはDX推進責任者として、<strong>限られた予算（6pt）</strong>の中で各分野に投資を配分し、選んだキャラクターの負担を最小化することがミッションです。</p>
+      </div>
+
+      <div class="character-selection">
+        <h2>👥 体験するキャラクターを選択してください</h2>
+        <div id="characterGrid" class="character-grid">
+          <!-- JSで動的生成 -->
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        <strong>⚠️ ご注意</strong><br>
+        本シミュレーターは教育目的のデモです。制度・施設運用の単純化・誇張を含みます。実際の効果は環境により異なります。
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/intro.js"></script>
+</body>
+</html>
   <main class="intro-container">
     <div class="story-section">
       <div class="story-header">

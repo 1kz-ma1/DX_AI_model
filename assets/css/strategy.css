@@ -3,6 +3,154 @@
  */
 
 /* ========================================
+   キャラクター情報カード
+   ======================================== */
+.character-info-card {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.character-info-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.character-info-emoji {
+  font-size: 3rem;
+  flex-shrink: 0;
+}
+
+.character-info-text {
+  flex: 1;
+}
+
+.character-info-name {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.character-info-role {
+  font-size: var(--font-size-md);
+  color: var(--color-primary);
+  font-weight: 600;
+  margin: 0;
+}
+
+.character-info-situation {
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+  color: var(--color-gray-700);
+  margin: 0 0 var(--spacing-md) 0;
+  padding: var(--spacing-sm);
+  background: white;
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--color-primary);
+}
+
+.character-info-priorities {
+  margin-top: var(--spacing-md);
+}
+
+.priority-info-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-gray-700);
+  margin-bottom: var(--spacing-sm);
+}
+
+.priority-domains-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.priority-domain-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.priority-domain-badge.critical {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 2px solid #ef4444;
+}
+
+.priority-domain-badge.high {
+  background: #fed7aa;
+  color: #ea580c;
+  border: 2px solid #f97316;
+}
+
+.priority-frequency {
+  font-size: var(--font-size-xs);
+  opacity: 0.8;
+}
+
+/* ========================================
+   キャラクター必須メッセージ
+   ======================================== */
+.character-required-message {
+  background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+  border: 3px solid #f59e0b;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.2);
+}
+
+.character-required-message .message-icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.character-required-message h3 {
+  font-size: var(--font-size-2xl);
+  color: var(--color-gray-900);
+  margin: 0 0 var(--spacing-md) 0;
+  font-weight: 700;
+}
+
+.character-required-message p {
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+  color: var(--color-gray-700);
+  margin: 0 0 var(--spacing-xl) 0;
+}
+
+.back-to-intro-btn {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+  border: none;
+  padding: var(--spacing-md) var(--spacing-2xl);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.back-to-intro-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* ========================================
    ポイントパネル
    ======================================== */
 .points-panel {
@@ -301,6 +449,7 @@
   margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid #f3f4f6;
+  flex-wrap: wrap;
 }
 
 .domain-icon {
@@ -312,6 +461,56 @@
   margin: 0;
   font-size: 1.25rem;
   color: #1f2937;
+}
+
+/* 優先度バッジ（分野カード内） */
+.domain-priority-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.domain-priority-badge.critical {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 2px solid #ef4444;
+}
+
+.domain-priority-badge.high {
+  background: #fed7aa;
+  color: #ea580c;
+  border: 2px solid #f97316;
+}
+
+.domain-priority-badge.medium {
+  background: #dbeafe;
+  color: #2563eb;
+  border: 2px solid #3b82f6;
+}
+
+.priority-icon {
+  font-size: 1rem;
+}
+
+.priority-text {
+  font-size: 0.75rem;
 }
 
 .detail-link {
@@ -556,6 +755,24 @@
 .btn-secondary:hover {
   background: #eff6ff;
   transform: translateY(-2px);
+}
+
+.btn-next {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-next:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
 }
 
 /* ========================================
