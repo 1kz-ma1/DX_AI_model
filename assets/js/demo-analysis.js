@@ -51,19 +51,19 @@ function initUI() {
   if (backToDomain) {
     backToDomain.addEventListener('click', (e) => {
       e.preventDefault();
-      navigate('domain.html', { experienceMode: 'demo' });
+      navigate('domain.html', { experience: 'demo' });
     });
   }
 
   if (backToDomainBtn) {
     backToDomainBtn.addEventListener('click', () => {
-      navigate('domain.html', { experienceMode: 'demo' });
+      navigate('domain.html', { experience: 'demo' });
     });
   }
 
   if (backToHubBtn) {
     backToHubBtn.addEventListener('click', () => {
-      navigate('home.html', { experienceMode: 'demo' });
+      navigate('home.html', { experience: 'demo' });
     });
   }
 

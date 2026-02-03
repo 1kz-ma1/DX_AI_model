@@ -100,6 +100,14 @@ function navigate(url, additionalParams = {}) {
   const merged = mergeWithProfile();
   const params = { ...merged, ...additionalParams };
   
+  // デモモード時はペルソナ関連パラメータを除外
+  if (params.experience === 'demo') {
+    delete params.myna;
+    delete params.online;
+    delete params.consent_unify;
+    delete params.persona;
+  }
+  
   // 相対パスの場合は現在のディレクトリをベースにする
   const currentPath = window.location.pathname;
   const currentDir = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
