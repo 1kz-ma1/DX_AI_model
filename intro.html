@@ -3,57 +3,162 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>はじめに - DX×AI 体験アプリ</title>
+  <title>はじめに - DX×AI 戦略シミュレーター</title>
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/intro.css">
 </head>
 <body>
   <main class="intro-container">
-    <header class="intro-header">
-      <h1>🏛️ DX×AI 体験アプリへようこそ</h1>
-      <p>各分野のDX・AI導入による効率化を体験できます</p>
-    </header>
+    <div class="story-section">
+      <div class="story-header">
+        <h1>🏛️ DX×AI 戦略シミュレーター</h1>
+        <p class="tagline">限られた資源で、最大の市民価値を創造せよ</p>
+      </div>
 
-    <div class="disclaimer">
-      <strong>⚠️ ご注意</strong><br>
-      本デモは制度・施設運用の単純化・誇張を含みます。実際の効果は環境により異なります。
+      <div class="story-content">
+        <div class="story-card">
+          <div class="story-icon">😓</div>
+          <h2>市民の困りごと</h2>
+          <div class="story-text">
+            <p>「また同じ情報を何度も書かされる...」</p>
+            <p>「紙の書類が多すぎて、何時間もかかる...」</p>
+            <p>「窓口が混んでいて、待ち時間が長い...」</p>
+          </div>
+          <div class="story-stats">
+            <div class="stat-item">
+              <span class="stat-number">平均 2時間</span>
+              <span class="stat-label">手続きにかかる時間</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">年間 100+</span>
+              <span class="stat-label">重複入力項目</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-arrow">↓</div>
+
+        <div class="story-card highlight">
+          <div class="story-icon">💼</div>
+          <h2>あなたの役割</h2>
+          <div class="story-text">
+            <p><strong>あなたは自治体のDX推進責任者です。</strong></p>
+            <p>限られた予算の中で、5つの分野（行政・医療・教育・物流・災害対応）にDX・AIを導入し、市民の負担を最小化するのがミッションです。</p>
+          </div>
+          <div class="resource-info">
+            <div class="resource-item">
+              <span class="resource-icon">💰</span>
+              <div>
+                <div class="resource-title">初期予算</div>
+                <div class="resource-value">6ポイント</div>
+              </div>
+            </div>
+            <div class="resource-item">
+              <span class="resource-icon">🎁</span>
+              <div>
+                <div class="resource-title">隠しポイント</div>
+                <div class="resource-value">最大 +6pt</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-arrow">↓</div>
+
+        <div class="story-card">
+          <div class="story-icon">🎮</div>
+          <h2>ゲームの進め方</h2>
+          <div class="strategy-options">
+            <div class="option-card">
+              <div class="option-header">
+                <span class="option-cost">0pt</span>
+                <span class="option-name">Plain（電子化）</span>
+              </div>
+              <p>紙→デジタル化のみ。重複入力は残る。</p>
+            </div>
+            <div class="option-card">
+              <div class="option-header">
+                <span class="option-cost">1pt</span>
+                <span class="option-name">Smart（工夫）</span>
+              </div>
+              <p>情報連携により約35%の入力を削減。</p>
+            </div>
+            <div class="option-card">
+              <div class="option-header">
+                <span class="option-cost">2pt</span>
+                <span class="option-name">AI（AI導入）</span>
+              </div>
+              <p>AI活用で約60%削減（マイナンバーで93%）。</p>
+            </div>
+          </div>
+          <div class="special-option">
+            <div class="special-header">
+              <span class="special-icon">💳</span>
+              <span class="special-name">マイナンバーシステム</span>
+              <span class="special-cost">5pt</span>
+            </div>
+            <p>高コストだが、全分野でAI効果が3倍に！横断的な基盤投資。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-box">
+        <h3>🎯 あなたのミッション</h3>
+        <ul>
+          <li>各分野の特性を理解し、最適な投資配分を決定</li>
+          <li>隠しポイントを探索して、追加の予算を獲得</li>
+          <li>マイナンバーシステムの導入タイミングを見極める</li>
+          <li>市民の時間を最大限削減し、満足度を向上させる</li>
+        </ul>
+      </div>
+
+      <form id="profileForm">
+        <div class="profile-section">
+          <h3>📋 前提条件の設定（オプション）</h3>
+          <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 1rem;">体験の精度を高めるための設定です。スキップも可能です。</p>
+          
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="myna" name="myna" value="1">
+              マイナンバーカード（保険証利用など）を活用する意思がある
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="online" name="online" value="1">
+              オンライン資格確認対応の施設を利用する想定
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="consent_unify" name="consent_unify" value="1">
+              包括同意による情報共有・簡略化の演出を許可
+            </label>
+          </div>
+
+          <div class="form-group select-group">
+            <label for="persona">利用者区分</label>
+            <select id="persona" name="persona">
+              <option value="citizen">市民（個人）</option>
+              <option value="business">事業者</option>
+              <option value="staff">自治体職員</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button type="submit" class="btn btn-primary">🚀 戦略ボードへ →</button>
+          <a href="home.html" class="btn btn-secondary">分野別に詳しく見る →</a>
+        </div>
+      </form>
+
+      <div class="disclaimer">
+        <strong>⚠️ ご注意</strong><br>
+        本シミュレーターは教育目的のデモです。制度・施設運用の単純化・誇張を含みます。実際の効果は環境により異なります。
+      </div>
     </div>
-
-    <form id="profileForm">
-      <div class="form-group">
-        <label>
-          <input type="checkbox" id="myna" name="myna" value="1">
-          マイナンバーカード（保険証利用など）を活用する意思がある
-        </label>
-      </div>
-
-      <div class="form-group">
-        <label>
-          <input type="checkbox" id="online" name="online" value="1">
-          オンライン資格確認対応の施設を利用する想定
-        </label>
-      </div>
-
-      <div class="form-group">
-        <label>
-          <input type="checkbox" id="consent_unify" name="consent_unify" value="1">
-          包括同意による情報共有・簡略化の演出を許可
-        </label>
-      </div>
-
-      <div class="form-group select-group">
-        <label for="persona">利用者区分</label>
-        <select id="persona" name="persona">
-          <option value="citizen">市民（個人）</option>
-          <option value="business">事業者</option>
-          <option value="staff">自治体職員</option>
-        </select>
-      </div>
-
-      <button type="submit" class="btn">体験を開始する →</button>
-    </form>
-
-    <a href="#" id="skipLink" class="skip-link" style="display: none;">すでに設定済み - スキップする →</a>
   </main>
 
   <script src="assets/js/state.js"></script>

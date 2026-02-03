@@ -1,0 +1,569 @@
+/**
+ * strategy.css - 戦略ボードのスタイル
+ */
+
+/* ========================================
+   ポイントパネル
+   ======================================== */
+.points-panel {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.points-display {
+  margin-bottom: 1rem;
+}
+
+.points-main {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.points-label {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.points-value {
+  font-size: 3rem;
+  font-weight: 800;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.points-total {
+  font-size: 1.5rem;
+  opacity: 0.9;
+}
+
+.points-bar {
+  width: 100%;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.points-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
+  border-radius: 8px;
+  transition: width 0.3s ease;
+}
+
+.points-info {
+  margin-top: 1rem;
+}
+
+.hint-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hint-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.hint-panel {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+.hint-panel h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.hint-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hint-panel li {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border-left: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+.hint-panel li.hint-unlocked {
+  background: rgba(74, 222, 128, 0.2);
+  border-left-color: #4ade80;
+}
+
+/* ========================================
+   マイナンバーセクション
+   ======================================== */
+.mynumber-section {
+  margin-bottom: 2rem;
+}
+
+.mynumber-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.mynumber-card.enabled {
+  border-color: #4ade80;
+  box-shadow: 0 4px 32px rgba(74, 222, 128, 0.2);
+}
+
+.mynumber-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.mynumber-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #1f2937;
+}
+
+.mynumber-status {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.mynumber-status.disabled {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.mynumber-status.enabled {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.mynumber-cost {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #fef3c7;
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+}
+
+.cost-label {
+  font-weight: 600;
+  color: #92400e;
+  margin-right: 0.5rem;
+}
+
+.cost-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #b45309;
+  margin-right: 0.5rem;
+}
+
+.cost-note {
+  font-size: 0.875rem;
+  color: #78350f;
+}
+
+.mynumber-effect {
+  margin-bottom: 1.5rem;
+}
+
+.mynumber-effect h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #374151;
+}
+
+.effect-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.effect-column {
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+}
+
+.effect-column.highlight {
+  background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
+  border-color: #3b82f6;
+}
+
+.effect-column h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.effect-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.effect-column ul li {
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.mynumber-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.mynumber-actions button {
+  flex: 1;
+}
+
+/* ========================================
+   分野別カード
+   ======================================== */
+.domains-section h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.domains-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.domain-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.domain-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.domain-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.domain-icon {
+  font-size: 2rem;
+}
+
+.domain-header h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1f2937;
+}
+
+.detail-link {
+  font-size: 0.875rem;
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.detail-link:hover {
+  color: #2563eb;
+}
+
+.domain-modes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.mode-option {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-option:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.mode-option input[type="radio"] {
+  margin-right: 0.75rem;
+  cursor: pointer;
+}
+
+.mode-option input[type="radio"]:checked ~ .mode-label {
+  font-weight: 600;
+}
+
+.mode-option:has(input:checked) {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+
+.mode-label {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mode-name {
+  font-size: 1rem;
+  color: #374151;
+}
+
+.mode-cost {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  background: #f3f4f6;
+  border-radius: 12px;
+  color: #6b7280;
+}
+
+.mode-option:has(input:checked) .mode-cost {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.domain-effect {
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.effect-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+
+.effect-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.effect-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.mynumber-warning {
+  padding: 0.75rem;
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: #92400e;
+}
+
+/* ========================================
+   総合効果セクション
+   ======================================== */
+.summary-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.summary-section h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  text-align: center;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+}
+
+.summary-card.highlight {
+  background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
+  border-color: #3b82f6;
+}
+
+.summary-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.summary-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.summary-card.highlight .summary-value {
+  color: #1e40af;
+}
+
+.summary-note {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.recommendation {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 12px;
+  border-left: 4px solid #f59e0b;
+}
+
+.recommendation h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  color: #78350f;
+}
+
+.recommendation p {
+  margin: 0;
+  color: #92400e;
+  line-height: 1.6;
+}
+
+/* ========================================
+   アクションセクション
+   ======================================== */
+.actions-section {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.actions-section button {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+}
+
+/* ========================================
+   ボタンスタイル
+   ======================================== */
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.btn-primary:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: white;
+  color: #3b82f6;
+  border: 2px solid #3b82f6;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: #eff6ff;
+  transform: translateY(-2px);
+}
+
+/* ========================================
+   フッター
+   ======================================== */
+.page-footer {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* ========================================
+   レスポンシブ
+   ======================================== */
+@media (max-width: 768px) {
+  .effect-comparison {
+    grid-template-columns: 1fr;
+  }
+  
+  .mynumber-actions {
+    flex-direction: column;
+  }
+  
+  .actions-section {
+    flex-direction: column;
+  }
+  
+  .points-value {
+    font-size: 2.5rem;
+  }
+}

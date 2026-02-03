@@ -2,19 +2,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('profileForm');
-  const skipLink = document.getElementById('skipLink');
   
-  // 既存プロファイルがあればスキップリンクを表示
-  const existingProfile = loadProfile();
-  if (existingProfile) {
-    skipLink.style.display = 'block';
-    skipLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      navigate('home.html');
-    });
-  }
-  
-  // フォーム送信
+  // フォーム送信 → 戦略ボードへ
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     
@@ -28,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 保存
     saveProfile(profile);
     
-    // ハブページへ遷移
-    navigate('home.html');
+    // 戦略ボードへ遷移
+    navigate('strategy.html');
   });
 });

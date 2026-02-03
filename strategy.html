@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>戦略ボード - DX×AI戦略シミュレーター</title>
+  <link rel="stylesheet" href="assets/css/common.css">
+  <link rel="stylesheet" href="assets/css/strategy.css">
+</head>
+<body>
+  <div class="container">
+    <!-- ヘッダー -->
+    <header class="page-header">
+      <h1>🎮 DX×AI 戦略ボード</h1>
+      <p class="subtitle">限られた予算で最大の効果を生み出せ</p>
+      <nav class="breadcrumb">
+        <a href="intro.html">🏠 トップ</a> →
+        <a href="home.html">📊 分野選択</a> →
+        <span>戦略ボード</span>
+      </nav>
+    </header>
+
+    <!-- ポイント表示 -->
+    <section class="points-panel">
+      <div class="points-display">
+        <div class="points-main">
+          <span class="points-label">💰 保有ポイント</span>
+          <span class="points-value" id="currentPoints">6</span>
+          <span class="points-total">/ <span id="maxPoints">12</span> pt</span>
+        </div>
+        <div class="points-bar">
+          <div class="points-bar-fill" id="pointsBarFill" style="width: 50%"></div>
+        </div>
+      </div>
+      
+      <div class="points-info">
+        <button class="hint-btn" id="hintBtn">💡 獲得可能ポイント</button>
+        <div class="hint-panel" id="hintPanel" style="display: none;">
+          <h3>💎 隠しポイント獲得状況</h3>
+          <ul id="hintList">
+            <li class="hint-locked">🔒 行政DX: 詳細ページで条件を探索</li>
+            <li class="hint-locked">🔒 医療DX: 詳細ページで条件を探索</li>
+            <li class="hint-locked">🔒 教育DX: 詳細ページで条件を探索</li>
+            <li class="hint-locked">🔒 物流DX: 詳細ページで条件を探索</li>
+            <li class="hint-locked">🔒 災害DX: 詳細ページで条件を探索</li>
+            <li class="hint-locked">🔒 完全制覇ボーナス: 全分野のポイント獲得で解放</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- マイナンバーシステム -->
+    <section class="mynumber-section">
+      <div class="mynumber-card" id="mynumberCard">
+        <div class="mynumber-header">
+          <h2>💳 マイナンバーシステム</h2>
+          <span class="mynumber-status" id="mynumberStatus">未導入</span>
+        </div>
+        
+        <div class="mynumber-body">
+          <div class="mynumber-cost">
+            <span class="cost-label">導入コスト:</span>
+            <span class="cost-value">5pt</span>
+            <span class="cost-note">(高額だが全分野に効果)</span>
+          </div>
+          
+          <div class="mynumber-effect">
+            <h3>📊 導入効果シミュレーション</h3>
+            <div class="effect-comparison">
+              <div class="effect-column">
+                <h4>未導入の場合</h4>
+                <ul id="effectWithout">
+                  <li>AI化の削減率: 約60%</li>
+                  <li>mynumberフィールドは手入力</li>
+                </ul>
+              </div>
+              <div class="effect-column highlight">
+                <h4>導入した場合 ⚡</h4>
+                <ul id="effectWith">
+                  <li>AI化の削減率: 約93%</li>
+                  <li>mynumberフィールドが自動化</li>
+                  <li>全分野で効果が3倍に！</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mynumber-actions">
+            <button class="btn-primary" id="enableMynumberBtn" disabled>
+              💳 導入する (5pt)
+            </button>
+            <button class="btn-secondary" id="mynumberDetailBtn">
+              ℹ️ 詳細を見る
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 分野別投資 -->
+    <section class="domains-section">
+      <h2>📋 分野別DX投資</h2>
+      
+      <div class="domains-grid">
+        <!-- 行政DX -->
+        <div class="domain-card" data-domain="administration">
+          <div class="domain-header">
+            <span class="domain-icon">🏛️</span>
+            <h3>行政DX</h3>
+            <a href="domain.html?d=administration" class="detail-link" target="_blank">詳細 →</a>
+          </div>
+          
+          <div class="domain-modes">
+            <label class="mode-option">
+              <input type="radio" name="mode-administration" value="plain" checked>
+              <span class="mode-label">
+                <span class="mode-name">Plain</span>
+                <span class="mode-cost">0pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-administration" value="smart">
+              <span class="mode-label">
+                <span class="mode-name">Smart</span>
+                <span class="mode-cost">1pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-administration" value="ai">
+              <span class="mode-label">
+                <span class="mode-name">AI</span>
+                <span class="mode-cost">2pt</span>
+              </span>
+            </label>
+          </div>
+          
+          <div class="domain-effect">
+            <div class="effect-item">
+              <span class="effect-label">入力項目:</span>
+              <span class="effect-value" id="effect-administration-input">-</span>
+            </div>
+            <div class="effect-item">
+              <span class="effect-label">推定時間:</span>
+              <span class="effect-value" id="effect-administration-time">-</span>
+            </div>
+          </div>
+          
+          <div class="mynumber-warning" style="display: none;">
+            ⚠️ マイナンバー未導入のためAI効果が制限されています
+          </div>
+        </div>
+
+        <!-- 医療DX -->
+        <div class="domain-card" data-domain="medical">
+          <div class="domain-header">
+            <span class="domain-icon">🏥</span>
+            <h3>医療DX</h3>
+            <a href="domain.html?d=medical" class="detail-link" target="_blank">詳細 →</a>
+          </div>
+          
+          <div class="domain-modes">
+            <label class="mode-option">
+              <input type="radio" name="mode-medical" value="plain" checked>
+              <span class="mode-label">
+                <span class="mode-name">Plain</span>
+                <span class="mode-cost">0pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-medical" value="smart">
+              <span class="mode-label">
+                <span class="mode-name">Smart</span>
+                <span class="mode-cost">1pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-medical" value="ai">
+              <span class="mode-label">
+                <span class="mode-name">AI</span>
+                <span class="mode-cost">2pt</span>
+              </span>
+            </label>
+          </div>
+          
+          <div class="domain-effect">
+            <div class="effect-item">
+              <span class="effect-label">入力項目:</span>
+              <span class="effect-value" id="effect-medical-input">-</span>
+            </div>
+            <div class="effect-item">
+              <span class="effect-label">推定時間:</span>
+              <span class="effect-value" id="effect-medical-time">-</span>
+            </div>
+          </div>
+          
+          <div class="mynumber-warning" style="display: none;">
+            ⚠️ マイナンバー未導入のためAI効果が制限されています
+          </div>
+        </div>
+
+        <!-- 教育DX -->
+        <div class="domain-card" data-domain="education">
+          <div class="domain-header">
+            <span class="domain-icon">🎓</span>
+            <h3>教育DX</h3>
+            <a href="domain.html?d=education" class="detail-link" target="_blank">詳細 →</a>
+          </div>
+          
+          <div class="domain-modes">
+            <label class="mode-option">
+              <input type="radio" name="mode-education" value="plain" checked>
+              <span class="mode-label">
+                <span class="mode-name">Plain</span>
+                <span class="mode-cost">0pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-education" value="smart">
+              <span class="mode-label">
+                <span class="mode-name">Smart</span>
+                <span class="mode-cost">1pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-education" value="ai">
+              <span class="mode-label">
+                <span class="mode-name">AI</span>
+                <span class="mode-cost">2pt</span>
+              </span>
+            </label>
+          </div>
+          
+          <div class="domain-effect">
+            <div class="effect-item">
+              <span class="effect-label">入力項目:</span>
+              <span class="effect-value" id="effect-education-input">-</span>
+            </div>
+            <div class="effect-item">
+              <span class="effect-label">推定時間:</span>
+              <span class="effect-value" id="effect-education-time">-</span>
+            </div>
+          </div>
+          
+          <div class="mynumber-warning" style="display: none;">
+            ⚠️ マイナンバー未導入のためAI効果が制限されています
+          </div>
+        </div>
+
+        <!-- 物流DX -->
+        <div class="domain-card" data-domain="logistics">
+          <div class="domain-header">
+            <span class="domain-icon">📦</span>
+            <h3>物流DX</h3>
+            <a href="domain.html?d=logistics" class="detail-link" target="_blank">詳細 →</a>
+          </div>
+          
+          <div class="domain-modes">
+            <label class="mode-option">
+              <input type="radio" name="mode-logistics" value="plain" checked>
+              <span class="mode-label">
+                <span class="mode-name">Plain</span>
+                <span class="mode-cost">0pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-logistics" value="smart">
+              <span class="mode-label">
+                <span class="mode-name">Smart</span>
+                <span class="mode-cost">1pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-logistics" value="ai">
+              <span class="mode-label">
+                <span class="mode-name">AI</span>
+                <span class="mode-cost">2pt</span>
+              </span>
+            </label>
+          </div>
+          
+          <div class="domain-effect">
+            <div class="effect-item">
+              <span class="effect-label">入力項目:</span>
+              <span class="effect-value" id="effect-logistics-input">-</span>
+            </div>
+            <div class="effect-item">
+              <span class="effect-label">推定時間:</span>
+              <span class="effect-value" id="effect-logistics-time">-</span>
+            </div>
+          </div>
+          
+          <div class="mynumber-warning" style="display: none;">
+            ⚠️ マイナンバー未導入のためAI効果が制限されています
+          </div>
+        </div>
+
+        <!-- 災害DX -->
+        <div class="domain-card" data-domain="disaster">
+          <div class="domain-header">
+            <span class="domain-icon">🚨</span>
+            <h3>災害対応DX</h3>
+            <a href="domain.html?d=disaster" class="detail-link" target="_blank">詳細 →</a>
+          </div>
+          
+          <div class="domain-modes">
+            <label class="mode-option">
+              <input type="radio" name="mode-disaster" value="plain" checked>
+              <span class="mode-label">
+                <span class="mode-name">Plain</span>
+                <span class="mode-cost">0pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-disaster" value="smart">
+              <span class="mode-label">
+                <span class="mode-name">Smart</span>
+                <span class="mode-cost">1pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-disaster" value="ai">
+              <span class="mode-label">
+                <span class="mode-name">AI</span>
+                <span class="mode-cost">2pt</span>
+              </span>
+            </label>
+          </div>
+          
+          <div class="domain-effect">
+            <div class="effect-item">
+              <span class="effect-label">入力項目:</span>
+              <span class="effect-value" id="effect-disaster-input">-</span>
+            </div>
+            <div class="effect-item">
+              <span class="effect-label">推定時間:</span>
+              <span class="effect-value" id="effect-disaster-time">-</span>
+            </div>
+          </div>
+          
+          <div class="mynumber-warning" style="display: none;">
+            ⚠️ マイナンバー未導入のためAI効果が制限されています
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 総合効果 -->
+    <section class="summary-section">
+      <h2>📊 総合効果</h2>
+      
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-label">使用ポイント</div>
+          <div class="summary-value" id="usedPoints">0pt</div>
+          <div class="summary-note" id="pointsNote">残り 6pt</div>
+        </div>
+        
+        <div class="summary-card">
+          <div class="summary-label">総入力項目数</div>
+          <div class="summary-value" id="totalInputs">-</div>
+          <div class="summary-note">手入力が必要な項目</div>
+        </div>
+        
+        <div class="summary-card highlight">
+          <div class="summary-label">推定時間削減</div>
+          <div class="summary-value" id="timeSaved">-</div>
+          <div class="summary-note">紙の書類と比較</div>
+        </div>
+        
+        <div class="summary-card">
+          <div class="summary-label">費用対効果</div>
+          <div class="summary-value" id="costEfficiency">-</div>
+          <div class="summary-note">削減時間/pt</div>
+        </div>
+      </div>
+      
+      <div class="recommendation" id="recommendation">
+        <h3>💡 戦略アドバイス</h3>
+        <p id="recommendationText">分野を選択すると、最適な戦略をアドバイスします</p>
+      </div>
+    </section>
+
+    <!-- アクションボタン -->
+    <section class="actions-section">
+      <button class="btn-secondary" id="resetBtn">🔄 リセット</button>
+      <button class="btn-primary" id="saveBtn">💾 この戦略を保存</button>
+      <button class="btn-primary" id="shareBtn">📤 戦略を共有</button>
+    </section>
+
+    <footer class="page-footer">
+      <p>💡 各分野の詳細ページで隠しポイントを探してみましょう！</p>
+    </footer>
+  </div>
+
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/strategy.js"></script>
+</body>
+</html>

@@ -97,6 +97,37 @@
             <span id="metricInputAiValue" class="metric-row-value">-</span>
           </div>
         </div>
+        <div class="metric-card">
+          <div class="metric-label">⏱️ 推定入力時間</div>
+          <div class="metric-row">
+            <span class="metric-row-label">紙の書類</span>
+            <div class="metric-bar">
+              <div id="metricTimePaper" class="metric-bar-fill paper" style="background: #999;"></div>
+            </div>
+            <span id="metricTimePaperValue" class="metric-row-value">-</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-row-label">Plain</span>
+            <div class="metric-bar">
+              <div id="metricTimePlain" class="metric-bar-fill plain"></div>
+            </div>
+            <span id="metricTimePlainValue" class="metric-row-value">-</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-row-label">Smart</span>
+            <div class="metric-bar">
+              <div id="metricTimeSmart" class="metric-bar-fill smart"></div>
+            </div>
+            <span id="metricTimeSmartValue" class="metric-row-value">-</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-row-label">AI</span>
+            <div class="metric-bar">
+              <div id="metricTimeAi" class="metric-bar-fill ai"></div>
+            </div>
+            <span id="metricTimeAiValue" class="metric-row-value">-</span>
+          </div>
+        </div>
       </div>
 
       <!-- 2カラムレイアウト -->
@@ -235,8 +266,27 @@
                       <span class="stat-value highlight" id="summaryInputAi">-</span>
                     </div>
                   </div>
-                </div>
-              </div>
+                </div>                <div class="stat-card">
+                  <div class="stat-label">⏱️ 推定入力時間</div>
+                  <div class="stat-comparison">
+                    <div class="stat-item">
+                      <span class="stat-mode">紙の書類</span>
+                      <span class="stat-value" id="summaryTimePaper">-</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-mode">Plain</span>
+                      <span class="stat-value" id="summaryTimePlain">-</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-mode">Smart</span>
+                      <span class="stat-value" id="summaryTimeSmart">-</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-mode">AI</span>
+                      <span class="stat-value highlight" id="summaryTimeAi">-</span>
+                    </div>
+                  </div>
+                </div>              </div>
 
               <!-- 削減効果 -->
               <div class="reduction-highlight">
@@ -266,6 +316,15 @@
       <div class="domain-disclaimer">
         <p><strong>※ デモ前提について</strong></p>
         <p>本デモは制度・施設運用の単純化・誇張を含みます。実際の効果は法令・医療機関・保険者・自治体の体制により異なります。マイナンバーカードで一元管理できる範囲も各機関で異なります。</p>
+      </div>
+
+      <!-- 隠しポイントチャレンジ -->
+      <div id="hiddenPointChallenge" class="hidden-point-challenge" style="margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; border: 2px solid #f59e0b; display: none;">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1.2rem; color: #92400e;">🎁 隠しポイントチャレンジ</h3>
+        <p id="challengeDescription" style="margin-bottom: 1rem; color: #78350f;"></p>
+        <button id="unlockPointBtn" class="unlock-point-btn" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+          チャレンジを達成する
+        </button>
       </div>
     </div>
   </main>

@@ -11,6 +11,13 @@ let aiAnswers = {};
 let profile = {};
 let modeStats = { plain: {}, smart: {}, ai: {} }; // 各モードの統計
 
+// 時間推定定数（1フィールドあたりの秒数）
+const TIME_ESTIMATES = {
+  paper: 45,      // 紙の書類: 手書き、消しゴム、辞書参照、書き直し
+  electronic: 20, // 電子入力: タイピング（手入力フィールドのみ）
+  auto: 0         // 自動入力: 時間不要
+};
+
 /**
  * 初期化
  */
@@ -56,6 +63,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // コンテンツ描画
     renderContent();
+    
+    // 隠しポイントチャレンジの初期化
+    initHiddenPointChallenge();
     
   } catch (error) {
     console.error('Failed to load domain data:', error);
@@ -158,6 +168,11 @@ function handleChecklistChange(itemId) {
   const checkbox = document.getElementById(`check_${itemId}`);
   checklistState[itemId] = checkbox.checked;
   
+  // 履歴記録（隠しポイント用）
+  if (checkbox.checked) {
+    recordChecklistHistory(itemId);
+  }
+  
   // 統計再計算
   calculateAllModeStats();
   renderMetricsBar();
@@ -217,12 +232,23 @@ function calculateStatsForMode(mode) {
     totalRemoved += removed;
   });
   
+  // 時間推定を計算（分単位）
+  const totalFields = totalManual + totalAuto;
+  const paperTimeMinutes = Math.round(totalFields * TIME_ESTIMATES.paper / 60);
+  const electronicTimeMinutes = Math.round(totalManual * TIME_ESTIMATES.electronic / 60);
+  const timeSavedMinutes = paperTimeMinutes - electronicTimeMinutes;
+  const reductionRate = totalFields > 0 ? Math.round((totalAuto / totalFields) * 100) : 0;
+  
   return {
     totalDocs,
     totalInput: totalManual,
     totalManual,
     totalAuto,
-    totalRemoved
+    totalRemoved,
+    paperTime: paperTimeMinutes,
+    electronicTime: electronicTimeMinutes,
+    timeSaved: timeSavedMinutes,
+    reductionRate: reductionRate
   };
 }
 
@@ -268,29 +294,36 @@ function renderMetricsBar() {
   // 最大値を計算（スケール用）
   const maxDocs = Math.max(plainStats.totalDocs, smartStats.totalDocs, aiStats.totalDocs) || 1;
   const maxInput = Math.max(plainStats.totalInput, smartStats.totalInput, aiStats.totalInput) || 1;
+  const maxTime = plainStats.paperTime || 1;
   
   // 提出書類
-  updateMetricBar('metricDocsPlain', 'metricDocsPlainValue', plainStats.totalDocs, maxDocs);
-  updateMetricBar('metricDocsSmart', 'metricDocsSmartValue', smartStats.totalDocs, maxDocs);
-  updateMetricBar('metricDocsAi', 'metricDocsAiValue', aiStats.totalDocs, maxDocs);
+  updateMetricBar('metricDocsPlain', 'metricDocsPlainValue', plainStats.totalDocs, maxDocs, '件');
+  updateMetricBar('metricDocsSmart', 'metricDocsSmartValue', smartStats.totalDocs, maxDocs, '件');
+  updateMetricBar('metricDocsAi', 'metricDocsAiValue', aiStats.totalDocs, maxDocs, '件');
   
   // 入力項目
-  updateMetricBar('metricInputPlain', 'metricInputPlainValue', plainStats.totalInput, maxInput);
-  updateMetricBar('metricInputSmart', 'metricInputSmartValue', smartStats.totalInput, maxInput);
-  updateMetricBar('metricInputAi', 'metricInputAiValue', aiStats.totalInput, maxInput);
+  updateMetricBar('metricInputPlain', 'metricInputPlainValue', plainStats.totalInput, maxInput, '項目');
+  updateMetricBar('metricInputSmart', 'metricInputSmartValue', smartStats.totalInput, maxInput, '項目');
+  updateMetricBar('metricInputAi', 'metricInputAiValue', aiStats.totalInput, maxInput, '項目');
+  
+  // 推定時間
+  updateMetricBar('metricTimePaper', 'metricTimePaperValue', plainStats.paperTime, maxTime, '分');
+  updateMetricBar('metricTimePlain', 'metricTimePlainValue', plainStats.electronicTime, maxTime, '分');
+  updateMetricBar('metricTimeSmart', 'metricTimeSmartValue', smartStats.electronicTime, maxTime, '分');
+  updateMetricBar('metricTimeAi', 'metricTimeAiValue', aiStats.electronicTime, maxTime, '分');
 }
 
 /**
  * メトリクスバーを更新
  */
-function updateMetricBar(barId, valueId, value, maxValue) {
+function updateMetricBar(barId, valueId, value, maxValue, unit = '') {
   const barElement = document.getElementById(barId);
   const valueElement = document.getElementById(valueId);
   
   if (barElement && valueElement) {
     const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
     barElement.style.width = `${percentage}%`;
-    valueElement.textContent = value;
+    valueElement.textContent = unit ? `${value}${unit}` : value;
   }
 }
 
@@ -447,6 +480,12 @@ function renderSummaryMode() {
     document.getElementById('summaryInputPlain').textContent = plainStats.totalInput || 0;
     document.getElementById('summaryInputSmart').textContent = smartStats.totalInput || 0;
     document.getElementById('summaryInputAi').textContent = aiStats.totalInput || 0;
+    
+    // 時間データ
+    document.getElementById('summaryTimePaper').textContent = `${plainStats.paperTime || 0}分`;
+    document.getElementById('summaryTimePlain').textContent = `${plainStats.electronicTime || 0}分`;
+    document.getElementById('summaryTimeSmart').textContent = `${smartStats.electronicTime || 0}分`;
+    document.getElementById('summaryTimeAi').textContent = `${aiStats.electronicTime || 0}分`;
   }
   
   // 削減効果
@@ -510,3 +549,307 @@ function evaluateRequiredIf(condition) {
   // 例: "emergency" → checklistState.emergency === true
   return checklistState[condition] === true;
 }
+
+// ========================================
+// 隠しポイントシステム
+// ========================================
+
+/**
+ * 隠しポイントチャレンジの初期化
+ */
+function initHiddenPointChallenge() {
+  if (!currentDomain) return;
+  
+  // 既に獲得済みかチェック
+  const hiddenPoints = JSON.parse(localStorage.getItem('hiddenPoints') || '{}');
+  if (hiddenPoints[currentDomain.id]) {
+    return; // 既に獲得済みなら何もしない
+  }
+  
+  // チャレンジ説明を表示
+  const challenge = HIDDEN_POINT_CHALLENGES[currentDomain.id];
+  if (challenge) {
+    const challengeDiv = document.getElementById('hiddenPointChallenge');
+    const descriptionEl = document.getElementById('challengeDescription');
+    
+    if (challengeDiv && descriptionEl) {
+      descriptionEl.textContent = challenge.description;
+      challengeDiv.style.display = 'block';
+      challengeDiv.style.background = 'linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)';
+      challengeDiv.style.borderColor = '#818cf8';
+      
+      // ボタンを非表示（条件達成時に表示）
+      const btnEl = document.getElementById('unlockPointBtn');
+      if (btnEl) {
+        btnEl.style.display = 'none';
+      }
+    }
+  }
+  
+  // 初回チェック
+  checkHiddenPointChallenge();
+}
+
+/**
+ * 隠しポイントのチャレンジ条件を定義
+ */
+const HIDDEN_POINT_CHALLENGES = {
+  administration: {
+    description: '全てのモード（Plain/Smart/AI/Summary）を確認すると、隠しポイントを獲得できます',
+    checkCondition: () => {
+      const viewHistory = JSON.parse(localStorage.getItem('viewHistory_administration') || '{}');
+      return viewHistory.plain && viewHistory.smart && viewHistory.ai && viewHistory.summary;
+    }
+  },
+  medical: {
+    description: '緊急時と通常時の両方のチェックリストパターンを試すと、隠しポイントを獲得できます',
+    checkCondition: () => {
+      const checkedHistory = JSON.parse(localStorage.getItem('checkedHistory_medical') || '[]');
+      return checkedHistory.includes('emergency') && checkedHistory.length >= 3;
+    }
+  },
+  education: {
+    description: '3つ以上のチェックリスト項目を選択した状態でAIモードを確認すると、隠しポイントを獲得できます',
+    checkCondition: () => {
+      const checkedCount = Object.values(checklistState).filter(v => v).length;
+      const viewHistory = JSON.parse(localStorage.getItem('viewHistory_education') || '{}');
+      return checkedCount >= 3 && viewHistory.ai;
+    }
+  },
+  logistics: {
+    description: 'Smart と AI モードの違いを比較（両方確認）すると、隠しポイントを獲得できます',
+    checkCondition: () => {
+      const viewHistory = JSON.parse(localStorage.getItem('viewHistory_logistics') || '{}');
+      return viewHistory.smart && viewHistory.ai;
+    }
+  },
+  disaster: {
+    description: 'Summaryモードで4つのモードの効果を比較すると、隠しポイントを獲得できます',
+    checkCondition: () => {
+      const viewHistory = JSON.parse(localStorage.getItem('viewHistory_disaster') || '{}');
+      return viewHistory.summary;
+    }
+  }
+};
+
+/**
+ * 閲覧履歴を記録
+ */
+function recordModeView(mode) {
+  if (!currentDomain) return;
+  
+  const key = `viewHistory_${currentDomain.id}`;
+  const history = JSON.parse(localStorage.getItem(key) || '{}');
+  history[mode] = true;
+  localStorage.setItem(key, JSON.stringify(history));
+  
+  // チャレンジチェック
+  checkHiddenPointChallenge();
+}
+
+/**
+ * チェックリスト履歴を記録
+ */
+function recordChecklistHistory(itemId) {
+  if (!currentDomain) return;
+  
+  const key = `checkedHistory_${currentDomain.id}`;
+  const history = JSON.parse(localStorage.getItem(key) || '[]');
+  if (!history.includes(itemId)) {
+    history.push(itemId);
+    localStorage.setItem(key, JSON.stringify(history));
+  }
+  
+  // チャレンジチェック
+  checkHiddenPointChallenge();
+}
+
+/**
+ * 隠しポイントチャレンジをチェック
+ */
+function checkHiddenPointChallenge() {
+  if (!currentDomain) return;
+  
+  const challenge = HIDDEN_POINT_CHALLENGES[currentDomain.id];
+  if (!challenge) return;
+  
+  // 既に獲得済みかチェック
+  const hiddenPoints = JSON.parse(localStorage.getItem('hiddenPoints') || '{}');
+  if (hiddenPoints[currentDomain.id]) {
+    return; // 既に獲得済み
+  }
+  
+  // 条件達成チェック
+  if (challenge.checkCondition()) {
+    showHiddenPointChallenge();
+  }
+}
+
+/**
+ * 隠しポイントチャレンジUIを表示
+ */
+function showHiddenPointChallenge() {
+  const challengeDiv = document.getElementById('hiddenPointChallenge');
+  const descriptionEl = document.getElementById('challengeDescription');
+  const btnEl = document.getElementById('unlockPointBtn');
+  
+  if (!challengeDiv || !descriptionEl || !btnEl) return;
+  
+  const challenge = HIDDEN_POINT_CHALLENGES[currentDomain.id];
+  descriptionEl.textContent = '🎉 おめでとうございます！チャレンジ条件を達成しました。';
+  
+  // ボタンを表示
+  btnEl.style.display = 'inline-block';
+  
+  // スタイルを成功モードに変更
+  challengeDiv.style.background = 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)';
+  challengeDiv.style.borderColor = '#f59e0b';
+  challengeDiv.style.display = 'block';
+  
+  // スクロールして表示
+  challengeDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  
+  // ボタンイベント
+  btnEl.onclick = () => {
+    unlockHiddenPoint();
+  };
+}
+
+/**
+ * 隠しポイントを獲得
+ */
+function unlockHiddenPoint() {
+  if (!currentDomain) return;
+  
+  const hiddenPoints = JSON.parse(localStorage.getItem('hiddenPoints') || '{}');
+  hiddenPoints[currentDomain.id] = true;
+  localStorage.setItem('hiddenPoints', JSON.stringify(hiddenPoints));
+  
+  // 通知表示
+  showPointNotification(`🎁 +1pt 獲得！\n${currentDomain.name}の隠しポイントをアンロックしました`);
+  
+  // チャレンジUIを非表示
+  const challengeDiv = document.getElementById('hiddenPointChallenge');
+  if (challengeDiv) {
+    challengeDiv.style.display = 'none';
+  }
+  
+  // 完全制覇チェック
+  checkCompleteBonus();
+}
+
+/**
+ * 完全制覇ボーナスをチェック
+ */
+function checkCompleteBonus() {
+  const hiddenPoints = JSON.parse(localStorage.getItem('hiddenPoints') || '{}');
+  const allDomains = ['administration', 'medical', 'education', 'logistics', 'disaster'];
+  
+  const allUnlocked = allDomains.every(domain => hiddenPoints[domain]);
+  
+  if (allUnlocked && !hiddenPoints.complete) {
+    hiddenPoints.complete = true;
+    localStorage.setItem('hiddenPoints', JSON.stringify(hiddenPoints));
+    showPointNotification('🏆 完全制覇ボーナス！ +1pt\n全分野の隠しポイントを獲得しました');
+  }
+}
+
+/**
+ * ポイント獲得通知を表示
+ */
+function showPointNotification(message) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2rem 3rem;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 3px solid #f59e0b;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    z-index: 10000;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #92400e;
+    text-align: center;
+    animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    white-space: pre-line;
+  `;
+  notification.textContent = message;
+  
+  // 背景オーバーレイ
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+  `;
+  
+  document.body.appendChild(overlay);
+  document.body.appendChild(notification);
+  
+  // 3秒後に消す
+  setTimeout(() => {
+    notification.style.animation = 'popOut 0.3s ease';
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => {
+      notification.remove();
+      overlay.remove();
+    }, 300);
+  }, 3000);
+  
+  // クリックで即座に消す
+  overlay.onclick = () => {
+    notification.remove();
+    overlay.remove();
+  };
+}
+
+// アニメーションのCSSを追加
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes popIn {
+    from {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes popOut {
+    from {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    to {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+    }
+  }
+  
+  .unlock-point-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+  }
+`;
+document.head.appendChild(style);
+
+/**
+ * モード切替時に閲覧履歴を記録（既存のswitchMode関数を拡張）
+ */
+const originalSwitchMode = window.switchMode;
+window.switchMode = function(mode) {
+  originalSwitchMode.call(this, mode);
+  recordModeView(mode);
+};
+
