@@ -5,7 +5,9 @@
 
 // グローバル状態
 let currentDomain = null;
+let currentDomainOriginal = null; // オリジナルの完全データを保持
 let currentMode = 'plain';
+let experienceMode = 'game'; // 'game' または 'demo'
 let checklistState = {};
 let aiAnswers = {};
 let profile = {};
@@ -39,13 +41,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const response = await fetch('assets/data/domains.json');
     const domainsData = await response.json();
-    currentDomain = domainsData.domains.find(d => d.id === domainId);
+    currentDomainOriginal = domainsData.domains.find(d => d.id === domainId);
     
-    if (!currentDomain) {
+    if (!currentDomainOriginal) {
       alert('指定された分野が見つかりません');
       navigate('home.html');
       return;
     }
+    
+    // 初期は完全データをコピー
+    currentDomain = JSON.parse(JSON.stringify(currentDomainOriginal));
     
     // 初期モードを設定（URLパラメータ > デフォルト）
     currentMode = params.mode || domainsData.meta.defaultMode || 'plain';
@@ -87,6 +92,14 @@ function initUI() {
   document.getElementById('backToHub').addEventListener('click', (e) => {
     e.preventDefault();
     navigate('home.html');
+  });
+  
+  // 体験モード切り替えボタン
+  document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newMode = btn.dataset.experience;
+      switchExperienceMode(newMode);
+    });
   });
   
   // モード切替ボタン
@@ -159,6 +172,94 @@ function renderChecklist() {
       <label for="check_${item.id}">${item.label}</label>
     </div>
   `).join('');
+}
+
+/**
+ * 体験モード切り替え
+ */
+function switchExperienceMode(mode) {
+  if (experienceMode === mode) return;
+  
+  experienceMode = mode;
+  
+  // ボタンのアクティブ状態を更新
+  document.querySelectorAll('.toggle-btn').forEach(btn => {
+    if (btn.dataset.experience === mode) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+  
+  // 説明文の切り替え
+  document.querySelectorAll('.description-content').forEach(desc => {
+    desc.classList.remove('active');
+  });
+  const activeDesc = document.getElementById(mode === 'game' ? 'gameDescription' : 'demoDescription');
+  if (activeDesc) activeDesc.classList.add('active');
+  
+  // データを切り替え
+  if (mode === 'game') {
+    // ゲームモード: データを簡略化
+    currentDomain = createSimplifiedDomain(currentDomainOriginal);
+  } else {
+    // デモモード: 完全なデータ
+    currentDomain = JSON.parse(JSON.stringify(currentDomainOriginal));
+  }
+  
+  // チェックリスト状態をリセット
+  checklistState = {};
+  
+  // 再レンダリング
+  renderChecklist();
+  calculateAllModeStats();
+  renderMetricsBar();
+  renderContent();
+  
+  // 通知表示
+  const modeLabel = mode === 'game' ? '🎮 ゲームモード' : '📊 デモモード';
+  showNotification(`${modeLabel}に切り替えました`, 'info');
+}
+
+/**
+ * 簡略化されたドメインデータを作成
+ */
+function createSimplifiedDomain(originalDomain) {
+  const simplified = JSON.parse(JSON.stringify(originalDomain));
+  
+  // チェックリストを3-5項目に削減
+  if (simplified.checklist && simplified.checklist.length > 5) {
+    simplified.checklist = simplified.checklist.slice(0, 5);
+  }
+  
+  // 書類を3-5件に削減
+  if (simplified.documents && simplified.documents.base) {
+    const reducedDocs = simplified.documents.base.slice(0, 5);
+    
+    // 各書類の入力フィールドも削減（3-5項目程度）
+    reducedDocs.forEach(doc => {
+      if (doc.inputFields && doc.inputFields.length > 5) {
+        // 各ソースタイプからバランスよく残す
+        const bySource = {};
+        doc.inputFields.forEach(field => {
+          if (!bySource[field.source]) bySource[field.source] = [];
+          bySource[field.source].push(field);
+        });
+        
+        // 各ソースから1-2項目ずつ取る
+        const balanced = [];
+        Object.values(bySource).forEach(fields => {
+          balanced.push(...fields.slice(0, 2));
+        });
+        
+        doc.inputFields = balanced.slice(0, 5);
+      }
+    });
+    
+    simplified.documents.base = reducedDocs;
+  }
+  
+  return simplified;
 }
 
 /**

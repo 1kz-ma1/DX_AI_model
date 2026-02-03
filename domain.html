@@ -6,6 +6,7 @@
   <title>分野体験 - DX×AI アプリ</title>
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/domain.css">
+  <link rel="stylesheet" href="assets/css/domain-responsive.css">
 </head>
 <body>
   <header class="domain-header">
@@ -23,6 +24,28 @@
 
   <main class="domain-main">
     <div class="container">
+      <!-- 体験モード選択 -->
+      <div class="experience-mode-selector">
+        <div class="mode-toggle">
+          <button class="toggle-btn active" data-experience="game">
+            🎮 ゲームモード
+            <span class="mode-hint">簡潔で分かりやすい</span>
+          </button>
+          <button class="toggle-btn" data-experience="demo">
+            📊 デモモード
+            <span class="mode-hint">実際のスケール感</span>
+          </button>
+        </div>
+        <div class="mode-description">
+          <div class="description-content active" id="gameDescription">
+            <strong>🎮 ゲームモード：</strong> 簡略化されたデータで、DX・AIの効果を分かりやすく体験できます。ゲーム感覚で隠しポイントを獲得しましょう。
+          </div>
+          <div class="description-content" id="demoDescription">
+            <strong>📊 デモモード：</strong> 実際の規模に近いデータ量で、リアルなDX・AI導入の効果を体験できます。より詳細な分析が可能です。
+          </div>
+        </div>
+      </div>
+
       <!-- モード切替 -->
       <nav class="mode-switcher" role="tablist" aria-label="DXステージ選択">
         <button class="mode-btn active" data-mode="plain" role="tab" aria-selected="true">

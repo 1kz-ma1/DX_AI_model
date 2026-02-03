@@ -1,0 +1,26 @@
+/* =====================
+   体験モード切り替えのレスポンシブ対応
+   ===================== */
+@media (max-width: 768px) {
+  .mode-toggle {
+    grid-template-columns: 1fr;
+  }
+  
+  .toggle-btn {
+    padding: 0.875rem;
+    font-size: 1rem;
+  }
+  
+  .experience-mode-selector {
+    padding: 1rem;
+  }
+  
+  .mode-description {
+    min-height: 80px;
+  }
+  
+  .description-content {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+}
