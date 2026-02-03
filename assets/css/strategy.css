@@ -145,6 +145,27 @@
   color: #1f2937;
 }
 
+.mynumber-warning-box {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mynumber-warning-box strong {
+  display: block;
+  color: #92400e;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.mynumber-warning-box p {
+  margin: 0;
+  color: #78350f;
+  line-height: 1.6;
+}
+
 .mynumber-status {
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -538,6 +559,171 @@
 }
 
 /* ========================================
+   ヒストグラムセクション
+   ======================================== */
+.histogram-section {
+  margin-bottom: 2rem;
+}
+
+.histogram-section h2 {
+  font-size: 1.75rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.section-description {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.histogram-container {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.histogram-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-right: 1rem;
+  border-right: 2px solid #e5e7eb;
+  min-width: 60px;
+}
+
+.y-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 600;
+  text-align: right;
+}
+
+.histogram-chart {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  height: 300px;
+  position: relative;
+  padding: 0 1rem;
+}
+
+.histogram-bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, #a78bfa 0%, #8b5cf6 100%);
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 0.5rem;
+  box-shadow: 0 -4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.bar-fill.plain {
+  background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+  box-shadow: 0 -4px 12px rgba(100, 116, 139, 0.3);
+}
+
+.bar-fill.smart {
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+  box-shadow: 0 -4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.bar-fill.ai {
+  background: linear-gradient(180deg, #a78bfa 0%, #8b5cf6 100%);
+  box-shadow: 0 -4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.bar-fill.ai.with-mynumber {
+  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+  box-shadow: 0 -4px 12px rgba(245, 158, 11, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 -4px 12px rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 -4px 20px rgba(245, 158, 11, 0.6);
+  }
+}
+
+.bar-value {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.bar-label {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.histogram-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.legend-color {
+  width: 24px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.legend-color.plain {
+  background: linear-gradient(90deg, #94a3b8 0%, #64748b 100%);
+}
+
+.legend-color.smart {
+  background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%);
+}
+
+.legend-color.ai {
+  background: linear-gradient(90deg, #a78bfa 0%, #8b5cf6 100%);
+}
+
+.legend-color.mynumber {
+  background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+/* ========================================
    フッター
    ======================================== */
 .page-footer {
@@ -565,5 +751,30 @@
   
   .points-value {
     font-size: 2.5rem;
+  }
+  
+  .histogram-container {
+    padding: 1rem;
+  }
+  
+  .histogram-chart {
+    gap: 0.75rem;
+    height: 250px;
+  }
+  
+  .bar-value {
+    font-size: 0.75rem;
+  }
+  
+  .bar-label {
+    font-size: 0.75rem;
+  }
+  
+  .histogram-legend {
+    gap: 1rem;
+  }
+  
+  .legend-item {
+    font-size: 0.8rem;
   }
 }

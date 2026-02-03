@@ -201,6 +201,10 @@ function showMynumberDetail() {
   const message = `
 💳 マイナンバーシステムについて
 
+【重要】マイナンバーは基盤インフラです
+マイナンバー単体では入力削減効果はありません。
+各分野をAI化して初めて効果を発揮します。
+
 【導入効果】
 ・全分野でmynumberソースの項目が自動化
 ・AI化の削減率が約60% → 93%に向上
@@ -217,8 +221,11 @@ function showMynumberDetail() {
 複数分野をAI化する場合は非常に効率的です。
 
 例: 3分野をAI化する場合
-- 未導入: 削減率60% × 3分野
-- 導入: 削減率93% × 3分野（+5ptで約2倍の効果）
+- 未導入: 削減率60% × 3分野 = 時間削減 約150分
+- 導入: 削減率93% × 3分野 = 時間削減 約300分
+  (+5ptで2倍の効果！)
+
+⚠️ 注意: マイナンバーのみ導入しても効果なし
   `;
   
   alert(message);
@@ -329,6 +336,9 @@ function calculateAndUpdate() {
   // 各分野の効果を計算
   updateDomainEffects();
   
+  // ヒストグラム更新
+  updateHistogram();
+  
   // 総合効果を計算
   updateSummary(usedPoints, remainingPoints);
   
@@ -413,6 +423,64 @@ function updateMynumberWarnings() {
     
     if (warning) {
       warning.style.display = (mode === 'ai' && !strategyState.mynumberEnabled) ? 'block' : 'none';
+    }
+  });
+}
+
+/**
+ * ヒストグラムを更新
+ */
+function updateHistogram() {
+  const maxTime = 120; // 最大値を120分に設定
+  
+  Object.keys(strategyState.domainModes).forEach(domain => {
+    const mode = strategyState.domainModes[domain];
+    const stats = DOMAIN_STATS[domain];
+    
+    // 紙の場合の時間（基準）
+    const paperTime = stats.paperTime;
+    
+    // 削減率を計算
+    let reductionRate = 0;
+    if (mode === 'plain') {
+      reductionRate = 0;
+    } else if (mode === 'smart') {
+      reductionRate = 0.35;
+    } else if (mode === 'ai') {
+      reductionRate = strategyState.mynumberEnabled ? 0.93 : 0.60;
+    }
+    
+    // 削減時間を計算（紙の時間 - 電子化後の時間）
+    const manualFields = Math.round(stats.totalFields * (1 - reductionRate));
+    const electronicTime = Math.round(manualFields * 20 / 60);
+    const timeSaved = paperTime - electronicTime;
+    
+    // バーの高さを計算（削減時間が大きいほど高い）
+    const heightPercent = Math.min((timeSaved / maxTime) * 100, 100);
+    
+    // バー要素を取得
+    const barEl = document.getElementById(`bar-${domain}`);
+    if (barEl) {
+      barEl.style.height = `${heightPercent}%`;
+      
+      // バーの色を設定
+      barEl.classList.remove('plain', 'smart', 'ai', 'with-mynumber');
+      if (mode === 'plain') {
+        barEl.classList.add('plain');
+      } else if (mode === 'smart') {
+        barEl.classList.add('smart');
+      } else if (mode === 'ai') {
+        barEl.classList.add('ai');
+        if (strategyState.mynumberEnabled) {
+          barEl.classList.add('with-mynumber');
+        }
+      }
+      
+      // 値を更新
+      const valueEl = barEl.querySelector('.bar-value');
+      if (valueEl) {
+        valueEl.textContent = `${timeSaved}分`;
+      }
     }
   });
 }

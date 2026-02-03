@@ -85,6 +85,11 @@
             </div>
           </div>
           
+          <div class="mynumber-warning-box">
+            <strong>⚠️ 重要な注意</strong>
+            <p>マイナンバーシステムは<strong>基盤インフラ</strong>です。各分野を<strong>AI化</strong>して初めて効果を発揮します。マイナンバー単体では入力削減効果はありません。</p>
+          </div>
+          
           <div class="mynumber-actions">
             <button class="btn-primary" id="enableMynumberBtn" disabled>
               💳 導入する (5pt)
@@ -93,6 +98,73 @@
               ℹ️ 詳細を見る
             </button>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 効率値ヒストグラム -->
+    <section class="histogram-section">
+      <h2>📊 分野別効率値</h2>
+      <p class="section-description">各分野の効率値（時間削減量）をリアルタイム表示。投資によって全体が向上します。</p>
+      
+      <div id="histogramContainer" class="histogram-container">
+        <div class="histogram-y-axis">
+          <div class="y-label">100分</div>
+          <div class="y-label">75分</div>
+          <div class="y-label">50分</div>
+          <div class="y-label">25分</div>
+          <div class="y-label">0分</div>
+        </div>
+        <div class="histogram-chart">
+          <div class="histogram-bar" data-domain="administration">
+            <div class="bar-fill" id="bar-administration">
+              <span class="bar-value">0分</span>
+            </div>
+            <div class="bar-label">🏛️<br>行政</div>
+          </div>
+          <div class="histogram-bar" data-domain="medical">
+            <div class="bar-fill" id="bar-medical">
+              <span class="bar-value">0分</span>
+            </div>
+            <div class="bar-label">🏥<br>医療</div>
+          </div>
+          <div class="histogram-bar" data-domain="education">
+            <div class="bar-fill" id="bar-education">
+              <span class="bar-value">0分</span>
+            </div>
+            <div class="bar-label">🎓<br>教育</div>
+          </div>
+          <div class="histogram-bar" data-domain="logistics">
+            <div class="bar-fill" id="bar-logistics">
+              <span class="bar-value">0分</span>
+            </div>
+            <div class="bar-label">📦<br>物流</div>
+          </div>
+          <div class="histogram-bar" data-domain="disaster">
+            <div class="bar-fill" id="bar-disaster">
+              <span class="bar-value">0分</span>
+            </div>
+            <div class="bar-label">🚨<br>災害</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="histogram-legend">
+        <div class="legend-item">
+          <span class="legend-color plain"></span>
+          <span>Plain（電子化のみ）</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color smart"></span>
+          <span>Smart（工夫で連携）</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color ai"></span>
+          <span>AI（AI活用）</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color mynumber"></span>
+          <span>＋マイナンバー効果</span>
         </div>
       </div>
     </section>
