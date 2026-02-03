@@ -103,6 +103,8 @@ function loadSelectedCharacter() {
     const character = charactersData.characters.find(c => c.id === profile.character);
     if (character) {
       selectedCharacter = character;
+      // キャラクター固有のデータでDOMAIN_STATSを更新
+      updateDomainStatsFromCharacter(character);
       displayCharacterInfo();
       addPriorityBadgesToDomains();
     }
@@ -110,6 +112,27 @@ function loadSelectedCharacter() {
     // キャラクター未選択の場合は選択画面へ
     showCharacterRequiredMessage();
   }
+}
+
+/**
+ * キャラクター固有のデータでDOMAIN_STATSを更新
+ */
+function updateDomainStatsFromCharacter(character) {
+  if (!character || !character.domains) return;
+  
+  Object.keys(character.domains).forEach(domainId => {
+    const domainData = character.domains[domainId];
+    if (domainData.fields && domainData.documents) {
+      // totalFieldsを更新
+      DOMAIN_STATS[domainId].totalFields = domainData.fields;
+      
+      // paperTime（紙の場合の時間）を計算
+      // フィールド数 × 45秒（手書き時間） / 60 = 分単位
+      DOMAIN_STATS[domainId].paperTime = Math.round(domainData.fields * 45 / 60);
+    }
+  });
+  
+  console.log('DOMAIN_STATS updated with character data:', DOMAIN_STATS);
 }
 
 /**
@@ -854,7 +877,7 @@ function handleNext() {
   // 戦略を保存
   handleSave();
   
-  // ホーム画面（ドメインハブ）へ遷移
+  // ホーム画面（分野一覧）へ遷移
   navigate('home.html');
 }
 

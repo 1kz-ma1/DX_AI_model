@@ -1,9 +1,16 @@
-// home.js - ハブのレンダリング（リング/グリッド）
+// home.js - 分野選択画面のレンダリング（リング/グリッド）
 
 let charactersData = null;
+let experienceMode = 'game'; // URLパラメータから取得
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    // URLパラメータからexperienceModeを取得
+    const params = getParams();
+    if (params.experience === 'demo') {
+      experienceMode = 'demo';
+    }
+    
     // domains.jsonとcharacters.jsonを読み込み
     const [domainsResponse, charactersResponse] = await Promise.all([
       fetch('assets/data/domains.json'),
@@ -92,7 +99,7 @@ function renderDomainHub(domains) {
       
       centerNode.addEventListener('click', (e) => {
         e.preventDefault();
-        navigate('domain.html', { d: admin.id, mode: 'plain' });
+        navigate('domain.html', { d: admin.id, mode: 'plain', experience: experienceMode });
       });
       
       hub.appendChild(centerNode);
@@ -123,7 +130,7 @@ function renderDomainHub(domains) {
       
       node.addEventListener('click', (e) => {
         e.preventDefault();
-        navigate('domain.html', { d: domain.id, mode: 'plain' });
+        navigate('domain.html', { d: domain.id, mode: 'plain', experience: experienceMode });
       });
       
       hub.appendChild(node);
@@ -160,7 +167,7 @@ function createDomainNode(domain, isCenter) {
   
   node.addEventListener('click', (e) => {
     e.preventDefault();
-    navigate('domain.html', { d: domain.id, mode: 'plain' });
+    navigate('domain.html', { d: domain.id, mode: 'plain', experience: experienceMode });
   });
   
   return node;

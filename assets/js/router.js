@@ -47,7 +47,7 @@ function navigateToDomain(domainId, mode = 'plain') {
 }
 
 /**
- * ハブページへ戻る
+ * 分野一覧ページへ戻る
  */
 function navigateToHub() {
   navigate('home.html');

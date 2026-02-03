@@ -7,7 +7,7 @@
 let currentDomain = null;
 let currentDomainOriginal = null; // オリジナルの完全データを保持
 let currentMode = 'plain';
-let experienceMode = 'game'; // 'game' または 'demo'
+let experienceMode = 'game'; // 'game' または 'demo' - 初期化時にURLパラメータで上書き
 let checklistState = {};
 let aiAnswers = {};
 let profile = {};
@@ -27,9 +27,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   // プロファイル読み込み
   profile = mergeWithProfile();
   
-  // URLパラメータから分野IDを取得
+  // URLパラメータから分野IDとexperienceModeを取得
   const params = getParams();
   const domainId = params.d;
+  
+  // experienceModeをURLパラメータから取得（デフォルトは'game'）
+  if (params.experience === 'demo') {
+    experienceMode = 'demo';
+  } else {
+    experienceMode = 'game';
+  }
   
   if (!domainId) {
     alert('分野が指定されていません');
@@ -49,8 +56,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
     
-    // 初期は完全データをコピー
-    currentDomain = JSON.parse(JSON.stringify(currentDomainOriginal));
+    // experienceModeに応じてデータを設定
+    if (experienceMode === 'demo') {
+      // デモモード: 完全データを使用
+      currentDomain = JSON.parse(JSON.stringify(currentDomainOriginal));
+    } else {
+      // ゲームモード: 簡略化データを使用
+      currentDomain = createSimplifiedDomain(currentDomainOriginal);
+    }
     
     // 初期モードを設定（URLパラメータ > デフォルト）
     currentMode = params.mode || domainsData.meta.defaultMode || 'plain';
@@ -87,7 +100,7 @@ function initUI() {
   document.getElementById('domainName').textContent = currentDomain.name;
   document.getElementById('domainIntro').textContent = currentDomain.description || '';
   
-  // ハブに戻るボタン
+  // 分野一覧に戻るボタン
   document.getElementById('backToHub').addEventListener('click', (e) => {
     e.preventDefault();
     navigate('home.html');
