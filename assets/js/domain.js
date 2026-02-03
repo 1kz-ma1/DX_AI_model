@@ -100,12 +100,15 @@ function initUI() {
   document.getElementById('domainName').textContent = currentDomain.name;
   document.getElementById('domainIntro').textContent = currentDomain.description || '';
   
-  // デモモード時は体験モード選択セクションを非表示
+  // デモモード時は体験モード選択セクション全体を非表示
   const experienceModeSelector = document.getElementById('experienceModeSelector');
   if (experienceMode === 'demo') {
     if (experienceModeSelector) {
       experienceModeSelector.style.display = 'none';
     }
+    // 体験モード切り替えボタンも全削除
+    document.querySelectorAll('.toggle-btn').forEach(btn => btn.style.display = 'none');
+    return;
   }
   
   // 分野一覧に戻るボタン

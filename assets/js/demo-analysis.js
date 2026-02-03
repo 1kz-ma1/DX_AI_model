@@ -115,13 +115,16 @@ function updateAnalysis() {
 
 /**
  * メトリクス計算
+ * 行政DXの波及効果を正確に反映
  */
 function calculateMetrics() {
   const costPerHour = domainsData.meta.demoMetaInfo?.costPerHour || 3000;
   
   let totalDailyVolume = 0;
   let totalProcessedAfter = 0;
+  let totalTimeBefore = 0;
   let totalTimeAfter = 0;
+  let totalCostBefore = 0;
   let totalCostAfter = 0;
   const domainMetrics = {};
 
@@ -131,65 +134,83 @@ function calculateMetrics() {
     if (!metrics) return;
 
     const dailyVolume = metrics.dailyVolume;
-    const reductionRate = metrics.reductionRates[currentMode] || 0;
-    const timeReductionRate = metrics.timeReductionRates[currentMode] || 0;
-    const costReductionRate = metrics.costReductionPercentage[currentMode] || 0;
+    let reductionRate = metrics.reductionRates[currentMode] || 0;
+    let timeReductionRate = metrics.timeReductionRates[currentMode] || 0;
+    let costReductionRate = metrics.costReductionPercentage[currentMode] || 0;
+    const adminDependency = metrics.administrativeDependency || 0;
 
+    // 行政DXの波及効果を適用
+    // 行政がPlainの場合、行政に依存している分野は効率が低下
+    if (domain.id !== 'administration' && currentMode !== 'ai') {
+      const adminDegradation = adminDependency * 0.3; // 最大30%の効率低下
+      reductionRate = Math.max(0, reductionRate - (reductionRate * adminDegradation));
+      timeReductionRate = Math.max(0, timeReductionRate - (timeReductionRate * adminDegradation));
+      costReductionRate = Math.max(0, costReductionRate - (costReductionRate * adminDegradation));
+    }
+
+    const processedBefore = dailyVolume;
     const processedAfter = Math.round(dailyVolume * (1 - reductionRate));
-    const timeAfter = Math.round(metrics.averageTimePerCase * processedAfter * (1 - timeReductionRate) / 60);
-    const costAfter = Math.round(timeAfter * costPerHour * (1 - costReductionRate));
+    const timeBefore = Math.round(metrics.averageTimePerCase * processedBefore / 60);
+    const timeAfter = Math.round(metrics.averageTimePerCase * processedBefore * (1 - timeReductionRate) / 60);
+    const costBefore = Math.round(timeBefore * costPerHour * 21 / 1000) * 1000; // 月額ベース
+    const costAfter = Math.round(timeAfter * costPerHour * 21 / 1000) * 1000;
 
     totalDailyVolume += dailyVolume;
     totalProcessedAfter += processedAfter;
+    totalTimeBefore += timeBefore;
     totalTimeAfter += timeAfter;
+    totalCostBefore += costBefore;
     totalCostAfter += costAfter;
-
-    // 行政への依存度による補正（行政がAIレベルにない場合は効率が落ちる）
-    const adminDependency = metrics.administrativeDependency || 0;
-    let adjustedReduction = reductionRate;
-
-    // 行政がPlain/Smartレベルの場合、この分野の効率も低下
-    if (currentMode === 'smart' || currentMode === 'plain') {
-      // 行政がAIレベルじゃない場合の補正
-      if (currentMode === 'plain') {
-        adjustedReduction = reductionRate * (1 - adminDependency * 0.5);
-      }
-    }
 
     domainMetrics[domain.id] = {
       name: domain.name,
       emoji: domain.emoji,
       dailyVolume,
-      reductionRate: adjustedReduction,
-      processedBefore: dailyVolume,
-      processedAfter: Math.round(dailyVolume * (1 - adjustedReduction)),
-      timePerCase: metrics.averageTimePerCase,
+      reductionRate,
+      processedBefore,
+      processedAfter,
+      timeBefore,
+      timeAfter,
+      costBefore,
+      costAfter,
       timeReductionRate,
       costReductionRate,
-      administrativeDependency: adminDependency,
+      administrativeDependency,
       impactOnOtherDomains: metrics.impactOnOtherDomains || {}
     };
   });
 
-  // 行政DXの波及効果を計算
-  const adminMetrics = domainMetrics['administration'];
-  let adminImpactAdjustment = 0;
-  if (adminMetrics && currentMode === 'ai') {
-    // 行政がAI導入されている場合、他分野の効率が向上
-    adminImpactAdjustment = 0.1; // 最大10%の追加効率化
-  } else if (adminMetrics && currentMode === 'plain') {
-    // 行政がPlain状態の場合、他分野の効率が低下
-    adminImpactAdjustment = -0.15; // 最大15%の効率低下
+  // 全体の削減率計算
+  const totalReductionRate = 1 - (totalProcessedAfter / totalDailyVolume);
+  const totalTimeSaving = totalTimeBefore - totalTimeAfter;
+  const totalCostSaving = totalCostBefore - totalCostAfter;
+
+  // 行政DXの波及効果メッセージ
+  let adminImpactMessage = '';
+  const adminDependentDomains = Object.entries(domainMetrics)
+    .filter(([id, m]) => id !== 'administration' && m.administrativeDependency > 0.5)
+    .map(([id, m]) => m.name);
+
+  if (currentMode === 'ai') {
+    adminImpactMessage = `✅ 行政DXがAIレベルのため、${adminDependentDomains.join('・')}の効率が最大化されています`;
+  } else if (currentMode === 'plain') {
+    adminImpactMessage = `⚠️ 行政DXがPlainのため、${adminDependentDomains.join('・')}の効率が制限されています`;
+  } else {
+    adminImpactMessage = `→ 行政DXが中程度のため、各分野の効率向上に部分的な制約があります`;
   }
 
   return {
     currentMode,
     totalDailyVolume,
-    totalProcessedAfter,
+    totalReductionRate,
+    totalTimeBefore,
     totalTimeAfter,
+    totalTimeSaving,
+    totalCostBefore,
     totalCostAfter,
+    totalCostSaving,
     domainMetrics,
-    adminImpactAdjustment,
+    adminImpactMessage,
     costPerHour
   };
 }
@@ -198,35 +219,29 @@ function calculateMetrics() {
  * メトリクス表示更新
  */
 function updateMetricsDisplay(metrics) {
-  const totalReduction = 1 - (metrics.totalProcessedAfter / metrics.totalDailyVolume);
-  const reductionPercentage = Math.round(totalReduction * 100);
-  
-  const totalTimeHours = Math.round(metrics.totalTimeAfter / 60);
-  const yearlyTimeSaving = Math.round(totalTimeHours * 250 / 8); // 営業日ベース
-
-  const monthlyCost = Math.round(metrics.totalCostAfter / 20); // 営業日ベース月換算
-
-  document.getElementById('reductionPercentage').textContent = `${reductionPercentage}%`;
+  // 流通件数削減率
+  const reductionPercent = Math.round(metrics.totalReductionRate * 100);
+  document.getElementById('reductionPercentage').textContent = `${reductionPercent}%`;
   document.getElementById('reductionDetail').textContent = 
-    `${metrics.totalDailyVolume.toLocaleString()} → ${metrics.totalProcessedAfter.toLocaleString()} 件`;
+    `${metrics.totalDailyVolume.toLocaleString()}件 → ${(metrics.totalDailyVolume - Math.round(metrics.totalDailyVolume * metrics.totalReductionRate)).toLocaleString()}件`;
 
-  document.getElementById('timeSaving').textContent = `${totalTimeHours}時間`;
+  // 時間削減（年間）
+  const yearlyTimeSaving = Math.round(metrics.totalTimeSaving * 250 / 8); // 営業日ベース
+  document.getElementById('timeSaving').textContent = `${yearlyTimeSaving}日分`;
   document.getElementById('timeSavingDetail').textContent = 
-    `年間 ${yearlyTimeSaving} 日分`;
+    `削減: ${metrics.totalTimeBefore.toLocaleString()}h → ${metrics.totalTimeAfter.toLocaleString()}h`;
 
+  // コスト削減（月額）
+  const monthlyCostBefore = Math.round(metrics.totalCostBefore / 21); // 営業日で月換算
+  const monthlyCostAfter = Math.round(metrics.totalCostAfter / 21);
+  const monthlySaving = monthlyCostBefore - monthlyCostAfter;
   document.getElementById('costSaving').textContent = 
-    `￥${monthlyCost.toLocaleString()}`;
-  document.getElementById('costSavingDetail').textContent = '月額削減';
+    `￥${monthlySaving.toLocaleString()}`;
+  document.getElementById('costSavingDetail').textContent = 
+    `月額削減 (￥${monthlyCostBefore.toLocaleString()} → ￥${monthlyCostAfter.toLocaleString()})`;
 
   // 行政DXの波及効果
-  const adminImpactPercent = Math.round(metrics.adminImpactAdjustment * 100);
-  const adminImpactSign = adminImpactPercent >= 0 ? '+' : '';
-  document.getElementById('adminImpact').textContent = 
-    `${adminImpactSign}${adminImpactPercent}%`;
-  document.getElementById('adminImpactDetail').textContent = 
-    metrics.currentMode === 'ai' ? '行政DX全導入による波及効果' :
-    metrics.currentMode === 'plain' ? '行政DX未実施による悪影響' :
-    '部分的な行政DX効果';
+  document.getElementById('adminImpact').textContent = metrics.adminImpactMessage;
 }
 
 /**
@@ -237,35 +252,31 @@ function updateCharts(metrics) {
   const domainNames = domainIds.map(id => metrics.domainMetrics[id].name);
   const domainEmojis = domainIds.map(id => metrics.domainMetrics[id].emoji);
 
-  // 処理件数グラフ
-  const volumeData = domainIds.map(id => ({
-    before: metrics.domainMetrics[id].processedBefore,
-    after: metrics.domainMetrics[id].processedAfter
-  }));
-
-  updateVolumeChart(domainNames, domainEmojis, volumeData);
-
-  // 時間削減グラフ
-  const timeData = domainIds.map(id => {
-    const metric = metrics.domainMetrics[id];
-    const timeBefore = Math.round(metric.timePerCase * metric.processedBefore / 60);
-    const timeAfter = Math.round(metric.timePerCase * metric.processedAfter / 60);
-    return { before: timeBefore, after: timeAfter };
+  // 処理件数削減率グラフ
+  const volumeReductionData = domainIds.map(id => {
+    const m = metrics.domainMetrics[id];
+    return Math.round(m.reductionRate * 100);
   });
 
-  updateTimeChart(domainNames, domainEmojis, timeData);
+  updateVolumeChart(domainNames, domainEmojis, volumeReductionData);
+
+  // 時間削減率グラフ
+  const timeReductionData = domainIds.map(id => {
+    const m = metrics.domainMetrics[id];
+    return Math.round(m.timeReductionRate * 100);
+  });
+
+  updateTimeChart(domainNames, domainEmojis, timeReductionData);
 }
 
 /**
- * 処理件数グラフ更新
+ * 処理件数削減率グラフ更新
  */
-function updateVolumeChart(labels, emojis, data) {
+function updateVolumeChart(labels, emojis, reductionPercentages) {
   const ctx = document.getElementById('volumeChart')?.getContext('2d');
   if (!ctx) return;
 
   const chartLabels = labels.map((label, i) => `${emojis[i]} ${label}`);
-  const beforeData = data.map(d => d.before);
-  const afterData = data.map(d => d.after);
 
   if (volumeChart) {
     volumeChart.destroy();
@@ -277,15 +288,8 @@ function updateVolumeChart(labels, emojis, data) {
       labels: chartLabels,
       datasets: [
         {
-          label: '削減前',
-          data: beforeData,
-          backgroundColor: 'rgba(229, 231, 235, 0.8)',
-          borderColor: 'rgb(107, 114, 128)',
-          borderWidth: 1
-        },
-        {
-          label: '削減後',
-          data: afterData,
+          label: '流通件数削減率',
+          data: reductionPercentages,
           backgroundColor: 'rgba(59, 130, 246, 0.8)',
           borderColor: 'rgb(37, 99, 235)',
           borderWidth: 1
@@ -294,17 +298,24 @@ function updateVolumeChart(labels, emojis, data) {
     },
     options: {
       responsive: true,
+      indexAxis: 'y',
       plugins: {
         legend: {
+          display: true,
           position: 'top',
+        },
+        title: {
+          display: true,
+          text: '各分野における流通件数削減率（%）'
         }
       },
       scales: {
-        y: {
+        x: {
           beginAtZero: true,
+          max: 100,
           title: {
             display: true,
-            text: '処理件数'
+            text: '削減率（%）'
           }
         }
       }
@@ -313,15 +324,13 @@ function updateVolumeChart(labels, emojis, data) {
 }
 
 /**
- * 時間削減グラフ更新
+ * 時間削減率グラフ更新
  */
-function updateTimeChart(labels, emojis, data) {
+function updateTimeChart(labels, emojis, timeReductionPercentages) {
   const ctx = document.getElementById('timeChart')?.getContext('2d');
   if (!ctx) return;
 
   const chartLabels = labels.map((label, i) => `${emojis[i]} ${label}`);
-  const beforeData = data.map(d => d.before);
-  const afterData = data.map(d => d.after);
 
   if (timeChart) {
     timeChart.destroy();
@@ -333,34 +342,34 @@ function updateTimeChart(labels, emojis, data) {
       labels: chartLabels,
       datasets: [
         {
-          label: '削減前（時間）',
-          data: beforeData,
+          label: '必要時間削減率',
+          data: timeReductionPercentages,
           backgroundColor: 'rgba(249, 115, 22, 0.8)',
           borderColor: 'rgb(217, 119, 6)',
-          borderWidth: 1
-        },
-        {
-          label: '削減後（時間）',
-          data: afterData,
-          backgroundColor: 'rgba(34, 197, 94, 0.8)',
-          borderColor: 'rgb(22, 163, 74)',
           borderWidth: 1
         }
       ]
     },
     options: {
       responsive: true,
+      indexAxis: 'y',
       plugins: {
         legend: {
+          display: true,
           position: 'top',
+        },
+        title: {
+          display: true,
+          text: '各分野における必要時間削減率（%）'
         }
       },
       scales: {
-        y: {
+        x: {
           beginAtZero: true,
+          max: 100,
           title: {
             display: true,
-            text: '時間（時間）'
+            text: '削減率（%）'
           }
         }
       }
@@ -375,26 +384,36 @@ function updateDomainDetails(metrics) {
   const grid = document.getElementById('domainDetailsGrid');
   if (!grid) return;
 
-  grid.innerHTML = Object.entries(metrics.domainMetrics).map(([id, metric]) => `
+  grid.innerHTML = Object.entries(metrics.domainMetrics).map(([id, metric]) => {
+    const reductionPercent = Math.round(metric.reductionRate * 100);
+    const timeReductionPercent = Math.round(metric.timeReductionRate * 100);
+    const costReductionPercent = Math.round(metric.costReductionRate * 100);
+    
+    return `
     <div class="domain-detail-card">
       <h4>${metric.emoji} ${metric.name}</h4>
       <div class="detail-metrics">
         <div class="detail-item">
-          <span class="detail-label">処理件数</span>
-          <span class="detail-value">${metric.processedAfter.toLocaleString()}件</span>
-          <span class="detail-change">-${Math.round(metric.reductionRate * 100)}%</span>
+          <span class="detail-label">流通削減率</span>
+          <span class="detail-value">${reductionPercent}%</span>
         </div>
         <div class="detail-item">
-          <span class="detail-label">時間削減</span>
-          <span class="detail-value">${Math.round(metric.timeReductionRate * 100)}%</span>
+          <span class="detail-label">時間削減率</span>
+          <span class="detail-value">${timeReductionPercent}%</span>
         </div>
         <div class="detail-item">
-          <span class="detail-label">コスト削減</span>
-          <span class="detail-value">${Math.round(metric.costReductionRate * 100)}%</span>
+          <span class="detail-label">コスト削減率</span>
+          <span class="detail-value">${costReductionPercent}%</span>
         </div>
+        ${metric.administrativeDependency > 0 ? `
+        <div class="detail-item dependency-info">
+          <span class="detail-label">行政依存度</span>
+          <span class="detail-value">${Math.round(metric.administrativeDependency * 100)}%</span>
+        </div>
+        ` : ''}
       </div>
     </div>
-  `).join('');
+  `}.join('');
 }
 
 /**
@@ -407,20 +426,37 @@ function updateAdminImpact(metrics) {
   const adminMetric = metrics.domainMetrics['administration'];
   if (!adminMetric) return;
 
-  const impacts = [];
-  const impactMap = adminMetric.impactOnOtherDomains || {};
+  // 行政の現在のモードに基づいてメッセージを生成
+  let statusEmoji = '⚠️';
+  let statusText = 'Plain（電子化のみ）';
+  
+  if (metrics.currentMode === 'ai') {
+    statusEmoji = '✅';
+    statusText = 'AI（完全自動化）';
+  } else if (metrics.currentMode === 'smart') {
+    statusEmoji = '💡';
+    statusText = 'Smart（工夫活用）';
+  }
 
-  Object.entries(impactMap).forEach(([domainId, dependencyRate]) => {
-    const domain = metrics.domainMetrics[domainId];
-    if (!domain) return;
+  const impacts = [`<li class="impact-status">${statusEmoji} <strong>行政DX現在状況：${statusText}</strong></li>`];
+
+  // 各分野の依存度と現在の状況を表示
+  Object.entries(metrics.domainMetrics).forEach(([domainId, domain]) => {
+    if (domainId === 'administration') return;
+    
+    const depRate = domain.administrativeDependency;
+    if (depRate === 0) return;
 
     let impactText = '';
+    const depPercent = Math.round(depRate * 100);
+    
     if (metrics.currentMode === 'ai') {
-      impactText = `✅ ${domain.name}の効率が${Math.round(dependencyRate * 100)}%向上`;
+      impactText = `✅ ${domain.name}の処理がスムーズ（行政依存度${depPercent}%）`;
     } else if (metrics.currentMode === 'plain') {
-      impactText = `⚠️ ${domain.name}の効率が${Math.round(dependencyRate * 50)}%低下（行政DX未実施）`;
+      const degradation = Math.round(depRate * 30); // 最大30%の効率低下
+      impactText = `⚠️ ${domain.name}の処理が${degradation}%制限される（行政依存度${depPercent}%）`;
     } else {
-      impactText = `→ ${domain.name}に${Math.round(dependencyRate * 100)}%の依存度`;
+      impactText = `→ ${domain.name}の処理が部分的に支援（行政依存度${depPercent}%）`;
     }
 
     impacts.push(`<li>${impactText}</li>`);

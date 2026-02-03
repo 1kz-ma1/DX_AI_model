@@ -198,8 +198,14 @@ body {
 .chart-title {
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   color: var(--text-dark);
+}
+
+.chart-description {
+  font-size: 0.875rem;
+  color: var(--text-light);
+  margin-bottom: 1rem;
 }
 
 canvas {
@@ -277,6 +283,13 @@ canvas {
   font-weight: 600;
 }
 
+.dependency-info {
+  background-color: var(--warning-light);
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
 /* ===== 行政DXの波及効果 ===== */
 #impactDetails {
   padding: 2rem;
@@ -305,6 +318,14 @@ canvas {
 
 #impactDetails li:not(:last-child) {
   border-bottom: 1px solid var(--gray-light);
+}
+
+.impact-status {
+  font-weight: 700 !important;
+  background-color: var(--primary-light);
+  padding: 0.75rem !important;
+  border-radius: 6px;
+  margin-bottom: 0.5rem !important;
 }
 
 /* ===== アクションボタン ===== */
