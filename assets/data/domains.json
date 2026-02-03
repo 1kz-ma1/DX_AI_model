@@ -13,7 +13,14 @@
       "checklist": [
         {"id": "proxy", "label": "代理申請を行う", "key": "proxy"},
         {"id": "subsidy", "label": "補助金申請を行う", "key": "subsidy"},
-        {"id": "move", "label": "転居手続きを行う", "key": "move"}
+        {"id": "move", "label": "転居手続きを行う", "key": "move"},
+        {"id": "marriage", "label": "婚姻届を提出する", "key": "marriage"},
+        {"id": "divorce", "label": "離婚届を提出する", "key": "divorce"},
+        {"id": "birth", "label": "出生届を提出する", "key": "birth"},
+        {"id": "death", "label": "死亡届を提出する", "key": "death"},
+        {"id": "business", "label": "事業開始届を提出する", "key": "business"},
+        {"id": "pension", "label": "年金関連手続きを行う", "key": "pension"},
+        {"id": "welfare", "label": "福祉サービスを申請する", "key": "welfare"}
       ],
       "documents": {
         "base": [
@@ -23,9 +30,15 @@
             "description": "住所・世帯構成の証明",
             "inputFields": [
               {"id": "household_head", "label": "世帯主氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "household_head_birth", "label": "世帯主生年月日", "source": "mynumber", "requiredIf": null},
               {"id": "address", "label": "住所", "source": "mynumber", "requiredIf": null},
+              {"id": "postal_code", "label": "郵便番号", "source": "mynumber", "requiredIf": null},
               {"id": "family_members", "label": "世帯員", "source": "mynumber", "requiredIf": null},
-              {"id": "purpose", "label": "使用目的", "source": "user", "requiredIf": null}
+              {"id": "family_count", "label": "世帯員数", "source": "derived", "requiredIf": null},
+              {"id": "resident_since", "label": "転入日", "source": "mynumber", "requiredIf": null},
+              {"id": "purpose", "label": "使用目的", "source": "user", "requiredIf": null},
+              {"id": "copies_needed", "label": "必要通数", "source": "user", "requiredIf": null},
+              {"id": "submission_to", "label": "提出先", "source": "user", "requiredIf": null}
             ]
           },
           {
@@ -34,8 +47,13 @@
             "description": "実印の証明",
             "inputFields": [
               {"id": "registrant_name", "label": "登録者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "registrant_birth", "label": "生年月日", "source": "mynumber", "requiredIf": null},
+              {"id": "registrant_address", "label": "住所", "source": "mynumber", "requiredIf": null},
               {"id": "seal_image", "label": "印影", "source": "shared", "requiredIf": null},
-              {"id": "registration_date", "label": "登録日", "source": "mynumber", "requiredIf": null}
+              {"id": "registration_date", "label": "登録日", "source": "mynumber", "requiredIf": null},
+              {"id": "certificate_number", "label": "証明書番号", "source": "derived", "requiredIf": null},
+              {"id": "purpose_seal", "label": "使用目的", "source": "user", "requiredIf": null},
+              {"id": "copies_seal", "label": "必要通数", "source": "user", "requiredIf": null}
             ]
           },
           {
@@ -44,9 +62,47 @@
             "description": "所得・税額の証明",
             "inputFields": [
               {"id": "taxpayer_name", "label": "納税者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "taxpayer_birth", "label": "生年月日", "source": "mynumber", "requiredIf": null},
+              {"id": "taxpayer_address", "label": "住所", "source": "mynumber", "requiredIf": null},
               {"id": "annual_income", "label": "年間所得", "source": "mynumber", "requiredIf": null},
               {"id": "tax_amount", "label": "税額", "source": "mynumber", "requiredIf": null},
-              {"id": "fiscal_year", "label": "年度", "source": "shared", "requiredIf": null}
+              {"id": "deduction_amount", "label": "控除額", "source": "mynumber", "requiredIf": null},
+              {"id": "fiscal_year", "label": "年度", "source": "shared", "requiredIf": null},
+              {"id": "employer_name", "label": "勤務先名称", "source": "mynumber", "requiredIf": null},
+              {"id": "dependents_count", "label": "扶養人数", "source": "mynumber", "requiredIf": null},
+              {"id": "purpose_tax", "label": "使用目的", "source": "user", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "income_certificate",
+            "name": "所得証明書",
+            "description": "所得金額の証明",
+            "inputFields": [
+              {"id": "income_person_name", "label": "氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "income_person_birth", "label": "生年月日", "source": "mynumber", "requiredIf": null},
+              {"id": "income_address", "label": "住所", "source": "mynumber", "requiredIf": null},
+              {"id": "total_income", "label": "総所得金額", "source": "mynumber", "requiredIf": null},
+              {"id": "income_year", "label": "所得年", "source": "shared", "requiredIf": null},
+              {"id": "income_source", "label": "所得の種類", "source": "mynumber", "requiredIf": null},
+              {"id": "business_income", "label": "事業所得", "source": "mynumber", "requiredIf": null},
+              {"id": "salary_income", "label": "給与所得", "source": "mynumber", "requiredIf": null},
+              {"id": "other_income", "label": "その他所得", "source": "mynumber", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "family_register",
+            "name": "戸籍謄本",
+            "description": "身分関係の証明",
+            "inputFields": [
+              {"id": "principal_name", "label": "筆頭者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "principal_birth", "label": "筆頭者生年月日", "source": "mynumber", "requiredIf": null},
+              {"id": "registered_domicile", "label": "本籍地", "source": "mynumber", "requiredIf": null},
+              {"id": "family_members_register", "label": "記載されている者", "source": "mynumber", "requiredIf": null},
+              {"id": "birth_records", "label": "出生事項", "source": "mynumber", "requiredIf": null},
+              {"id": "marriage_records", "label": "婚姻事項", "source": "mynumber", "requiredIf": null},
+              {"id": "divorce_records", "label": "離婚事項", "source": "mynumber", "requiredIf": null},
+              {"id": "death_records", "label": "死亡事項", "source": "mynumber", "requiredIf": null},
+              {"id": "register_purpose", "label": "使用目的", "source": "user", "requiredIf": null}
             ]
           },
           {
@@ -55,10 +111,17 @@
             "description": "各種補助金の申請",
             "inputFields": [
               {"id": "applicant_name", "label": "申請者氏名", "source": "mynumber", "requiredIf": "subsidy"},
+              {"id": "applicant_birth", "label": "生年月日", "source": "mynumber", "requiredIf": "subsidy"},
+              {"id": "applicant_address", "label": "住所", "source": "mynumber", "requiredIf": "subsidy"},
               {"id": "subsidy_type", "label": "補助金種別", "source": "ai", "requiredIf": "subsidy"},
               {"id": "project_desc", "label": "事業内容", "source": "user", "requiredIf": "subsidy"},
+              {"id": "project_period", "label": "事業期間", "source": "user", "requiredIf": "subsidy"},
               {"id": "budget", "label": "事業予算", "source": "user", "requiredIf": "subsidy"},
-              {"id": "expected_effect", "label": "期待される効果", "source": "ai", "requiredIf": "subsidy"}
+              {"id": "budget_breakdown", "label": "予算内訳", "source": "user", "requiredIf": "subsidy"},
+              {"id": "expected_effect", "label": "期待される効果", "source": "ai", "requiredIf": "subsidy"},
+              {"id": "past_subsidy", "label": "過去の補助金受給歴", "source": "mynumber", "requiredIf": "subsidy"},
+              {"id": "bank_account", "label": "振込口座", "source": "shared", "requiredIf": "subsidy"},
+              {"id": "applicant_signature", "label": "申請者署名", "source": "user", "requiredIf": "subsidy"}
             ]
           },
           {
@@ -67,10 +130,16 @@
             "description": "住所変更の届出",
             "inputFields": [
               {"id": "mover_name", "label": "転居者氏名", "source": "mynumber", "requiredIf": "move"},
+              {"id": "mover_birth", "label": "生年月日", "source": "mynumber", "requiredIf": "move"},
               {"id": "old_address", "label": "旧住所", "source": "mynumber", "requiredIf": "move"},
               {"id": "new_address", "label": "新住所", "source": "user", "requiredIf": "move"},
+              {"id": "new_postal_code", "label": "新郵便番号", "source": "user", "requiredIf": "move"},
               {"id": "move_date", "label": "転居日", "source": "user", "requiredIf": "move"},
-              {"id": "household_members", "label": "同居家族", "source": "mynumber", "requiredIf": "move"}
+              {"id": "move_reason", "label": "転居理由", "source": "ai", "requiredIf": "move"},
+              {"id": "household_members", "label": "同居家族", "source": "mynumber", "requiredIf": "move"},
+              {"id": "previous_residence_period", "label": "前住所での居住期間", "source": "derived", "requiredIf": "move"},
+              {"id": "forwarding_address", "label": "郵便物転送先", "source": "user", "requiredIf": "move"},
+              {"id": "contact_phone", "label": "連絡先電話番号", "source": "shared", "requiredIf": "move"}
             ]
           },
           {
@@ -79,9 +148,130 @@
             "description": "代理人による申請の委任",
             "inputFields": [
               {"id": "principal_name", "label": "委任者氏名", "source": "mynumber", "requiredIf": "proxy"},
+              {"id": "principal_birth", "label": "委任者生年月日", "source": "mynumber", "requiredIf": "proxy"},
+              {"id": "principal_address", "label": "委任者住所", "source": "mynumber", "requiredIf": "proxy"},
               {"id": "agent_name", "label": "代理人氏名", "source": "user", "requiredIf": "proxy"},
+              {"id": "agent_birth", "label": "代理人生年月日", "source": "user", "requiredIf": "proxy"},
+              {"id": "agent_address", "label": "代理人住所", "source": "user", "requiredIf": "proxy"},
+              {"id": "agent_relation", "label": "委任者との続柄", "source": "user", "requiredIf": "proxy"},
               {"id": "authorized_matters", "label": "委任事項", "source": "ai", "requiredIf": "proxy"},
-              {"id": "principal_signature", "label": "委任者署名", "source": "user", "requiredIf": "proxy"}
+              {"id": "authorization_period", "label": "委任期間", "source": "user", "requiredIf": "proxy"},
+              {"id": "principal_signature", "label": "委任者署名", "source": "user", "requiredIf": "proxy"},
+              {"id": "authorization_date", "label": "委任日", "source": "derived", "requiredIf": "proxy"}
+            ]
+          },
+          {
+            "id": "marriage_notification",
+            "name": "婚姻届",
+            "description": "婚姻の届出",
+            "inputFields": [
+              {"id": "groom_name", "label": "夫氏名", "source": "mynumber", "requiredIf": "marriage"},
+              {"id": "groom_birth", "label": "夫生年月日", "source": "mynumber", "requiredIf": "marriage"},
+              {"id": "groom_address", "label": "夫住所", "source": "mynumber", "requiredIf": "marriage"},
+              {"id": "bride_name", "label": "妻氏名", "source": "mynumber", "requiredIf": "marriage"},
+              {"id": "bride_birth", "label": "妻生年月日", "source": "mynumber", "requiredIf": "marriage"},
+              {"id": "bride_address", "label": "妻住所", "source": "mynumber", "requiredIf": "marriage"},
+              {"id": "marriage_date", "label": "婚姻日", "source": "user", "requiredIf": "marriage"},
+              {"id": "new_surname", "label": "新姓", "source": "user", "requiredIf": "marriage"},
+              {"id": "witness1_name", "label": "証人1氏名", "source": "user", "requiredIf": "marriage"},
+              {"id": "witness2_name", "label": "証人2氏名", "source": "user", "requiredIf": "marriage"},
+              {"id": "new_domicile", "label": "新本籍", "source": "user", "requiredIf": "marriage"}
+            ]
+          },
+          {
+            "id": "divorce_notification",
+            "name": "離婚届",
+            "description": "離婚の届出",
+            "inputFields": [
+              {"id": "husband_name", "label": "夫氏名", "source": "mynumber", "requiredIf": "divorce"},
+              {"id": "husband_birth", "label": "夫生年月日", "source": "mynumber", "requiredIf": "divorce"},
+              {"id": "wife_name", "label": "妻氏名", "source": "mynumber", "requiredIf": "divorce"},
+              {"id": "wife_birth", "label": "妻生年月日", "source": "mynumber", "requiredIf": "divorce"},
+              {"id": "divorce_date", "label": "離婚日", "source": "user", "requiredIf": "divorce"},
+              {"id": "divorce_type", "label": "離婚種別", "source": "user", "requiredIf": "divorce"},
+              {"id": "custody", "label": "親権者", "source": "user", "requiredIf": "divorce"},
+              {"id": "children_names", "label": "子の氏名", "source": "mynumber", "requiredIf": "divorce"},
+              {"id": "wife_surname_after", "label": "妻の氏（離婚後）", "source": "user", "requiredIf": "divorce"}
+            ]
+          },
+          {
+            "id": "birth_notification",
+            "name": "出生届",
+            "description": "出生の届出",
+            "inputFields": [
+              {"id": "child_name", "label": "子の氏名", "source": "user", "requiredIf": "birth"},
+              {"id": "child_birth_date", "label": "出生日時", "source": "user", "requiredIf": "birth"},
+              {"id": "birth_place", "label": "出生場所", "source": "user", "requiredIf": "birth"},
+              {"id": "father_name", "label": "父氏名", "source": "mynumber", "requiredIf": "birth"},
+              {"id": "father_birth", "label": "父生年月日", "source": "mynumber", "requiredIf": "birth"},
+              {"id": "mother_name", "label": "母氏名", "source": "mynumber", "requiredIf": "birth"},
+              {"id": "mother_birth", "label": "母生年月日", "source": "mynumber", "requiredIf": "birth"},
+              {"id": "parents_address", "label": "両親住所", "source": "mynumber", "requiredIf": "birth"},
+              {"id": "child_domicile", "label": "子の本籍", "source": "derived", "requiredIf": "birth"},
+              {"id": "doctor_certificate", "label": "医師の出生証明書", "source": "user", "requiredIf": "birth"}
+            ]
+          },
+          {
+            "id": "death_notification",
+            "name": "死亡届",
+            "description": "死亡の届出",
+            "inputFields": [
+              {"id": "deceased_name", "label": "死亡者氏名", "source": "mynumber", "requiredIf": "death"},
+              {"id": "deceased_birth", "label": "死亡者生年月日", "source": "mynumber", "requiredIf": "death"},
+              {"id": "death_date", "label": "死亡日時", "source": "user", "requiredIf": "death"},
+              {"id": "death_place", "label": "死亡場所", "source": "user", "requiredIf": "death"},
+              {"id": "death_cause", "label": "死因", "source": "user", "requiredIf": "death"},
+              {"id": "deceased_address", "label": "死亡者住所", "source": "mynumber", "requiredIf": "death"},
+              {"id": "deceased_domicile", "label": "死亡者本籍", "source": "mynumber", "requiredIf": "death"},
+              {"id": "submitter_name", "label": "届出人氏名", "source": "shared", "requiredIf": "death"},
+              {"id": "submitter_relation", "label": "続柄", "source": "user", "requiredIf": "death"},
+              {"id": "doctor_death_certificate", "label": "医師の死亡診断書", "source": "user", "requiredIf": "death"}
+            ]
+          },
+          {
+            "id": "business_notification",
+            "name": "事業開始届",
+            "description": "個人事業の開始届",
+            "inputFields": [
+              {"id": "business_owner_name", "label": "事業主氏名", "source": "mynumber", "requiredIf": "business"},
+              {"id": "business_owner_birth", "label": "生年月日", "source": "mynumber", "requiredIf": "business"},
+              {"id": "business_address", "label": "事業所住所", "source": "user", "requiredIf": "business"},
+              {"id": "business_name", "label": "屋号", "source": "user", "requiredIf": "business"},
+              {"id": "business_type", "label": "事業種目", "source": "user", "requiredIf": "business"},
+              {"id": "start_date", "label": "開業日", "source": "user", "requiredIf": "business"},
+              {"id": "employee_count", "label": "従業員数", "source": "user", "requiredIf": "business"},
+              {"id": "accounting_method", "label": "会計方式", "source": "user", "requiredIf": "business"},
+              {"id": "tax_office", "label": "所轄税務署", "source": "derived", "requiredIf": "business"}
+            ]
+          },
+          {
+            "id": "pension_application",
+            "name": "年金手帳再発行申請書",
+            "description": "年金手帳の再発行申請",
+            "inputFields": [
+              {"id": "pension_applicant_name", "label": "申請者氏名", "source": "mynumber", "requiredIf": "pension"},
+              {"id": "pension_applicant_birth", "label": "生年月日", "source": "mynumber", "requiredIf": "pension"},
+              {"id": "pension_number", "label": "基礎年金番号", "source": "mynumber", "requiredIf": "pension"},
+              {"id": "pension_address", "label": "住所", "source": "mynumber", "requiredIf": "pension"},
+              {"id": "lost_reason", "label": "紛失理由", "source": "ai", "requiredIf": "pension"},
+              {"id": "lost_date", "label": "紛失日", "source": "user", "requiredIf": "pension"},
+              {"id": "reissue_reason", "label": "再発行理由", "source": "user", "requiredIf": "pension"}
+            ]
+          },
+          {
+            "id": "welfare_application",
+            "name": "福祉サービス利用申請書",
+            "description": "介護・福祉サービスの申請",
+            "inputFields": [
+              {"id": "welfare_applicant_name", "label": "申請者氏名", "source": "mynumber", "requiredIf": "welfare"},
+              {"id": "welfare_applicant_birth", "label": "生年月日", "source": "mynumber", "requiredIf": "welfare"},
+              {"id": "welfare_address", "label": "住所", "source": "mynumber", "requiredIf": "welfare"},
+              {"id": "service_type", "label": "希望サービス", "source": "ai", "requiredIf": "welfare"},
+              {"id": "care_level", "label": "要介護度", "source": "mynumber", "requiredIf": "welfare"},
+              {"id": "medical_condition", "label": "健康状態", "source": "user", "requiredIf": "welfare"},
+              {"id": "family_support", "label": "家族の支援状況", "source": "user", "requiredIf": "welfare"},
+              {"id": "income_welfare", "label": "収入額", "source": "mynumber", "requiredIf": "welfare"},
+              {"id": "welfare_reason", "label": "申請理由", "source": "ai", "requiredIf": "welfare"}
             ]
           }
         ]
@@ -133,10 +323,14 @@
       "checklist": [
         {"id": "surgery", "label": "手術を受けた", "key": "surgery"},
         {"id": "hce", "label": "高額療養費制度を申請する", "key": "hce"},
-        {"id": "claim", "label": "医療保険を請求する", "key": "claim"},
+        {"id": "claim", "label": "民間医療保険を請求する", "key": "claim"},
         {"id": "proxy", "label": "代理人として手続きする", "key": "proxy"},
-        {"id": "expensive", "label": "入院費が10万円を超えた", "key": "expensive"},
-        {"id": "transfer", "label": "退院後に転院する予定がある", "key": "transfer"}
+        {"id": "expensive", "label": "入院費が30万円を超えた", "key": "expensive"},
+        {"id": "transfer", "label": "退院後に転院する", "key": "transfer"},
+        {"id": "rehabilitation", "label": "リハビリテーションが必要", "key": "rehabilitation"},
+        {"id": "longterm", "label": "長期入院（30日以上）", "key": "longterm"},
+        {"id": "certificate", "label": "診断書が必要", "key": "certificate"},
+        {"id": "disability", "label": "障害者手帳を申請する", "key": "disability"}
       ],
       "documents": {
         "base": [
@@ -146,13 +340,19 @@
             "description": "入院期間を証明する書類",
             "inputFields": [
               {"id": "patient_name", "label": "患者氏名", "source": "shared", "requiredIf": null},
+              {"id": "patient_birth", "label": "患者生年月日", "source": "mynumber", "requiredIf": null},
               {"id": "patient_id", "label": "患者ID", "source": "shared", "requiredIf": null},
+              {"id": "patient_address", "label": "患者住所", "source": "mynumber", "requiredIf": null},
               {"id": "admission_date", "label": "入院日", "source": "shared", "requiredIf": null},
               {"id": "discharge_date", "label": "退院日", "source": "shared", "requiredIf": null},
+              {"id": "hospitalization_days", "label": "入院日数", "source": "derived", "requiredIf": null},
               {"id": "diagnosis", "label": "診断名", "source": "ai", "requiredIf": null},
               {"id": "treatment", "label": "治療内容", "source": "ai", "requiredIf": null},
+              {"id": "department", "label": "診療科", "source": "shared", "requiredIf": null},
+              {"id": "ward", "label": "病棟", "source": "shared", "requiredIf": null},
               {"id": "doctor_name", "label": "担当医名", "source": "derived", "requiredIf": null},
-              {"id": "doctor_sign", "label": "医師署名", "source": "user", "requiredIf": null}
+              {"id": "doctor_sign", "label": "医師署名", "source": "user", "requiredIf": null},
+              {"id": "hospital_seal", "label": "病院印", "source": "user", "requiredIf": null}
             ]
           },
           {
@@ -160,12 +360,35 @@
             "name": "健康保険証の写し",
             "description": "国民健康保険証・社会保険証等",
             "inputFields": [
+              {"id": "insured_name_ins", "label": "被保険者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "insured_birth_ins", "label": "被保険者生年月日", "source": "mynumber", "requiredIf": null},
               {"id": "insurer_name", "label": "保険者名称", "source": "mynumber", "requiredIf": null},
               {"id": "insurer_no", "label": "保険者番号", "source": "mynumber", "requiredIf": null},
               {"id": "insured_no", "label": "被保険者番号", "source": "mynumber", "requiredIf": null},
               {"id": "insured_symbol", "label": "被保険者記号", "source": "mynumber", "requiredIf": null},
+              {"id": "insured_address_ins", "label": "住所", "source": "mynumber", "requiredIf": null},
               {"id": "valid_from", "label": "有効期限（開始）", "source": "mynumber", "requiredIf": null},
-              {"id": "valid_to", "label": "有効期限（終了）", "source": "mynumber", "requiredIf": null}
+              {"id": "valid_to", "label": "有効期限（終了）", "source": "mynumber", "requiredIf": null},
+              {"id": "copay_rate", "label": "自己負担割合", "source": "mynumber", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "admission_application",
+            "name": "入院申込書",
+            "description": "入院時の基本情報",
+            "inputFields": [
+              {"id": "admission_patient_name", "label": "患者氏名", "source": "shared", "requiredIf": null},
+              {"id": "admission_patient_birth", "label": "生年月日", "source": "mynumber", "requiredIf": null},
+              {"id": "admission_patient_address", "label": "住所", "source": "mynumber", "requiredIf": null},
+              {"id": "admission_phone", "label": "電話番号", "source": "shared", "requiredIf": null},
+              {"id": "emergency_contact_name", "label": "緊急連絡先氏名", "source": "shared", "requiredIf": null},
+              {"id": "emergency_contact_phone", "label": "緊急連絡先電話", "source": "shared", "requiredIf": null},
+              {"id": "emergency_relation", "label": "続柄", "source": "user", "requiredIf": null},
+              {"id": "admission_reason", "label": "入院理由", "source": "ai", "requiredIf": null},
+              {"id": "past_medical_history", "label": "既往歴", "source": "mynumber", "requiredIf": null},
+              {"id": "allergies", "label": "アレルギー", "source": "mynumber", "requiredIf": null},
+              {"id": "current_medications", "label": "服用中の薬", "source": "mynumber", "requiredIf": null},
+              {"id": "smoking_status", "label": "喫煙歴", "source": "user", "requiredIf": null}
             ]
           },
           {
@@ -173,34 +396,161 @@
             "name": "手術同意書",
             "description": "手術実施に対する同意書",
             "inputFields": [
+              {"id": "surgery_patient_name", "label": "患者氏名", "source": "shared", "requiredIf": "surgery"},
               {"id": "surgery_name", "label": "手術名", "source": "ai", "requiredIf": "surgery"},
               {"id": "surgery_date", "label": "手術予定日", "source": "shared", "requiredIf": "surgery"},
+              {"id": "surgery_time", "label": "手術予定時刻", "source": "shared", "requiredIf": "surgery"},
+              {"id": "anesthesia_type", "label": "麻酔方法", "source": "ai", "requiredIf": "surgery"},
+              {"id": "surgery_duration", "label": "予定手術時間", "source": "derived", "requiredIf": "surgery"},
               {"id": "risk_explanation", "label": "リスク説明", "source": "ai", "requiredIf": "surgery"},
+              {"id": "complications", "label": "合併症の可能性", "source": "ai", "requiredIf": "surgery"},
+              {"id": "alternative_treatment", "label": "代替治療の有無", "source": "ai", "requiredIf": "surgery"},
               {"id": "patient_sign", "label": "患者署名", "source": "user", "requiredIf": "surgery"},
+              {"id": "family_sign", "label": "家族署名", "source": "user", "requiredIf": "surgery"},
               {"id": "consent_date", "label": "同意日", "source": "derived", "requiredIf": "surgery"}
             ]
           },
           {
+            "id": "anesthesia_consent",
+            "name": "麻酔同意書",
+            "description": "麻酔実施に対する同意書",
+            "inputFields": [
+              {"id": "anesthesia_patient_name", "label": "患者氏名", "source": "shared", "requiredIf": "surgery"},
+              {"id": "anesthesia_method", "label": "麻酔方法", "source": "ai", "requiredIf": "surgery"},
+              {"id": "anesthesiologist", "label": "麻酔科医名", "source": "derived", "requiredIf": "surgery"},
+              {"id": "anesthesia_risks", "label": "麻酔のリスク", "source": "ai", "requiredIf": "surgery"},
+              {"id": "patient_condition", "label": "患者の全身状態", "source": "shared", "requiredIf": "surgery"},
+              {"id": "anesthesia_patient_sign", "label": "患者署名", "source": "user", "requiredIf": "surgery"}
+            ]
+          },
+          {
             "id": "hce_application",
-            "name": "限度額認定証の申請書",
+            "name": "限度額適用認定申請書",
             "description": "高額療養費制度の申請用紙",
             "inputFields": [
-              {"id": "insured_name", "label": "被保険者氏名", "source": "mynumber", "requiredIf": "hce"},
+              {"id": "hce_insured_name", "label": "被保険者氏名", "source": "mynumber", "requiredIf": "hce"},
+              {"id": "hce_insured_birth", "label": "被保険者生年月日", "source": "mynumber", "requiredIf": "hce"},
+              {"id": "hce_insured_no", "label": "被保険者番号", "source": "mynumber", "requiredIf": "hce"},
               {"id": "householder_name", "label": "世帯主氏名", "source": "mynumber", "requiredIf": "hce"},
+              {"id": "household_income", "label": "世帯収入", "source": "mynumber", "requiredIf": "hce"},
               {"id": "income_bracket", "label": "所得区分", "source": "mynumber", "requiredIf": "hce"},
+              {"id": "copay_limit", "label": "自己負担限度額", "source": "derived", "requiredIf": "hce"},
+              {"id": "treatment_facility", "label": "治療を受ける医療機関", "source": "shared", "requiredIf": "hce"},
               {"id": "app_date", "label": "申請日", "source": "derived", "requiredIf": "hce"}
             ]
           },
           {
+            "id": "medical_expense_receipt",
+            "name": "医療費領収書",
+            "description": "医療費の領収証明",
+            "inputFields": [
+              {"id": "receipt_patient_name", "label": "患者氏名", "source": "shared", "requiredIf": "expensive"},
+              {"id": "receipt_date", "label": "領収日", "source": "shared", "requiredIf": "expensive"},
+              {"id": "medical_fee", "label": "医療費総額", "source": "shared", "requiredIf": "expensive"},
+              {"id": "copay_amount", "label": "自己負担額", "source": "derived", "requiredIf": "expensive"},
+              {"id": "insurance_coverage", "label": "保険適用額", "source": "derived", "requiredIf": "expensive"},
+              {"id": "itemized_charges", "label": "診療明細", "source": "ai", "requiredIf": "expensive"},
+              {"id": "prescription_fee", "label": "薬剤費", "source": "shared", "requiredIf": "expensive"},
+              {"id": "hospital_receipt_seal", "label": "病院印", "source": "user", "requiredIf": "expensive"}
+            ]
+          },
+          {
             "id": "claim_form",
-            "name": "民間医療保険の請求書",
+            "name": "民間医療保険請求書",
             "description": "保険会社への請求用紙",
             "inputFields": [
+              {"id": "policy_holder", "label": "契約者氏名", "source": "shared", "requiredIf": "claim"},
               {"id": "policy_no", "label": "証券番号", "source": "user", "requiredIf": "claim"},
+              {"id": "insured_person", "label": "被保険者氏名", "source": "shared", "requiredIf": "claim"},
               {"id": "claim_amount", "label": "請求金額", "source": "shared", "requiredIf": "claim"},
               {"id": "diagnosis_claim", "label": "診断名", "source": "ai", "requiredIf": "claim"},
               {"id": "treatment_dates", "label": "治療期間", "source": "shared", "requiredIf": "claim"},
+              {"id": "hospitalization_reason", "label": "入院理由", "source": "ai", "requiredIf": "claim"},
+              {"id": "surgery_performed", "label": "手術の有無", "source": "derived", "requiredIf": "claim"},
+              {"id": "benefit_type", "label": "給付金種類", "source": "ai", "requiredIf": "claim"},
+              {"id": "bank_account_claim", "label": "振込口座", "source": "shared", "requiredIf": "claim"},
               {"id": "claimant_sign", "label": "請求者署名", "source": "user", "requiredIf": "claim"}
+            ]
+          },
+          {
+            "id": "referral_letter",
+            "name": "診療情報提供書（紹介状）",
+            "description": "転院時の診療情報",
+            "inputFields": [
+              {"id": "referral_patient_name", "label": "患者氏名", "source": "shared", "requiredIf": "transfer"},
+              {"id": "referral_patient_birth", "label": "生年月日", "source": "mynumber", "requiredIf": "transfer"},
+              {"id": "current_diagnosis", "label": "現診断名", "source": "ai", "requiredIf": "transfer"},
+              {"id": "treatment_history", "label": "治療経過", "source": "ai", "requiredIf": "transfer"},
+              {"id": "current_medications_ref", "label": "現在の処方薬", "source": "shared", "requiredIf": "transfer"},
+              {"id": "test_results", "label": "検査結果", "source": "shared", "requiredIf": "transfer"},
+              {"id": "referral_reason", "label": "紹介理由", "source": "ai", "requiredIf": "transfer"},
+              {"id": "referring_doctor", "label": "紹介元医師名", "source": "derived", "requiredIf": "transfer"},
+              {"id": "referring_facility", "label": "紹介元医療機関", "source": "shared", "requiredIf": "transfer"},
+              {"id": "target_facility", "label": "紹介先医療機関", "source": "user", "requiredIf": "transfer"}
+            ]
+          },
+          {
+            "id": "rehabilitation_plan",
+            "name": "リハビリテーション計画書",
+            "description": "リハビリの実施計画",
+            "inputFields": [
+              {"id": "rehab_patient_name", "label": "患者氏名", "source": "shared", "requiredIf": "rehabilitation"},
+              {"id": "rehab_diagnosis", "label": "診断名", "source": "ai", "requiredIf": "rehabilitation"},
+              {"id": "rehab_goal", "label": "リハビリ目標", "source": "ai", "requiredIf": "rehabilitation"},
+              {"id": "rehab_type", "label": "リハビリ種別", "source": "ai", "requiredIf": "rehabilitation"},
+              {"id": "rehab_frequency", "label": "実施頻度", "source": "derived", "requiredIf": "rehabilitation"},
+              {"id": "rehab_duration", "label": "実施期間", "source": "derived", "requiredIf": "rehabilitation"},
+              {"id": "therapist_name", "label": "担当療法士名", "source": "derived", "requiredIf": "rehabilitation"},
+              {"id": "functional_assessment", "label": "機能評価", "source": "shared", "requiredIf": "rehabilitation"}
+            ]
+          },
+          {
+            "id": "long_term_care_application",
+            "name": "長期入院計画書",
+            "description": "長期入院の計画と承認",
+            "inputFields": [
+              {"id": "longterm_patient_name", "label": "患者氏名", "source": "shared", "requiredIf": "longterm"},
+              {"id": "longterm_diagnosis", "label": "診断名", "source": "ai", "requiredIf": "longterm"},
+              {"id": "expected_stay", "label": "予定入院期間", "source": "derived", "requiredIf": "longterm"},
+              {"id": "longterm_reason", "label": "長期入院の理由", "source": "ai", "requiredIf": "longterm"},
+              {"id": "treatment_plan", "label": "治療計画", "source": "ai", "requiredIf": "longterm"},
+              {"id": "estimated_cost", "label": "予想費用", "source": "derived", "requiredIf": "longterm"},
+              {"id": "family_consent_longterm", "label": "家族同意", "source": "user", "requiredIf": "longterm"}
+            ]
+          },
+          {
+            "id": "medical_certificate",
+            "name": "診断書",
+            "description": "各種用途の診断書",
+            "inputFields": [
+              {"id": "cert_patient_name", "label": "患者氏名", "source": "shared", "requiredIf": "certificate"},
+              {"id": "cert_patient_birth", "label": "生年月日", "source": "mynumber", "requiredIf": "certificate"},
+              {"id": "cert_diagnosis", "label": "診断名", "source": "ai", "requiredIf": "certificate"},
+              {"id": "cert_onset_date", "label": "発症日", "source": "shared", "requiredIf": "certificate"},
+              {"id": "cert_treatment_details", "label": "治療内容", "source": "ai", "requiredIf": "certificate"},
+              {"id": "cert_prognosis", "label": "予後", "source": "ai", "requiredIf": "certificate"},
+              {"id": "cert_work_restriction", "label": "就業制限", "source": "ai", "requiredIf": "certificate"},
+              {"id": "cert_period", "label": "診断書期間", "source": "derived", "requiredIf": "certificate"},
+              {"id": "cert_purpose", "label": "使用目的", "source": "user", "requiredIf": "certificate"},
+              {"id": "cert_doctor_name", "label": "医師名", "source": "derived", "requiredIf": "certificate"},
+              {"id": "cert_issue_date", "label": "発行日", "source": "derived", "requiredIf": "certificate"}
+            ]
+          },
+          {
+            "id": "disability_certificate",
+            "name": "障害者手帳申請用診断書",
+            "description": "障害者手帳申請のための医師診断書",
+            "inputFields": [
+              {"id": "disability_patient_name", "label": "患者氏名", "source": "shared", "requiredIf": "disability"},
+              {"id": "disability_patient_birth", "label": "生年月日", "source": "mynumber", "requiredIf": "disability"},
+              {"id": "disability_type", "label": "障害の種類", "source": "ai", "requiredIf": "disability"},
+              {"id": "disability_grade", "label": "障害等級", "source": "ai", "requiredIf": "disability"},
+              {"id": "disability_cause", "label": "障害の原因", "source": "ai", "requiredIf": "disability"},
+              {"id": "disability_onset", "label": "初診日", "source": "shared", "requiredIf": "disability"},
+              {"id": "functional_impairment", "label": "機能障害の状態", "source": "ai", "requiredIf": "disability"},
+              {"id": "daily_life_impact", "label": "日常生活への影響", "source": "ai", "requiredIf": "disability"},
+              {"id": "medical_opinion", "label": "医師の意見", "source": "ai", "requiredIf": "disability"},
+              {"id": "examining_doctor", "label": "診断医名", "source": "derived", "requiredIf": "disability"}
             ]
           },
           {
@@ -208,10 +558,15 @@
             "name": "代理人届出書",
             "description": "代理人が手続きする際の届出",
             "inputFields": [
+              {"id": "proxy_patient_name", "label": "患者氏名", "source": "shared", "requiredIf": "proxy"},
               {"id": "proxy_name", "label": "代理人氏名", "source": "user", "requiredIf": "proxy"},
+              {"id": "proxy_birth", "label": "代理人生年月日", "source": "user", "requiredIf": "proxy"},
+              {"id": "proxy_address", "label": "代理人住所", "source": "user", "requiredIf": "proxy"},
               {"id": "proxy_relation", "label": "続柄", "source": "user", "requiredIf": "proxy"},
+              {"id": "proxy_phone", "label": "代理人電話番号", "source": "user", "requiredIf": "proxy"},
               {"id": "proxy_id_copy", "label": "代理人の本人確認書類", "source": "user", "requiredIf": "proxy"},
-              {"id": "patient_consent", "label": "患者の委任状", "source": "user", "requiredIf": "proxy"}
+              {"id": "patient_consent", "label": "患者の委任状", "source": "user", "requiredIf": "proxy"},
+              {"id": "proxy_authority", "label": "代理権限の範囲", "source": "ai", "requiredIf": "proxy"}
             ]
           }
         ]
@@ -261,7 +616,13 @@
       "checklist": [
         {"id": "transfer", "label": "転校手続きを行う", "key": "transfer"},
         {"id": "support", "label": "就学支援金を申請する", "key": "support"},
-        {"id": "disability", "label": "特別支援教育を希望する", "key": "disability"}
+        {"id": "disability", "label": "特別支援教育を希望する", "key": "disability"},
+        {"id": "scholarship", "label": "奨学金を申請する", "key": "scholarship"},
+        {"id": "dormitory", "label": "学生寮を利用する", "key": "dormitory"},
+        {"id": "club", "label": "部活動に参加する", "key": "club"},
+        {"id": "allergy", "label": "食物アレルギーがある", "key": "allergy"},
+        {"id": "medical_care", "label": "医療的ケアが必要", "key": "medical_care"},
+        {"id": "commute", "label": "通学バスを利用する", "key": "commute"}
       ],
       "documents": {
         "base": [
@@ -272,20 +633,69 @@
             "inputFields": [
               {"id": "student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": null},
               {"id": "student_birth", "label": "生年月日", "source": "mynumber", "requiredIf": null},
+              {"id": "student_gender", "label": "性別", "source": "mynumber", "requiredIf": null},
+              {"id": "student_address", "label": "住所", "source": "mynumber", "requiredIf": null},
               {"id": "parent_name", "label": "保護者氏名", "source": "shared", "requiredIf": null},
-              {"id": "address", "label": "住所", "source": "mynumber", "requiredIf": null},
+              {"id": "parent_birth", "label": "保護者生年月日", "source": "mynumber", "requiredIf": null},
+              {"id": "parent_address", "label": "保護者住所", "source": "mynumber", "requiredIf": null},
               {"id": "phone", "label": "電話番号", "source": "shared", "requiredIf": null},
-              {"id": "emergency_contact", "label": "緊急連絡先", "source": "user", "requiredIf": null}
+              {"id": "email", "label": "メールアドレス", "source": "shared", "requiredIf": null},
+              {"id": "emergency_contact", "label": "緊急連絡先", "source": "user", "requiredIf": null},
+              {"id": "emergency_relation", "label": "緊急連絡先続柄", "source": "user", "requiredIf": null},
+              {"id": "previous_school", "label": "前在籍校", "source": "shared", "requiredIf": null}
             ]
           },
           {
-            "id": "residence_certificate",
+            "id": "residence_certificate_edu",
             "name": "住民票の写し",
             "description": "住所確認用",
             "inputFields": [
-              {"id": "household_head", "label": "世帯主氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "household_head_edu", "label": "世帯主氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "household_head_birth_edu", "label": "世帯主生年月日", "source": "mynumber", "requiredIf": null},
               {"id": "address_proof", "label": "現住所", "source": "mynumber", "requiredIf": null},
-              {"id": "family_members", "label": "世帯構成", "source": "mynumber", "requiredIf": null}
+              {"id": "family_members_edu", "label": "世帯構成", "source": "mynumber", "requiredIf": null},
+              {"id": "family_count_edu", "label": "世帯員数", "source": "derived", "requiredIf": null},
+              {"id": "residence_purpose", "label": "使用目的", "source": "user", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "family_register_edu",
+            "name": "戸籍謄本",
+            "description": "親子関係の証明",
+            "inputFields": [
+              {"id": "principal_name_edu", "label": "筆頭者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "registered_domicile_edu", "label": "本籍地", "source": "mynumber", "requiredIf": null},
+              {"id": "family_members_register_edu", "label": "記載されている者", "source": "mynumber", "requiredIf": null},
+              {"id": "parent_child_relation", "label": "親子関係", "source": "mynumber", "requiredIf": null},
+              {"id": "register_issue_date", "label": "発行日", "source": "derived", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "health_record",
+            "name": "健康診断書",
+            "description": "入学時の健康状態",
+            "inputFields": [
+              {"id": "health_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": null},
+              {"id": "health_check_date", "label": "健診日", "source": "user", "requiredIf": null},
+              {"id": "height", "label": "身長", "source": "user", "requiredIf": null},
+              {"id": "weight", "label": "体重", "source": "user", "requiredIf": null},
+              {"id": "vision", "label": "視力", "source": "user", "requiredIf": null},
+              {"id": "hearing", "label": "聴力", "source": "user", "requiredIf": null},
+              {"id": "chronic_disease", "label": "既往症・慢性疾患", "source": "user", "requiredIf": null},
+              {"id": "allergies_health", "label": "アレルギー", "source": "user", "requiredIf": null},
+              {"id": "doctor_health_name", "label": "医師名", "source": "derived", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "vaccination_record",
+            "name": "予防接種証明書",
+            "description": "予防接種の記録",
+            "inputFields": [
+              {"id": "vacc_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": null},
+              {"id": "vacc_history", "label": "接種履歴", "source": "mynumber", "requiredIf": null},
+              {"id": "required_vaccines", "label": "必要な予防接種", "source": "derived", "requiredIf": null},
+              {"id": "incomplete_vaccines", "label": "未接種の予防接種", "source": "derived", "requiredIf": null},
+              {"id": "vacc_clinic", "label": "接種医療機関", "source": "shared", "requiredIf": null}
             ]
           },
           {
@@ -293,10 +703,29 @@
             "name": "在学証明書",
             "description": "前の学校からの転校証明",
             "inputFields": [
+              {"id": "transfer_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": "transfer"},
+              {"id": "transfer_student_birth", "label": "生年月日", "source": "mynumber", "requiredIf": "transfer"},
               {"id": "prev_school", "label": "前籍校名", "source": "shared", "requiredIf": "transfer"},
+              {"id": "prev_school_address", "label": "前籍校所在地", "source": "shared", "requiredIf": "transfer"},
               {"id": "prev_grade", "label": "学年", "source": "shared", "requiredIf": "transfer"},
+              {"id": "prev_class", "label": "クラス", "source": "shared", "requiredIf": "transfer"},
+              {"id": "attendance_days", "label": "出席日数", "source": "shared", "requiredIf": "transfer"},
               {"id": "transfer_date", "label": "転校日", "source": "shared", "requiredIf": "transfer"},
+              {"id": "transfer_reason", "label": "転校理由", "source": "ai", "requiredIf": "transfer"},
               {"id": "principal_sign", "label": "校長印", "source": "user", "requiredIf": "transfer"}
+            ]
+          },
+          {
+            "id": "transcript",
+            "name": "成績証明書",
+            "description": "前の学校の成績記録",
+            "inputFields": [
+              {"id": "transcript_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": "transfer"},
+              {"id": "transcript_prev_school", "label": "前籍校名", "source": "shared", "requiredIf": "transfer"},
+              {"id": "academic_year", "label": "学年", "source": "shared", "requiredIf": "transfer"},
+              {"id": "subject_grades", "label": "各科目の成績", "source": "shared", "requiredIf": "transfer"},
+              {"id": "overall_grade", "label": "総合評価", "source": "derived", "requiredIf": "transfer"},
+              {"id": "special_notes", "label": "特記事項", "source": "shared", "requiredIf": "transfer"}
             ]
           },
           {
@@ -304,9 +733,74 @@
             "name": "就学支援金申請書",
             "description": "授業料支援の申請",
             "inputFields": [
-              {"id": "income_info", "label": "世帯年収", "source": "mynumber", "requiredIf": "support"},
-              {"id": "tax_certificate", "label": "課税証明書番号", "source": "mynumber", "requiredIf": "support"},
-              {"id": "bank_account", "label": "振込口座", "source": "user", "requiredIf": "support"}
+              {"id": "support_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": "support"},
+              {"id": "support_parent_name", "label": "保護者氏名", "source": "shared", "requiredIf": "support"},
+              {"id": "household_income", "label": "世帯年収", "source": "mynumber", "requiredIf": "support"},
+              {"id": "household_members_count", "label": "世帯員数", "source": "mynumber", "requiredIf": "support"},
+              {"id": "tax_certificate_support", "label": "課税証明書番号", "source": "mynumber", "requiredIf": "support"},
+              {"id": "income_bracket_support", "label": "所得区分", "source": "derived", "requiredIf": "support"},
+              {"id": "support_amount", "label": "支援金額", "source": "derived", "requiredIf": "support"},
+              {"id": "bank_account_support", "label": "振込口座", "source": "shared", "requiredIf": "support"},
+              {"id": "support_reason", "label": "申請理由", "source": "ai", "requiredIf": "support"}
+            ]
+          },
+          {
+            "id": "scholarship_application",
+            "name": "奨学金申請書",
+            "description": "奨学金の申請",
+            "inputFields": [
+              {"id": "scholar_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": "scholarship"},
+              {"id": "scholar_grade", "label": "学年", "source": "shared", "requiredIf": "scholarship"},
+              {"id": "scholar_gpa", "label": "成績平均", "source": "shared", "requiredIf": "scholarship"},
+              {"id": "scholar_household_income", "label": "世帯年収", "source": "mynumber", "requiredIf": "scholarship"},
+              {"id": "scholarship_type", "label": "奨学金種別", "source": "ai", "requiredIf": "scholarship"},
+              {"id": "scholar_amount", "label": "希望金額", "source": "user", "requiredIf": "scholarship"},
+              {"id": "scholar_reason", "label": "申請理由", "source": "user", "requiredIf": "scholarship"},
+              {"id": "scholar_essay", "label": "志望理由書", "source": "user", "requiredIf": "scholarship"},
+              {"id": "recommendation_letter", "label": "推薦状", "source": "user", "requiredIf": "scholarship"}
+            ]
+          },
+          {
+            "id": "dormitory_application",
+            "name": "学生寮入寮申込書",
+            "description": "学生寮の利用申請",
+            "inputFields": [
+              {"id": "dorm_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": "dormitory"},
+              {"id": "dorm_grade", "label": "学年", "source": "shared", "requiredIf": "dormitory"},
+              {"id": "dorm_parent_name", "label": "保護者氏名", "source": "shared", "requiredIf": "dormitory"},
+              {"id": "home_address", "label": "自宅住所", "source": "mynumber", "requiredIf": "dormitory"},
+              {"id": "commute_distance", "label": "通学距離", "source": "derived", "requiredIf": "dormitory"},
+              {"id": "dorm_reason", "label": "入寮理由", "source": "ai", "requiredIf": "dormitory"},
+              {"id": "roommate_preference", "label": "ルームメイト希望", "source": "user", "requiredIf": "dormitory"},
+              {"id": "dietary_restrictions", "label": "食事制限", "source": "user", "requiredIf": "dormitory"}
+            ]
+          },
+          {
+            "id": "club_registration",
+            "name": "部活動入部届",
+            "description": "部活動への参加申込",
+            "inputFields": [
+              {"id": "club_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": "club"},
+              {"id": "club_name", "label": "部活動名", "source": "user", "requiredIf": "club"},
+              {"id": "club_type", "label": "活動種別", "source": "derived", "requiredIf": "club"},
+              {"id": "experience_level", "label": "経験レベル", "source": "user", "requiredIf": "club"},
+              {"id": "parent_consent_club", "label": "保護者同意", "source": "user", "requiredIf": "club"},
+              {"id": "insurance_club", "label": "傷害保険加入", "source": "user", "requiredIf": "club"}
+            ]
+          },
+          {
+            "id": "allergy_report",
+            "name": "食物アレルギー報告書",
+            "description": "給食での配慮が必要な場合",
+            "inputFields": [
+              {"id": "allergy_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": "allergy"},
+              {"id": "allergen_list", "label": "アレルゲン一覧", "source": "user", "requiredIf": "allergy"},
+              {"id": "allergy_severity", "label": "重症度", "source": "user", "requiredIf": "allergy"},
+              {"id": "allergy_symptoms", "label": "症状", "source": "user", "requiredIf": "allergy"},
+              {"id": "emergency_medicine", "label": "緊急時の薬", "source": "user", "requiredIf": "allergy"},
+              {"id": "epipen", "label": "エピペン所持", "source": "user", "requiredIf": "allergy"},
+              {"id": "allergy_doctor", "label": "主治医名", "source": "user", "requiredIf": "allergy"},
+              {"id": "doctor_certificate_allergy", "label": "医師の診断書", "source": "user", "requiredIf": "allergy"}
             ]
           },
           {
@@ -314,9 +808,45 @@
             "name": "特別支援教育申込書",
             "description": "特別支援が必要な場合",
             "inputFields": [
+              {"id": "special_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": "disability"},
+              {"id": "disability_type", "label": "障害の種類", "source": "user", "requiredIf": "disability"},
               {"id": "support_type", "label": "支援内容", "source": "ai", "requiredIf": "disability"},
-              {"id": "medical_opinion", "label": "医師の意見書", "source": "user", "requiredIf": "disability"},
-              {"id": "past_support", "label": "過去の支援歴", "source": "shared", "requiredIf": "disability"}
+              {"id": "support_level", "label": "支援レベル", "source": "ai", "requiredIf": "disability"},
+              {"id": "medical_opinion_edu", "label": "医師の意見書", "source": "user", "requiredIf": "disability"},
+              {"id": "therapy_history", "label": "療育歴", "source": "shared", "requiredIf": "disability"},
+              {"id": "past_support", "label": "過去の支援歴", "source": "shared", "requiredIf": "disability"},
+              {"id": "iep_required", "label": "個別教育計画の必要性", "source": "ai", "requiredIf": "disability"},
+              {"id": "support_equipment", "label": "必要な支援機器", "source": "user", "requiredIf": "disability"}
+            ]
+          },
+          {
+            "id": "medical_care_plan",
+            "name": "医療的ケア実施計画書",
+            "description": "医療的ケアが必要な場合",
+            "inputFields": [
+              {"id": "care_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": "medical_care"},
+              {"id": "medical_condition", "label": "病状", "source": "user", "requiredIf": "medical_care"},
+              {"id": "care_type", "label": "ケア内容", "source": "ai", "requiredIf": "medical_care"},
+              {"id": "care_frequency", "label": "実施頻度", "source": "user", "requiredIf": "medical_care"},
+              {"id": "care_provider", "label": "ケア実施者", "source": "user", "requiredIf": "medical_care"},
+              {"id": "emergency_protocol", "label": "緊急時対応", "source": "ai", "requiredIf": "medical_care"},
+              {"id": "doctor_instruction", "label": "医師の指示書", "source": "user", "requiredIf": "medical_care"},
+              {"id": "care_equipment", "label": "必要な医療器具", "source": "user", "requiredIf": "medical_care"}
+            ]
+          },
+          {
+            "id": "commute_application",
+            "name": "通学バス利用申込書",
+            "description": "スクールバスの利用申請",
+            "inputFields": [
+              {"id": "bus_student_name", "label": "児童・生徒氏名", "source": "shared", "requiredIf": "commute"},
+              {"id": "bus_home_address", "label": "自宅住所", "source": "mynumber", "requiredIf": "commute"},
+              {"id": "bus_stop", "label": "利用バス停", "source": "derived", "requiredIf": "commute"},
+              {"id": "bus_route", "label": "路線", "source": "derived", "requiredIf": "commute"},
+              {"id": "pickup_time", "label": "乗車時刻", "source": "derived", "requiredIf": "commute"},
+              {"id": "dropoff_time", "label": "下車時刻", "source": "derived", "requiredIf": "commute"},
+              {"id": "bus_fee", "label": "バス利用料金", "source": "derived", "requiredIf": "commute"},
+              {"id": "emergency_contact_bus", "label": "緊急連絡先", "source": "shared", "requiredIf": "commute"}
             ]
           }
         ]
@@ -367,7 +897,12 @@
         {"id": "export", "label": "輸出を行う", "key": "export"},
         {"id": "import", "label": "輸入を行う", "key": "import"},
         {"id": "dangerous", "label": "危険物を含む", "key": "dangerous"},
-        {"id": "cold_chain", "label": "冷蔵・冷凍が必要", "key": "cold_chain"}
+        {"id": "cold_chain", "label": "冷蔵・冷凍が必要", "key": "cold_chain"},
+        {"id": "air_freight", "label": "航空便を利用", "key": "air_freight"},
+        {"id": "sea_freight", "label": "海上便を利用", "key": "sea_freight"},
+        {"id": "warehouse", "label": "倉庫保管が必要", "key": "warehouse"},
+        {"id": "insurance", "label": "貨物保険に加入", "key": "insurance"},
+        {"id": "license", "label": "輸出入許可が必要", "key": "license"}
       ],
       "documents": {
         "base": [
@@ -376,13 +911,18 @@
             "name": "商業送り状（Invoice）",
             "description": "取引内容の明細",
             "inputFields": [
+              {"id": "invoice_number", "label": "送り状番号", "source": "derived", "requiredIf": null},
+              {"id": "invoice_date", "label": "発行日", "source": "derived", "requiredIf": null},
               {"id": "seller_name", "label": "売主名", "source": "shared", "requiredIf": null},
+              {"id": "seller_address", "label": "売主住所", "source": "shared", "requiredIf": null},
               {"id": "buyer_name", "label": "買主名", "source": "shared", "requiredIf": null},
+              {"id": "buyer_address", "label": "買主住所", "source": "shared", "requiredIf": null},
               {"id": "product_desc", "label": "商品説明", "source": "ai", "requiredIf": null},
               {"id": "quantity", "label": "数量", "source": "shared", "requiredIf": null},
               {"id": "unit_price", "label": "単価", "source": "shared", "requiredIf": null},
               {"id": "total_amount", "label": "合計金額", "source": "derived", "requiredIf": null},
-              {"id": "incoterms", "label": "貿易条件", "source": "shared", "requiredIf": null}
+              {"id": "incoterms", "label": "貿易条件", "source": "shared", "requiredIf": null},
+              {"id": "payment_terms", "label": "支払条件", "source": "shared", "requiredIf": null}
             ]
           },
           {
@@ -390,10 +930,58 @@
             "name": "梱包明細書（Packing List）",
             "description": "荷物の詳細情報",
             "inputFields": [
+              {"id": "packing_date", "label": "梱包日", "source": "derived", "requiredIf": null},
               {"id": "package_count", "label": "梱包個数", "source": "shared", "requiredIf": null},
+              {"id": "package_type", "label": "梱包形態", "source": "shared", "requiredIf": null},
               {"id": "gross_weight", "label": "総重量", "source": "shared", "requiredIf": null},
               {"id": "net_weight", "label": "正味重量", "source": "derived", "requiredIf": null},
-              {"id": "dimensions", "label": "寸法", "source": "shared", "requiredIf": null}
+              {"id": "dimensions", "label": "寸法", "source": "shared", "requiredIf": null},
+              {"id": "volume", "label": "容積", "source": "derived", "requiredIf": null},
+              {"id": "handling_instructions", "label": "取扱注意事項", "source": "ai", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "certificate_of_origin",
+            "name": "原産地証明書",
+            "description": "商品の原産国証明",
+            "inputFields": [
+              {"id": "origin_country", "label": "原産国", "source": "shared", "requiredIf": null},
+              {"id": "manufacturer_name", "label": "製造者名", "source": "shared", "requiredIf": null},
+              {"id": "manufacturing_date", "label": "製造日", "source": "shared", "requiredIf": null},
+              {"id": "origin_criteria", "label": "原産地基準", "source": "ai", "requiredIf": null},
+              {"id": "certifying_authority", "label": "発行機関", "source": "derived", "requiredIf": null},
+              {"id": "certificate_number", "label": "証明書番号", "source": "derived", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "bill_of_lading",
+            "name": "船荷証券（B/L）",
+            "description": "海上輸送の貨物証券",
+            "inputFields": [
+              {"id": "bl_number", "label": "B/L番号", "source": "shared", "requiredIf": "sea_freight"},
+              {"id": "vessel_name", "label": "船名", "source": "shared", "requiredIf": "sea_freight"},
+              {"id": "voyage_number", "label": "航海番号", "source": "shared", "requiredIf": "sea_freight"},
+              {"id": "port_of_loading", "label": "積載港", "source": "shared", "requiredIf": "sea_freight"},
+              {"id": "port_of_discharge", "label": "陸揚港", "source": "shared", "requiredIf": "sea_freight"},
+              {"id": "container_number", "label": "コンテナ番号", "source": "shared", "requiredIf": "sea_freight"},
+              {"id": "seal_number", "label": "シール番号", "source": "shared", "requiredIf": "sea_freight"},
+              {"id": "freight_charges", "label": "運賃", "source": "derived", "requiredIf": "sea_freight"},
+              {"id": "bl_type", "label": "B/L種別", "source": "ai", "requiredIf": "sea_freight"}
+            ]
+          },
+          {
+            "id": "airway_bill",
+            "name": "航空貨物運送状（AWB）",
+            "description": "航空輸送の貨物証券",
+            "inputFields": [
+              {"id": "awb_number", "label": "AWB番号", "source": "shared", "requiredIf": "air_freight"},
+              {"id": "airline_name", "label": "航空会社名", "source": "shared", "requiredIf": "air_freight"},
+              {"id": "flight_number", "label": "便名", "source": "shared", "requiredIf": "air_freight"},
+              {"id": "flight_date", "label": "出発日", "source": "shared", "requiredIf": "air_freight"},
+              {"id": "airport_of_departure", "label": "出発空港", "source": "shared", "requiredIf": "air_freight"},
+              {"id": "airport_of_destination", "label": "到着空港", "source": "shared", "requiredIf": "air_freight"},
+              {"id": "freight_charges_air", "label": "運賃", "source": "derived", "requiredIf": "air_freight"},
+              {"id": "chargeable_weight", "label": "課金重量", "source": "derived", "requiredIf": "air_freight"}
             ]
           },
           {
@@ -401,10 +989,15 @@
             "name": "輸出申告書",
             "description": "税関への輸出申告",
             "inputFields": [
+              {"id": "export_declaration_number", "label": "申告番号", "source": "derived", "requiredIf": "export"},
+              {"id": "declarant_name", "label": "申告者名", "source": "shared", "requiredIf": "export"},
               {"id": "hs_code", "label": "HSコード", "source": "ai", "requiredIf": "export"},
               {"id": "export_license", "label": "輸出許可番号", "source": "shared", "requiredIf": "export"},
               {"id": "destination_country", "label": "仕向国", "source": "shared", "requiredIf": "export"},
-              {"id": "customs_value", "label": "課税価格", "source": "derived", "requiredIf": "export"}
+              {"id": "customs_value_export", "label": "課税価格", "source": "derived", "requiredIf": "export"},
+              {"id": "export_port", "label": "輸出港", "source": "shared", "requiredIf": "export"},
+              {"id": "export_date", "label": "輸出予定日", "source": "shared", "requiredIf": "export"},
+              {"id": "customs_clearance_export", "label": "通関許可", "source": "derived", "requiredIf": "export"}
             ]
           },
           {
@@ -412,10 +1005,31 @@
             "name": "輸入申告書",
             "description": "税関への輸入申告",
             "inputFields": [
+              {"id": "import_declaration_number", "label": "申告番号", "source": "derived", "requiredIf": "import"},
+              {"id": "importer_name", "label": "輸入者名", "source": "shared", "requiredIf": "import"},
               {"id": "hs_code_import", "label": "HSコード", "source": "ai", "requiredIf": "import"},
-              {"id": "origin_country", "label": "原産国", "source": "shared", "requiredIf": "import"},
+              {"id": "origin_country_import", "label": "原産国", "source": "shared", "requiredIf": "import"},
               {"id": "duty_rate", "label": "関税率", "source": "ai", "requiredIf": "import"},
-              {"id": "import_tax", "label": "輸入税額", "source": "derived", "requiredIf": "import"}
+              {"id": "import_tax", "label": "輸入税額", "source": "derived", "requiredIf": "import"},
+              {"id": "import_port", "label": "輸入港", "source": "shared", "requiredIf": "import"},
+              {"id": "import_date", "label": "輸入日", "source": "shared", "requiredIf": "import"},
+              {"id": "customs_clearance_import", "label": "通関許可", "source": "derived", "requiredIf": "import"}
+            ]
+          },
+          {
+            "id": "export_license_application",
+            "name": "輸出許可申請書",
+            "description": "特定品目の輸出許可",
+            "inputFields": [
+              {"id": "license_application_number", "label": "申請番号", "source": "derived", "requiredIf": "license"},
+              {"id": "applicant_name_license", "label": "申請者名", "source": "shared", "requiredIf": "license"},
+              {"id": "export_item", "label": "輸出品目", "source": "shared", "requiredIf": "license"},
+              {"id": "end_user", "label": "最終需要者", "source": "shared", "requiredIf": "license"},
+              {"id": "end_use", "label": "最終用途", "source": "user", "requiredIf": "license"},
+              {"id": "quantity_license", "label": "数量", "source": "shared", "requiredIf": "license"},
+              {"id": "value_license", "label": "金額", "source": "shared", "requiredIf": "license"},
+              {"id": "license_type", "label": "許可種別", "source": "ai", "requiredIf": "license"},
+              {"id": "approval_status", "label": "承認状況", "source": "derived", "requiredIf": "license"}
             ]
           },
           {
@@ -423,10 +1037,14 @@
             "name": "危険物明細書",
             "description": "危険物の詳細申告",
             "inputFields": [
+              {"id": "shipper_dangerous", "label": "荷送人名", "source": "shared", "requiredIf": "dangerous"},
               {"id": "un_number", "label": "国連番号", "source": "ai", "requiredIf": "dangerous"},
               {"id": "hazard_class", "label": "危険物クラス", "source": "ai", "requiredIf": "dangerous"},
+              {"id": "packing_group", "label": "容器等級", "source": "ai", "requiredIf": "dangerous"},
               {"id": "flash_point", "label": "引火点", "source": "user", "requiredIf": "dangerous"},
-              {"id": "emergency_contact", "label": "緊急連絡先", "source": "shared", "requiredIf": "dangerous"}
+              {"id": "emergency_contact_dangerous", "label": "緊急連絡先", "source": "shared", "requiredIf": "dangerous"},
+              {"id": "safety_data_sheet", "label": "SDS添付", "source": "user", "requiredIf": "dangerous"},
+              {"id": "special_provisions", "label": "特別規定", "source": "ai", "requiredIf": "dangerous"}
             ]
           },
           {
@@ -434,9 +1052,73 @@
             "name": "温度管理証明書",
             "description": "冷蔵・冷凍輸送の証明",
             "inputFields": [
+              {"id": "product_name_cold", "label": "商品名", "source": "shared", "requiredIf": "cold_chain"},
               {"id": "temp_range", "label": "保管温度帯", "source": "ai", "requiredIf": "cold_chain"},
               {"id": "monitoring_device", "label": "温度記録装置", "source": "shared", "requiredIf": "cold_chain"},
-              {"id": "quality_cert", "label": "品質保証書", "source": "user", "requiredIf": "cold_chain"}
+              {"id": "temp_log_frequency", "label": "記録頻度", "source": "ai", "requiredIf": "cold_chain"},
+              {"id": "quality_cert", "label": "品質保証書", "source": "user", "requiredIf": "cold_chain"},
+              {"id": "expiry_date_cold", "label": "消費期限", "source": "shared", "requiredIf": "cold_chain"},
+              {"id": "cold_chain_breach", "label": "温度逸脱記録", "source": "derived", "requiredIf": "cold_chain"}
+            ]
+          },
+          {
+            "id": "warehouse_receipt",
+            "name": "倉庫寄託証",
+            "description": "倉庫保管の証明",
+            "inputFields": [
+              {"id": "warehouse_name", "label": "倉庫名", "source": "shared", "requiredIf": "warehouse"},
+              {"id": "warehouse_location", "label": "倉庫所在地", "source": "shared", "requiredIf": "warehouse"},
+              {"id": "receipt_number", "label": "寄託証番号", "source": "derived", "requiredIf": "warehouse"},
+              {"id": "depositor_name", "label": "寄託者名", "source": "shared", "requiredIf": "warehouse"},
+              {"id": "goods_description_warehouse", "label": "貨物概要", "source": "shared", "requiredIf": "warehouse"},
+              {"id": "storage_start_date", "label": "保管開始日", "source": "shared", "requiredIf": "warehouse"},
+              {"id": "storage_end_date", "label": "保管終了予定日", "source": "shared", "requiredIf": "warehouse"},
+              {"id": "storage_fee", "label": "保管料", "source": "derived", "requiredIf": "warehouse"},
+              {"id": "storage_conditions", "label": "保管条件", "source": "ai", "requiredIf": "warehouse"}
+            ]
+          },
+          {
+            "id": "cargo_insurance",
+            "name": "貨物保険証券",
+            "description": "輸送中の保険",
+            "inputFields": [
+              {"id": "policy_number", "label": "保険証券番号", "source": "shared", "requiredIf": "insurance"},
+              {"id": "insured_name", "label": "被保険者名", "source": "shared", "requiredIf": "insurance"},
+              {"id": "insured_value", "label": "保険金額", "source": "shared", "requiredIf": "insurance"},
+              {"id": "coverage_type", "label": "担保範囲", "source": "ai", "requiredIf": "insurance"},
+              {"id": "insurance_period", "label": "保険期間", "source": "shared", "requiredIf": "insurance"},
+              {"id": "deductible", "label": "免責金額", "source": "shared", "requiredIf": "insurance"},
+              {"id": "premium", "label": "保険料", "source": "derived", "requiredIf": "insurance"},
+              {"id": "claims_contact", "label": "事故連絡先", "source": "shared", "requiredIf": "insurance"}
+            ]
+          },
+          {
+            "id": "delivery_order",
+            "name": "配送指図書",
+            "description": "配送業者への指示",
+            "inputFields": [
+              {"id": "delivery_order_number", "label": "配送指図番号", "source": "derived", "requiredIf": null},
+              {"id": "carrier_name", "label": "運送業者名", "source": "shared", "requiredIf": null},
+              {"id": "pickup_address", "label": "集荷先住所", "source": "shared", "requiredIf": null},
+              {"id": "delivery_address", "label": "配送先住所", "source": "shared", "requiredIf": null},
+              {"id": "pickup_date", "label": "集荷日", "source": "shared", "requiredIf": null},
+              {"id": "delivery_date", "label": "配送希望日", "source": "shared", "requiredIf": null},
+              {"id": "delivery_instructions", "label": "配送指示", "source": "ai", "requiredIf": null},
+              {"id": "contact_person_delivery", "label": "担当者名", "source": "shared", "requiredIf": null},
+              {"id": "contact_phone_delivery", "label": "担当者電話", "source": "shared", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "customs_bond",
+            "name": "関税担保差入書",
+            "description": "関税の担保提供",
+            "inputFields": [
+              {"id": "bond_type", "label": "担保種別", "source": "ai", "requiredIf": null},
+              {"id": "bond_amount", "label": "担保金額", "source": "derived", "requiredIf": null},
+              {"id": "obligor_name", "label": "義務者名", "source": "shared", "requiredIf": null},
+              {"id": "surety_name", "label": "保証人名", "source": "shared", "requiredIf": null},
+              {"id": "bond_period", "label": "担保期間", "source": "shared", "requiredIf": null},
+              {"id": "customs_office_bond", "label": "提出税関", "source": "shared", "requiredIf": null}
             ]
           }
         ]
@@ -488,7 +1170,12 @@
         {"id": "damage_report", "label": "被害報告を行う", "key": "damage_report"},
         {"id": "certificate", "label": "罹災証明書を申請する", "key": "certificate"},
         {"id": "relief_fund", "label": "義援金を申請する", "key": "relief_fund"},
-        {"id": "temporary_housing", "label": "仮設住宅を希望する", "key": "temporary_housing"}
+        {"id": "temporary_housing", "label": "仮設住宅を希望する", "key": "temporary_housing"},
+        {"id": "financial_support", "label": "生活再建支援金を申請", "key": "financial_support"},
+        {"id": "tax_reduction", "label": "税の減免を申請", "key": "tax_reduction"},
+        {"id": "utility_support", "label": "公共料金の減免を申請", "key": "utility_support"},
+        {"id": "medical_support", "label": "医療費の減免を申請", "key": "medical_support"},
+        {"id": "loan", "label": "災害復興融資を申請", "key": "loan"}
       ],
       "documents": {
         "base": [
@@ -497,21 +1184,68 @@
             "name": "被害届出書",
             "description": "被災状況の第一報",
             "inputFields": [
-              {"id": "victim_name", "label": "被災者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "victim_name_damage", "label": "被災者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "victim_birth", "label": "被災者生年月日", "source": "mynumber", "requiredIf": null},
               {"id": "property_address", "label": "被災物件住所", "source": "mynumber", "requiredIf": null},
+              {"id": "property_type", "label": "物件種別", "source": "shared", "requiredIf": null},
               {"id": "damage_date", "label": "被災日時", "source": "user", "requiredIf": null},
+              {"id": "disaster_type_damage", "label": "災害の種類", "source": "ai", "requiredIf": null},
               {"id": "damage_type", "label": "被害の種類", "source": "ai", "requiredIf": null},
-              {"id": "damage_photos", "label": "被害写真", "source": "user", "requiredIf": null}
+              {"id": "damage_photos", "label": "被害写真", "source": "user", "requiredIf": null},
+              {"id": "emergency_contact_damage", "label": "緊急連絡先", "source": "shared", "requiredIf": null},
+              {"id": "current_location", "label": "現在の所在", "source": "user", "requiredIf": null}
             ]
           },
           {
-            "id": "residence_proof",
+            "id": "residence_proof_disaster",
             "name": "住民票の写し",
             "description": "被災地居住の証明",
             "inputFields": [
-              {"id": "resident_name", "label": "住民氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "resident_name_disaster", "label": "住民氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "resident_birth", "label": "生年月日", "source": "mynumber", "requiredIf": null},
               {"id": "resident_address", "label": "住所", "source": "mynumber", "requiredIf": null},
+              {"id": "household_head_disaster", "label": "世帯主氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "family_members_disaster", "label": "世帯構成", "source": "mynumber", "requiredIf": null},
               {"id": "move_in_date", "label": "転入日", "source": "mynumber", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "family_register_disaster",
+            "name": "戸籍謄本",
+            "description": "家族関係の証明",
+            "inputFields": [
+              {"id": "principal_name_disaster", "label": "筆頭者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "registered_domicile_disaster", "label": "本籍地", "source": "mynumber", "requiredIf": null},
+              {"id": "family_members_register_disaster", "label": "記載されている者", "source": "mynumber", "requiredIf": null},
+              {"id": "family_relations", "label": "続柄", "source": "mynumber", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "property_registration",
+            "name": "不動産登記簿謄本",
+            "description": "物件所有権の証明",
+            "inputFields": [
+              {"id": "property_location", "label": "物件所在", "source": "shared", "requiredIf": null},
+              {"id": "property_owner", "label": "所有者氏名", "source": "shared", "requiredIf": null},
+              {"id": "property_area", "label": "面積", "source": "shared", "requiredIf": null},
+              {"id": "building_structure", "label": "建物構造", "source": "shared", "requiredIf": null},
+              {"id": "mortgage_info", "label": "抵当権情報", "source": "shared", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "damage_assessment_report",
+            "name": "被害調査票",
+            "description": "詳細な被害状況の記録",
+            "inputFields": [
+              {"id": "assessment_officer", "label": "調査員名", "source": "derived", "requiredIf": "damage_report"},
+              {"id": "assessment_date", "label": "調査日", "source": "derived", "requiredIf": "damage_report"},
+              {"id": "roof_damage", "label": "屋根の被害", "source": "ai", "requiredIf": "damage_report"},
+              {"id": "wall_damage", "label": "壁の被害", "source": "ai", "requiredIf": "damage_report"},
+              {"id": "foundation_damage", "label": "基礎の被害", "source": "ai", "requiredIf": "damage_report"},
+              {"id": "interior_damage", "label": "内部の被害", "source": "ai", "requiredIf": "damage_report"},
+              {"id": "flooding_height", "label": "浸水深", "source": "user", "requiredIf": "damage_report"},
+              {"id": "repair_estimate", "label": "修繕費用見積", "source": "ai", "requiredIf": "damage_report"},
+              {"id": "habitability", "label": "居住可否判定", "source": "ai", "requiredIf": "damage_report"}
             ]
           },
           {
@@ -519,9 +1253,13 @@
             "name": "罹災証明書",
             "description": "被害程度の公式証明",
             "inputFields": [
+              {"id": "certificate_number", "label": "証明書番号", "source": "derived", "requiredIf": "certificate"},
+              {"id": "victim_name_cert", "label": "被災者氏名", "source": "mynumber", "requiredIf": "certificate"},
               {"id": "damage_level", "label": "被害程度", "source": "ai", "requiredIf": "certificate"},
+              {"id": "damage_category", "label": "被害区分", "source": "ai", "requiredIf": "certificate"},
               {"id": "inspection_date", "label": "調査日", "source": "derived", "requiredIf": "certificate"},
               {"id": "inspector_name", "label": "調査員名", "source": "derived", "requiredIf": "certificate"},
+              {"id": "issue_date_cert", "label": "発行日", "source": "derived", "requiredIf": "certificate"},
               {"id": "official_seal", "label": "公印", "source": "derived", "requiredIf": "certificate"}
             ]
           },
@@ -530,9 +1268,15 @@
             "name": "義援金申請書",
             "description": "災害義援金の受給申請",
             "inputFields": [
-              {"id": "bank_info", "label": "振込先口座", "source": "user", "requiredIf": "relief_fund"},
-              {"id": "household_size", "label": "世帯人数", "source": "mynumber", "requiredIf": "relief_fund"},
-              {"id": "certificate_copy", "label": "罹災証明書の写し", "source": "shared", "requiredIf": "relief_fund"}
+              {"id": "applicant_name_relief", "label": "申請者氏名", "source": "mynumber", "requiredIf": "relief_fund"},
+              {"id": "bank_name_relief", "label": "銀行名", "source": "user", "requiredIf": "relief_fund"},
+              {"id": "bank_branch_relief", "label": "支店名", "source": "user", "requiredIf": "relief_fund"},
+              {"id": "account_type_relief", "label": "口座種別", "source": "user", "requiredIf": "relief_fund"},
+              {"id": "account_number_relief", "label": "口座番号", "source": "user", "requiredIf": "relief_fund"},
+              {"id": "account_holder_relief", "label": "口座名義", "source": "shared", "requiredIf": "relief_fund"},
+              {"id": "household_size_relief", "label": "世帯人数", "source": "mynumber", "requiredIf": "relief_fund"},
+              {"id": "certificate_copy_relief", "label": "罹災証明書の写し", "source": "shared", "requiredIf": "relief_fund"},
+              {"id": "relief_amount", "label": "支給額", "source": "derived", "requiredIf": "relief_fund"}
             ]
           },
           {
@@ -540,10 +1284,114 @@
             "name": "仮設住宅入居申込書",
             "description": "応急仮設住宅の申込",
             "inputFields": [
-              {"id": "family_composition", "label": "世帯構成", "source": "mynumber", "requiredIf": "temporary_housing"},
-              {"id": "special_needs", "label": "特別な配慮", "source": "ai", "requiredIf": "temporary_housing"},
-              {"id": "preferred_location", "label": "希望地域", "source": "user", "requiredIf": "temporary_housing"},
-              {"id": "pet_info", "label": "ペットの有無", "source": "user", "requiredIf": "temporary_housing"}
+              {"id": "applicant_name_housing", "label": "申請者氏名", "source": "mynumber", "requiredIf": "temporary_housing"},
+              {"id": "family_composition_housing", "label": "世帯構成", "source": "mynumber", "requiredIf": "temporary_housing"},
+              {"id": "household_members_housing", "label": "同居予定者", "source": "mynumber", "requiredIf": "temporary_housing"},
+              {"id": "disability_housing", "label": "障害の有無", "source": "user", "requiredIf": "temporary_housing"},
+              {"id": "elderly_housing", "label": "高齢者の有無", "source": "derived", "requiredIf": "temporary_housing"},
+              {"id": "special_needs_housing", "label": "特別な配慮", "source": "ai", "requiredIf": "temporary_housing"},
+              {"id": "preferred_location_housing", "label": "希望地域", "source": "user", "requiredIf": "temporary_housing"},
+              {"id": "preferred_floor", "label": "希望階数", "source": "user", "requiredIf": "temporary_housing"},
+              {"id": "pet_info_housing", "label": "ペットの有無", "source": "user", "requiredIf": "temporary_housing"},
+              {"id": "contact_phone_housing", "label": "連絡先電話", "source": "shared", "requiredIf": "temporary_housing"}
+            ]
+          },
+          {
+            "id": "financial_support_application",
+            "name": "被災者生活再建支援金申請書",
+            "description": "生活再建のための支援金申請",
+            "inputFields": [
+              {"id": "applicant_name_financial", "label": "申請者氏名", "source": "mynumber", "requiredIf": "financial_support"},
+              {"id": "damage_level_financial", "label": "被害程度", "source": "shared", "requiredIf": "financial_support"},
+              {"id": "reconstruction_method", "label": "再建方法", "source": "ai", "requiredIf": "financial_support"},
+              {"id": "support_amount_financial", "label": "支援金額", "source": "derived", "requiredIf": "financial_support"},
+              {"id": "bank_account_financial", "label": "振込口座", "source": "user", "requiredIf": "financial_support"},
+              {"id": "certificate_attach_financial", "label": "罹災証明書添付", "source": "shared", "requiredIf": "financial_support"},
+              {"id": "contract_documents", "label": "契約関係書類", "source": "user", "requiredIf": "financial_support"}
+            ]
+          },
+          {
+            "id": "tax_reduction_application",
+            "name": "税の減免申請書",
+            "description": "固定資産税等の減免申請",
+            "inputFields": [
+              {"id": "applicant_name_tax", "label": "申請者氏名", "source": "mynumber", "requiredIf": "tax_reduction"},
+              {"id": "tax_type", "label": "税目", "source": "ai", "requiredIf": "tax_reduction"},
+              {"id": "property_location_tax", "label": "物件所在地", "source": "shared", "requiredIf": "tax_reduction"},
+              {"id": "damage_rate_tax", "label": "被害割合", "source": "ai", "requiredIf": "tax_reduction"},
+              {"id": "reduction_rate", "label": "減免割合", "source": "derived", "requiredIf": "tax_reduction"},
+              {"id": "tax_amount_before", "label": "減免前税額", "source": "mynumber", "requiredIf": "tax_reduction"},
+              {"id": "tax_amount_after", "label": "減免後税額", "source": "derived", "requiredIf": "tax_reduction"},
+              {"id": "certificate_attach_tax", "label": "罹災証明書添付", "source": "shared", "requiredIf": "tax_reduction"}
+            ]
+          },
+          {
+            "id": "utility_reduction_application",
+            "name": "公共料金減免申請書",
+            "description": "水道・電気等の料金減免",
+            "inputFields": [
+              {"id": "applicant_name_utility", "label": "申請者氏名", "source": "mynumber", "requiredIf": "utility_support"},
+              {"id": "service_type", "label": "対象サービス", "source": "ai", "requiredIf": "utility_support"},
+              {"id": "customer_number", "label": "お客様番号", "source": "shared", "requiredIf": "utility_support"},
+              {"id": "property_address_utility", "label": "使用場所住所", "source": "shared", "requiredIf": "utility_support"},
+              {"id": "reduction_period", "label": "減免期間", "source": "ai", "requiredIf": "utility_support"},
+              {"id": "certificate_attach_utility", "label": "罹災証明書添付", "source": "shared", "requiredIf": "utility_support"}
+            ]
+          },
+          {
+            "id": "medical_support_application",
+            "name": "医療費減免申請書",
+            "description": "医療費の一部負担金減免",
+            "inputFields": [
+              {"id": "applicant_name_medical", "label": "申請者氏名", "source": "mynumber", "requiredIf": "medical_support"},
+              {"id": "insurance_number_medical", "label": "保険証番号", "source": "mynumber", "requiredIf": "medical_support"},
+              {"id": "household_income_medical", "label": "世帯収入", "source": "mynumber", "requiredIf": "medical_support"},
+              {"id": "damage_impact_income", "label": "被災による収入減", "source": "ai", "requiredIf": "medical_support"},
+              {"id": "reduction_rate_medical", "label": "減免割合", "source": "derived", "requiredIf": "medical_support"},
+              {"id": "certificate_attach_medical", "label": "罹災証明書添付", "source": "shared", "requiredIf": "medical_support"},
+              {"id": "income_certificate_medical", "label": "所得証明書", "source": "mynumber", "requiredIf": "medical_support"}
+            ]
+          },
+          {
+            "id": "disaster_loan_application",
+            "name": "災害復興融資申込書",
+            "description": "住宅・事業再建のための融資",
+            "inputFields": [
+              {"id": "applicant_name_loan", "label": "申請者氏名", "source": "mynumber", "requiredIf": "loan"},
+              {"id": "loan_purpose", "label": "資金使途", "source": "ai", "requiredIf": "loan"},
+              {"id": "loan_amount", "label": "希望借入額", "source": "user", "requiredIf": "loan"},
+              {"id": "loan_period", "label": "返済期間", "source": "user", "requiredIf": "loan"},
+              {"id": "annual_income_loan", "label": "年収", "source": "mynumber", "requiredIf": "loan"},
+              {"id": "existing_loans", "label": "既存借入", "source": "shared", "requiredIf": "loan"},
+              {"id": "collateral", "label": "担保提供", "source": "user", "requiredIf": "loan"},
+              {"id": "interest_rate", "label": "適用金利", "source": "derived", "requiredIf": "loan"},
+              {"id": "monthly_payment", "label": "月額返済額", "source": "derived", "requiredIf": "loan"},
+              {"id": "certificate_attach_loan", "label": "罹災証明書添付", "source": "shared", "requiredIf": "loan"}
+            ]
+          },
+          {
+            "id": "evacuation_certificate",
+            "name": "避難証明書",
+            "description": "避難所滞在の証明",
+            "inputFields": [
+              {"id": "evacuee_name", "label": "避難者氏名", "source": "mynumber", "requiredIf": null},
+              {"id": "evacuation_center", "label": "避難所名", "source": "shared", "requiredIf": null},
+              {"id": "evacuation_start_date", "label": "避難開始日", "source": "shared", "requiredIf": null},
+              {"id": "evacuation_end_date", "label": "避難終了日", "source": "shared", "requiredIf": null},
+              {"id": "evacuees_count", "label": "避難者人数", "source": "derived", "requiredIf": null}
+            ]
+          },
+          {
+            "id": "repair_contract",
+            "name": "住宅修繕契約書",
+            "description": "住宅の修繕・再建契約",
+            "inputFields": [
+              {"id": "contractor_name", "label": "施工業者名", "source": "user", "requiredIf": null},
+              {"id": "contract_amount", "label": "契約金額", "source": "user", "requiredIf": null},
+              {"id": "construction_period", "label": "工期", "source": "user", "requiredIf": null},
+              {"id": "repair_scope", "label": "修繕範囲", "source": "ai", "requiredIf": null},
+              {"id": "contract_date", "label": "契約日", "source": "derived", "requiredIf": null},
+              {"id": "completion_date", "label": "完成予定日", "source": "derived", "requiredIf": null}
             ]
           }
         ]
