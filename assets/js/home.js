@@ -46,6 +46,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderDomainHub(data.domains);
     setupProfileLink();
     setupModeButtonListeners();
+    
+    // 統計セクションの閉じるボタン
+    const closeBtn = document.getElementById('closeStatistics');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeStatistics);
+    }
   } catch (error) {
     console.error('Error loading domains:', error);
     document.getElementById('domainHub').innerHTML = `
@@ -292,19 +298,341 @@ function createModeButtons(domainId) {
  * デモモード用：行政分野クリック時に分析ページへ遷移
  */
 function navigateToAnalysis(domainId) {
-  console.log('Navigating to analysis page with modes:', domainModes);
-  // 全分野のモード状態を渡す
-  const modeParams = {};
-  Object.keys(domainModes).forEach(id => {
-    modeParams[`${id}_mode`] = domainModes[id];
+  // 統計セクションを表示してスクロール
+  showStatistics();
+}
+
+/**
+ * 統計セクションを表示
+ */
+function showStatistics() {
+  const section = document.getElementById('statisticsSection');
+  if (!section) return;
+  
+  // セクション表示
+  section.style.display = 'block';
+  
+  // スムーズスクロール
+  setTimeout(() => {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+  
+  // 統計データを更新
+  updateStatisticsAnalysis();
+}
+
+/**
+ * 統計セクションを閉じる
+ */
+function closeStatistics() {
+  const section = document.getElementById('statisticsSection');
+  if (section) {
+    section.style.display = 'none';
+  }
+}
+
+// グラフ変数
+let volumeChart = null;
+let timeChart = null;
+let domainsDataForStats = null;
+let demoMetricsCache = {};
+
+/**
+ * 統計分析を更新
+ */
+async function updateStatisticsAnalysis() {
+  try {
+    // データ未読み込みの場合は読み込み
+    if (!domainsDataForStats) {
+      const response = await fetch('assets/data/domains.json');
+      if (!response.ok) throw new Error('Failed to load domains.json');
+      domainsDataForStats = await response.json();
+      
+      // demoMetricsをキャッシュ
+      domainsDataForStats.domains.forEach(domain => {
+        if (domain.demoMetrics) {
+          demoMetricsCache[domain.id] = domain.demoMetrics;
+        }
+      });
+    }
+    
+    // メトリクス計算
+    const metrics = calculateMetrics();
+    if (!metrics) {
+      console.error('Failed to calculate metrics');
+      return;
+    }
+    
+    // UI更新
+    updateMetricsDisplay(metrics);
+    updateCharts(metrics);
+    updateDomainDetails(metrics);
+    updateAdminImpact(metrics);
+    
+  } catch (error) {
+    console.error('Failed to update statistics:', error);
+  }
+}
+
+/**
+ * メトリクス計算
+ */
+function calculateMetrics() {
+  if (!domainsDataForStats || !domainsDataForStats.domains) {
+    console.error('domainsData is not loaded');
+    return null;
+  }
+  
+  const costPerHour = domainsDataForStats?.meta?.demoMetaInfo?.costPerHour || 3000;
+  
+  let totalDailyVolume = 0;
+  let totalProcessedAfter = 0;
+  let totalTimeBefore = 0;
+  let totalTimeAfter = 0;
+  let totalCostBefore = 0;
+  let totalCostAfter = 0;
+  const domainMetrics = {};
+
+  // 各分野のメトリクス計算
+  domainsDataForStats.domains.forEach(domain => {
+    const metrics = demoMetricsCache[domain.id];
+    if (!metrics) {
+      console.warn(`No demoMetrics found for domain: ${domain.id}`);
+      return;
+    }
+    
+    const domainMode = domainModes[domain.id] || 'plain';
+    const dailyVolume = metrics.dailyVolume || 0;
+    let reductionRate = metrics.reductionRates?.[domainMode] || 0;
+    let timeReductionRate = metrics.timeReductionRates?.[domainMode] || 0;
+    let costReductionRate = metrics.costReductionPercentage?.[domainMode] || 0;
+    const adminDependency = metrics.administrativeDependency || 0;
+
+    // 行政DXの波及効果を適用
+    const adminMode = domainModes['administration'] || 'plain';
+    if (domain.id !== 'administration' && adminMode !== 'ai') {
+      const adminDegradation = adminDependency * 0.3;
+      reductionRate = Math.max(0, reductionRate - (reductionRate * adminDegradation));
+      timeReductionRate = Math.max(0, timeReductionRate - (timeReductionRate * adminDegradation));
+      costReductionRate = Math.max(0, costReductionRate - (costReductionRate * adminDegradation));
+    }
+
+    const processedBefore = dailyVolume;
+    const processedAfter = Math.round(dailyVolume * (1 - reductionRate));
+    const timeBefore = Math.round(metrics.averageTimePerCase * processedBefore / 60);
+    const timeAfter = Math.round(metrics.averageTimePerCase * processedBefore * (1 - timeReductionRate) / 60);
+    const costBefore = Math.round(timeBefore * costPerHour * 21 / 1000) * 1000;
+    const costAfter = Math.round(timeAfter * costPerHour * 21 / 1000) * 1000;
+
+    totalDailyVolume += dailyVolume;
+    totalProcessedAfter += processedAfter;
+    totalTimeBefore += timeBefore;
+    totalTimeAfter += timeAfter;
+    totalCostBefore += costBefore;
+    totalCostAfter += costAfter;
+
+    domainMetrics[domain.id] = {
+      name: domain.name,
+      emoji: domain.emoji,
+      dailyVolume,
+      reductionRate,
+      processedBefore,
+      processedAfter,
+      timeBefore,
+      timeAfter,
+      costBefore,
+      costAfter,
+      timeReductionRate,
+      costReductionRate,
+      administrativeDependency: adminDependency,
+      impactOnOtherDomains: metrics.impactOnOtherDomains || {}
+    };
+  });
+
+  const totalReductionRate = 1 - (totalProcessedAfter / totalDailyVolume);
+  const totalTimeSaving = totalTimeBefore - totalTimeAfter;
+  const totalCostSaving = totalCostBefore - totalCostAfter;
+
+  const adminMode = domainModes['administration'] || 'plain';
+  let adminImpactMessage = '';
+  const adminDependentDomains = Object.entries(domainMetrics)
+    .filter(([id, m]) => id !== 'administration' && m.administrativeDependency > 0.5)
+    .map(([id, m]) => m.name);
+
+  if (adminMode === 'ai') {
+    adminImpactMessage = `✅ 行政DXがAIレベルのため、${adminDependentDomains.join('・')}の効率が最大化されています`;
+  } else if (adminMode === 'plain') {
+    adminImpactMessage = `⚠️ 行政DXがPlainのため、${adminDependentDomains.join('・')}の効率が制限されています`;
+  } else {
+    adminImpactMessage = `🔄 行政DXがSmartレベルのため、${adminDependentDomains.join('・')}への影響は中程度です`;
+  }
+
+  return {
+    totalReductionRate,
+    totalProcessedAfter,
+    totalDailyVolume,
+    totalTimeSaving,
+    totalCostSaving,
+    domainMetrics,
+    adminImpactMessage
+  };
+}
+
+/**
+ * メトリクス表示を更新
+ */
+function updateMetricsDisplay(metrics) {
+  document.getElementById('reductionPercentage').textContent = 
+    `${(metrics.totalReductionRate * 100).toFixed(1)}%`;
+  document.getElementById('reductionDetail').textContent = 
+    `${metrics.totalDailyVolume} → ${metrics.totalProcessedAfter} 件`;
+  
+  const daysPerYear = metrics.totalTimeSaving / 8;
+  document.getElementById('timeSaving').textContent = 
+    `${metrics.totalTimeSaving.toLocaleString()}時間`;
+  document.getElementById('timeSavingDetail').textContent = 
+    `年間 ${daysPerYear.toFixed(0)} 日分`;
+  
+  document.getElementById('costSaving').textContent = 
+    `￥${metrics.totalCostSaving.toLocaleString()}`;
+  document.getElementById('costSavingDetail').textContent = 
+    `月額削減`;
+  
+  document.getElementById('adminImpact').textContent = 
+    metrics.adminImpactMessage.split('のため')[0];
+  document.getElementById('adminImpactDetail').textContent = 
+    '全体への効果';
+}
+
+/**
+ * グラフを更新
+ */
+function updateCharts(metrics) {
+  const labels = [];
+  const volumeData = [];
+  const timeData = [];
+  
+  Object.entries(metrics.domainMetrics).forEach(([id, m]) => {
+    labels.push(m.emoji + ' ' + m.name);
+    volumeData.push((m.reductionRate * 100).toFixed(1));
+    timeData.push((m.timeReductionRate * 100).toFixed(1));
   });
   
-  navigate('demo-analysis.html', { 
-    experience: 'demo',
-    domain: domainId,
-    ...modeParams
+  // 流通件数削減グラフ
+  const volumeCtx = document.getElementById('volumeChart');
+  if (volumeCtx) {
+    if (volumeChart) volumeChart.destroy();
+    volumeChart = new Chart(volumeCtx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '削減率 (%)',
+          data: volumeData,
+          backgroundColor: 'rgba(59, 130, 246, 0.7)',
+          borderColor: 'rgba(59, 130, 246, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: { callback: value => value + '%' }
+          }
+        }
+      }
+    });
+  }
+  
+  // 時間削減グラフ
+  const timeCtx = document.getElementById('timeChart');
+  if (timeCtx) {
+    if (timeChart) timeChart.destroy();
+    timeChart = new Chart(timeCtx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '削減率 (%)',
+          data: timeData,
+          backgroundColor: 'rgba(249, 115, 22, 0.7)',
+          borderColor: 'rgba(249, 115, 22, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: { callback: value => value + '%' }
+          }
+        }
+      }
+    });
+  }
+}
+
+/**
+ * 分野別詳細を更新
+ */
+function updateDomainDetails(metrics) {
+  const grid = document.getElementById('domainDetailsGrid');
+  if (!grid) return;
+  
+  grid.innerHTML = '';
+  Object.entries(metrics.domainMetrics).forEach(([id, m]) => {
+    const card = document.createElement('div');
+    card.className = 'domain-detail-card';
+    card.innerHTML = `
+      <h4>${m.emoji} ${m.name}</h4>
+      <div class="detail-stat">
+        <span class="detail-label">処理件数</span>
+        <span class="detail-value">${m.processedBefore} → ${m.processedAfter}</span>
+      </div>
+      <div class="detail-stat">
+        <span class="detail-label">削減率</span>
+        <span class="detail-value">${(m.reductionRate * 100).toFixed(1)}%</span>
+      </div>
+      <div class="detail-stat">
+        <span class="detail-label">時間削減</span>
+        <span class="detail-value">${m.timeBefore}h → ${m.timeAfter}h</span>
+      </div>
+      <div class="detail-stat">
+        <span class="detail-label">コスト削減</span>
+        <span class="detail-value">￥${m.costBefore.toLocaleString()} → ￥${m.costAfter.toLocaleString()}</span>
+      </div>
+    `;
+    grid.appendChild(card);
   });
 }
+
+/**
+ * 行政DX波及効果を更新
+ */
+function updateAdminImpact(metrics) {
+  const container = document.getElementById('impactDetails');
+  if (!container) return;
+  
+  const ul = container.querySelector('ul');
+  if (!ul) return;
+  
+  ul.innerHTML = `<li>${metrics.adminImpactMessage}</li>`;
+  
+  Object.entries(metrics.domainMetrics).forEach(([id, m]) => {
+    if (id !== 'administration' && m.administrativeDependency > 0) {
+      const depPercent = (m.administrativeDependency * 100).toFixed(0);
+      ul.innerHTML += `<li>${m.emoji} ${m.name}: 行政依存度 ${depPercent}%</li>`;
+    }
+  });
+}
+
 
 /**
  * モードボタンのリスナーをセットアップ
@@ -387,6 +715,12 @@ async function updateDomainStats(domainId, mode) {
       // フラッシュアニメーション
       statsDiv.classList.add('stats-flash');
       setTimeout(() => statsDiv.classList.remove('stats-flash'), 500);
+    }
+    
+    // 統計セクションが表示されている場合は更新
+    const statisticsSection = document.getElementById('statisticsSection');
+    if (statisticsSection && statisticsSection.style.display === 'block') {
+      updateStatisticsAnalysis();
     }
   } catch (error) {
     console.error('Failed to update stats:', error);
