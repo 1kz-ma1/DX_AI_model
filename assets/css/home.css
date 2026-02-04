@@ -245,6 +245,27 @@ body {
     z-index: 2;
   }
 
+  /* 分野ごとの背景色 */
+  .domain-node[data-domain-id="medical"] {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    color: white;
+  }
+
+  .domain-node[data-domain-id="education"] {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+  }
+
+  .domain-node[data-domain-id="logistics"] {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: white;
+  }
+
+  .domain-node[data-domain-id="disaster"] {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: white;
+  }
+
   .domain-node::after {
     content: '';
     position: absolute;

@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     displayCharacterInfo();
     renderDomainHub(data.domains);
     setupProfileLink();
+    setupModeButtonListeners();
   } catch (error) {
     console.error('Error loading domains:', error);
     document.getElementById('domainHub').innerHTML = `
@@ -104,6 +105,7 @@ function renderDomainHub(domains) {
       centerNode.className = 'domain-node center';
       centerNode.href = '#';
       centerNode.setAttribute('role', 'button');
+      centerNode.setAttribute('data-domain-id', admin.id);
       centerNode.setAttribute('aria-label', `${admin.name}の体験へ移動`);
       
       centerNode.style.left = 'calc(50% - 90px)';
@@ -140,6 +142,7 @@ function renderDomainHub(domains) {
       node.className = 'domain-node';
       node.href = '#';
       node.setAttribute('role', 'button');
+      node.setAttribute('data-domain-id', domain.id);
       node.setAttribute('aria-label', `${domain.name}の体験へ移動`);
       
       // 12時の位置を起点に時計回りに配置
@@ -205,6 +208,7 @@ function createDomainNode(domain, isCenter) {
   node.className = `domain-node ${isCenter ? 'center' : ''}`;
   node.href = '#';
   node.setAttribute('role', 'button');
+  node.setAttribute('data-domain-id', domain.id);
   node.setAttribute('aria-label', `${domain.name}の体験へ移動`);
   
   node.innerHTML = `
@@ -274,8 +278,12 @@ function navigateToAnalysis(domainId) {
   });
 }
 
-// モードボタンのイベントリスナー（イベント委譲）
-if (experienceMode === 'demo') {
+/**
+ * モードボタンのリスナーをセットアップ
+ */
+function setupModeButtonListeners() {
+  if (experienceMode !== 'demo') return;
+  
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.mode-btn');
     if (!btn) return;
