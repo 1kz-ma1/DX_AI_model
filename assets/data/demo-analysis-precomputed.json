@@ -1,0 +1,385 @@
+{
+  "meta": {
+    "generatedAt": "2026-02-04T06:40:58.814331+00:00",
+    "source": "domains.json",
+    "version": "1.0.0",
+    "defaultMode": "plain"
+  },
+  "modes": {
+    "plain": {
+      "currentMode": "plain",
+      "totalDailyVolume": 57920.0,
+      "totalReductionRate": 0.0,
+      "totalTimeBefore": 5263,
+      "totalTimeAfter": 5263,
+      "totalTimeSaving": 0,
+      "totalCostBefore": 331569000,
+      "totalCostAfter": 331569000,
+      "totalCostSaving": 0,
+      "domainMetrics": {
+        "administration": {
+          "id": "administration",
+          "name": "行政DX",
+          "emoji": "🏛️",
+          "dailyVolume": 5000.0,
+          "processedBefore": 5000.0,
+          "processedAfter": 5000,
+          "timeBefore": 1500,
+          "timeAfter": 1500,
+          "costBefore": 94500000,
+          "costAfter": 94500000,
+          "reductionRate": 0.0,
+          "timeReductionRate": 0.0,
+          "costReductionRate": 0.0,
+          "administrativeDependency": 1.0,
+          "impactOnOtherDomains": {
+            "medical": 0.9,
+            "education": 0.85,
+            "logistics": 0.2,
+            "disaster": 0.7
+          }
+        },
+        "medical": {
+          "id": "medical",
+          "name": "医療DX",
+          "emoji": "🏥",
+          "dailyVolume": 2800.0,
+          "processedBefore": 2800.0,
+          "processedAfter": 2800,
+          "timeBefore": 933,
+          "timeAfter": 933,
+          "costBefore": 58779000,
+          "costAfter": 58779000,
+          "reductionRate": 0.0,
+          "timeReductionRate": 0.0,
+          "costReductionRate": 0.0,
+          "administrativeDependency": 0.9,
+          "impactOnOtherDomains": {
+            "administration": 0.1,
+            "education": 0.3,
+            "logistics": 0.05,
+            "disaster": 0.4
+          }
+        },
+        "education": {
+          "id": "education",
+          "name": "教育DX",
+          "emoji": "📚",
+          "dailyVolume": 920.0,
+          "processedBefore": 920.0,
+          "processedAfter": 920,
+          "timeBefore": 230,
+          "timeAfter": 230,
+          "costBefore": 14490000,
+          "costAfter": 14490000,
+          "reductionRate": 0.0,
+          "timeReductionRate": 0.0,
+          "costReductionRate": 0.0,
+          "administrativeDependency": 0.85,
+          "impactOnOtherDomains": {
+            "administration": 0.05,
+            "medical": 0.15,
+            "logistics": 0.1,
+            "disaster": 0.2
+          }
+        },
+        "logistics": {
+          "id": "logistics",
+          "name": "物流DX",
+          "emoji": "📦",
+          "dailyVolume": 48000.0,
+          "processedBefore": 48000.0,
+          "processedAfter": 48000,
+          "timeBefore": 2400,
+          "timeAfter": 2400,
+          "costBefore": 151200000,
+          "costAfter": 151200000,
+          "reductionRate": 0.0,
+          "timeReductionRate": 0.0,
+          "costReductionRate": 0.0,
+          "administrativeDependency": 0.15,
+          "impactOnOtherDomains": {
+            "administration": 0.02,
+            "medical": 0.02,
+            "education": 0.01,
+            "disaster": 0.05
+          }
+        },
+        "disaster": {
+          "id": "disaster",
+          "name": "災害対応DX",
+          "emoji": "🚨",
+          "dailyVolume": 1200.0,
+          "processedBefore": 1200.0,
+          "processedAfter": 1200,
+          "timeBefore": 200,
+          "timeAfter": 200,
+          "costBefore": 12600000,
+          "costAfter": 12600000,
+          "reductionRate": 0.0,
+          "timeReductionRate": 0.0,
+          "costReductionRate": 0.0,
+          "administrativeDependency": 0.75,
+          "impactOnOtherDomains": {
+            "administration": 0.1,
+            "medical": 0.2,
+            "education": 0.1,
+            "logistics": 0.1
+          }
+        }
+      },
+      "adminImpactMessage": "⚠️ 行政DXがPlainのため、医療DX・教育DX・災害対応DXの効率が制限されています",
+      "costPerHour": 3000.0
+    },
+    "smart": {
+      "currentMode": "smart",
+      "totalDailyVolume": 57920.0,
+      "totalReductionRate": 0.25138121546961323,
+      "totalTimeBefore": 5263,
+      "totalTimeAfter": 3547,
+      "totalTimeSaving": 1716,
+      "totalCostBefore": 331569000,
+      "totalCostAfter": 223461000,
+      "totalCostSaving": 108108000,
+      "domainMetrics": {
+        "administration": {
+          "id": "administration",
+          "name": "行政DX",
+          "emoji": "🏛️",
+          "dailyVolume": 5000.0,
+          "processedBefore": 5000.0,
+          "processedAfter": 3250,
+          "timeBefore": 1500,
+          "timeAfter": 900,
+          "costBefore": 94500000,
+          "costAfter": 56700000,
+          "reductionRate": 0.35,
+          "timeReductionRate": 0.4,
+          "costReductionRate": 0.35,
+          "administrativeDependency": 1.0,
+          "impactOnOtherDomains": {
+            "medical": 0.9,
+            "education": 0.85,
+            "logistics": 0.2,
+            "disaster": 0.7
+          }
+        },
+        "medical": {
+          "id": "medical",
+          "name": "医療DX",
+          "emoji": "🏥",
+          "dailyVolume": 2800.0,
+          "processedBefore": 2800.0,
+          "processedAfter": 1982,
+          "timeBefore": 933,
+          "timeAfter": 627,
+          "costBefore": 58779000,
+          "costAfter": 39501000,
+          "reductionRate": 0.29200000000000004,
+          "timeReductionRate": 0.3285,
+          "costReductionRate": 0.29200000000000004,
+          "administrativeDependency": 0.9,
+          "impactOnOtherDomains": {
+            "administration": 0.1,
+            "education": 0.3,
+            "logistics": 0.05,
+            "disaster": 0.4
+          }
+        },
+        "education": {
+          "id": "education",
+          "name": "教育DX",
+          "emoji": "📚",
+          "dailyVolume": 920.0,
+          "processedBefore": 920.0,
+          "processedAfter": 714,
+          "timeBefore": 230,
+          "timeAfter": 170,
+          "costBefore": 14490000,
+          "costAfter": 10710000,
+          "reductionRate": 0.22349999999999998,
+          "timeReductionRate": 0.26075,
+          "costReductionRate": 0.22349999999999998,
+          "administrativeDependency": 0.85,
+          "impactOnOtherDomains": {
+            "administration": 0.05,
+            "medical": 0.15,
+            "logistics": 0.1,
+            "disaster": 0.2
+          }
+        },
+        "logistics": {
+          "id": "logistics",
+          "name": "物流DX",
+          "emoji": "📦",
+          "dailyVolume": 48000.0,
+          "processedBefore": 48000.0,
+          "processedAfter": 36540,
+          "timeBefore": 2400,
+          "timeAfter": 1712,
+          "costBefore": 151200000,
+          "costAfter": 107856000,
+          "reductionRate": 0.23875,
+          "timeReductionRate": 0.2865,
+          "costReductionRate": 0.23875,
+          "administrativeDependency": 0.15,
+          "impactOnOtherDomains": {
+            "administration": 0.02,
+            "medical": 0.02,
+            "education": 0.01,
+            "disaster": 0.05
+          }
+        },
+        "disaster": {
+          "id": "disaster",
+          "name": "災害対応DX",
+          "emoji": "🚨",
+          "dailyVolume": 1200.0,
+          "processedBefore": 1200.0,
+          "processedAfter": 874,
+          "timeBefore": 200,
+          "timeAfter": 138,
+          "costBefore": 12600000,
+          "costAfter": 8694000,
+          "reductionRate": 0.27125,
+          "timeReductionRate": 0.31000000000000005,
+          "costReductionRate": 0.27125,
+          "administrativeDependency": 0.75,
+          "impactOnOtherDomains": {
+            "administration": 0.1,
+            "medical": 0.2,
+            "education": 0.1,
+            "logistics": 0.1
+          }
+        }
+      },
+      "adminImpactMessage": "→ 行政DXが中程度のため、各分野の効率向上に部分的な制約があります",
+      "costPerHour": 3000.0
+    },
+    "ai": {
+      "currentMode": "ai",
+      "totalDailyVolume": 57920.0,
+      "totalReductionRate": 0.6292127071823204,
+      "totalTimeBefore": 5263,
+      "totalTimeAfter": 1230,
+      "totalTimeSaving": 4033,
+      "totalCostBefore": 331569000,
+      "totalCostAfter": 77490000,
+      "totalCostSaving": 254079000,
+      "domainMetrics": {
+        "administration": {
+          "id": "administration",
+          "name": "行政DX",
+          "emoji": "🏛️",
+          "dailyVolume": 5000.0,
+          "processedBefore": 5000.0,
+          "processedAfter": 1000,
+          "timeBefore": 1500,
+          "timeAfter": 225,
+          "costBefore": 94500000,
+          "costAfter": 14175000,
+          "reductionRate": 0.8,
+          "timeReductionRate": 0.85,
+          "costReductionRate": 0.75,
+          "administrativeDependency": 1.0,
+          "impactOnOtherDomains": {
+            "medical": 0.9,
+            "education": 0.85,
+            "logistics": 0.2,
+            "disaster": 0.7
+          }
+        },
+        "medical": {
+          "id": "medical",
+          "name": "医療DX",
+          "emoji": "🏥",
+          "dailyVolume": 2800.0,
+          "processedBefore": 2800.0,
+          "processedAfter": 700,
+          "timeBefore": 933,
+          "timeAfter": 187,
+          "costBefore": 58779000,
+          "costAfter": 11781000,
+          "reductionRate": 0.75,
+          "timeReductionRate": 0.8,
+          "costReductionRate": 0.7,
+          "administrativeDependency": 0.9,
+          "impactOnOtherDomains": {
+            "administration": 0.1,
+            "education": 0.3,
+            "logistics": 0.05,
+            "disaster": 0.4
+          }
+        },
+        "education": {
+          "id": "education",
+          "name": "教育DX",
+          "emoji": "📚",
+          "dailyVolume": 920.0,
+          "processedBefore": 920.0,
+          "processedAfter": 276,
+          "timeBefore": 230,
+          "timeAfter": 58,
+          "costBefore": 14490000,
+          "costAfter": 3654000,
+          "reductionRate": 0.7,
+          "timeReductionRate": 0.75,
+          "costReductionRate": 0.65,
+          "administrativeDependency": 0.85,
+          "impactOnOtherDomains": {
+            "administration": 0.05,
+            "medical": 0.15,
+            "logistics": 0.1,
+            "disaster": 0.2
+          }
+        },
+        "logistics": {
+          "id": "logistics",
+          "name": "物流DX",
+          "emoji": "📦",
+          "dailyVolume": 48000.0,
+          "processedBefore": 48000.0,
+          "processedAfter": 19200,
+          "timeBefore": 2400,
+          "timeAfter": 720,
+          "costBefore": 151200000,
+          "costAfter": 45360000,
+          "reductionRate": 0.6,
+          "timeReductionRate": 0.7,
+          "costReductionRate": 0.6,
+          "administrativeDependency": 0.15,
+          "impactOnOtherDomains": {
+            "administration": 0.02,
+            "medical": 0.02,
+            "education": 0.01,
+            "disaster": 0.05
+          }
+        },
+        "disaster": {
+          "id": "disaster",
+          "name": "災害対応DX",
+          "emoji": "🚨",
+          "dailyVolume": 1200.0,
+          "processedBefore": 1200.0,
+          "processedAfter": 300,
+          "timeBefore": 200,
+          "timeAfter": 40,
+          "costBefore": 12600000,
+          "costAfter": 2520000,
+          "reductionRate": 0.75,
+          "timeReductionRate": 0.8,
+          "costReductionRate": 0.7,
+          "administrativeDependency": 0.75,
+          "impactOnOtherDomains": {
+            "administration": 0.1,
+            "medical": 0.2,
+            "education": 0.1,
+            "logistics": 0.1
+          }
+        }
+      },
+      "adminImpactMessage": "✅ 行政DXがAIレベルのため、医療DX・教育DX・災害対応DXの効率が最大化されています",
+      "costPerHour": 3000.0
+    }
+  }
+}
