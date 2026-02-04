@@ -465,7 +465,8 @@ body {
   justify-content: center;
   flex-wrap: wrap;
   row-gap: 0.35rem;
-  z-index: 3;
+  position: relative;
+  z-index: 30;
 }
 
 .domain-node:not(.center) .mode-buttons {
@@ -485,6 +486,8 @@ body {
   backdrop-filter: blur(4px);
   min-width: 58px;
   text-align: center;
+  position: relative;
+  z-index: 31;
 }
 
 .domain-node:not(.center) .mode-btn {
@@ -597,6 +600,11 @@ body {
   display: block;
 }
 
+/* 行政DX（center）はホバーで統計を表示しない（デモモードではクリックで分析ページに遷移するため） */
+.domain-node.center:hover .domain-stats {
+  display: none;
+}
+
 /* 右側ノードのツールチップは右に表示 */
 .domain-node.tooltip-right .domain-stats {
   left: auto;
@@ -619,6 +627,7 @@ body {
 .domain-node.center .domain-stats {
   background: rgba(0, 0, 0, 0.65);
   top: -118px;
+  pointer-events: none;
 }
 
 .domain-node.center .domain-stats::before {
