@@ -20,11 +20,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.log(`Mode from URL: ${currentMode}`);
     }
 
-    // domains.jsonを読み込み（pages/から見て ../assets/ 相対）
-    const basePath = window.location.pathname.includes('/pages/') ? '../' : '';
-    console.log(`Base path: ${basePath}, Full path will be: ${basePath}assets/data/domains.json`);
+    // domains.jsonを読み込み（どこから実行されてもdocsパスを正しく解決）
+    let dataUrl = 'assets/data/domains.json';
+    console.log(`Attempting to fetch: ${dataUrl}`);
     
-    const response = await fetch(basePath + 'assets/data/domains.json');
+    let response = await fetch(dataUrl);
+    if (!response.ok && window.location.pathname.includes('/pages/')) {
+      // pages/ フォルダからアクセスされている場合は ../ を付ける
+      dataUrl = '../assets/data/domains.json';
+      console.log(`First attempt failed. Attempting: ${dataUrl}`);
+      response = await fetch(dataUrl);
+    }
+    
     if (!response.ok) {
       throw new Error(`Failed to fetch domains.json: ${response.status}`);
     }
@@ -105,10 +112,6 @@ function initUI() {
 
         // 分析更新
         console.log(`Mode changed to: ${currentMode}`);
-        updateAnalysis();
-      }
-    });
-  });
         updateAnalysis();
       }
     });
