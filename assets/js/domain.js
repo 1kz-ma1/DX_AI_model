@@ -187,6 +187,8 @@ function initUI() {
  * デモモード：分析ページへナビゲート
  */
 function navigateToAnalysis() {
+  console.log('navigateToAnalysis() called');
+  console.log(`Current mode: ${currentMode}, Current domain: ${currentDomain?.id}`);
   navigate('demo-analysis.html', { 
     experience: 'demo',
     mode: currentMode, 

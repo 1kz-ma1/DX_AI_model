@@ -3,6 +3,8 @@
  * 社会全体のDX×AI導入による影響を動的に計算・表示
  */
 
+console.log('demo-analysis.js loaded');
+
 let currentMode = 'smart';
 let domainsData = null;
 let demoMetricsCache = {};

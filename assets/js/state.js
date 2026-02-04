@@ -97,6 +97,8 @@ function mergeWithProfile() {
  * @param {Object} additionalParams - 追加パラメータ
  */
 function navigate(url, additionalParams = {}) {
+  console.log(`navigate() called with url: ${url}`, additionalParams);
+  
   const merged = mergeWithProfile();
   const params = { ...merged, ...additionalParams };
   
@@ -113,12 +115,19 @@ function navigate(url, additionalParams = {}) {
   const currentDir = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
   const basePath = window.location.origin + currentDir;
   
+  console.log(`currentPath: ${currentPath}`);
+  console.log(`currentDir: ${currentDir}`);
+  console.log(`basePath: ${basePath}`);
+  
   const urlObj = new URL(url, basePath);
+  console.log(`Final URL before params: ${urlObj.toString()}`);
+  
   Object.keys(params).forEach(key => {
     if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
       urlObj.searchParams.set(key, params[key]);
     }
   });
   
+  console.log(`Final URL with params: ${urlObj.toString()}`);
   window.location.href = urlObj.toString();
 }
