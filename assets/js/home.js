@@ -146,9 +146,13 @@ function renderDomainHub(domains) {
       const angle = (index / otherDomains.length) * 2 * Math.PI - Math.PI / 2;
       const x = radius * Math.cos(angle);
       const y = radius * Math.sin(angle);
+      const railAngleDeg = (Math.atan2(-y, -x) * 180) / Math.PI;
+      const railLength = Math.sqrt(x * x + y * y);
       
       node.style.left = `calc(50% + ${x}px - 70px)`;
       node.style.top = `calc(50% + ${y}px - 70px)`;
+      node.style.setProperty('--rail-angle', `${railAngleDeg}deg`);
+      node.style.setProperty('--rail-length', `${railLength}px`);
       
       node.innerHTML = `
         <div class="domain-emoji">${domain.emoji}</div>
