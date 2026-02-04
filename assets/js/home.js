@@ -112,6 +112,7 @@ function renderDomainHub(domains) {
       centerNode.innerHTML = `
         <div class="domain-emoji">${admin.emoji}</div>
         <div class="domain-name">${admin.name}</div>
+        ${experienceMode === 'demo' ? '<div class="analysis-badge">📊 クリックで統計分析</div>' : ''}
         <div class="domain-desc">${admin.description || ''}</div>
         ${experienceMode === 'demo' ? createModeButtons(admin.id) : ''}
       `;
@@ -198,6 +199,7 @@ function createDomainNode(domain, isCenter) {
   node.innerHTML = `
     <div class="domain-emoji">${domain.emoji}</div>
     <div class="domain-name">${domain.name}</div>
+    ${experienceMode === 'demo' && domain.id === 'administration' ? '<div class="analysis-badge">📊 クリックで統計分析</div>' : ''}
     <div class="domain-desc">${domain.description || ''}</div>
     ${experienceMode === 'demo' ? createModeButtons(domain.id) : ''}
   `;

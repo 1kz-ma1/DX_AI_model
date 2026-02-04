@@ -168,12 +168,15 @@ function calculateMetrics() {
   // 各分野のメトリクス計算
   domainsData.domains.forEach(domain => {
     const metrics = demoMetricsCache[domain.id];
-    if (!metrics) return;
+    if (!metrics) {
+      console.warn(`No demoMetrics found for domain: ${domain.id}`);
+      return;
+    }
 
-    const dailyVolume = metrics.dailyVolume;
-    let reductionRate = metrics.reductionRates[currentMode] || 0;
-    let timeReductionRate = metrics.timeReductionRates[currentMode] || 0;
-    let costReductionRate = metrics.costReductionPercentage[currentMode] || 0;
+    const dailyVolume = metrics.dailyVolume || 0;
+    let reductionRate = metrics.reductionRates?.[currentMode] || 0;
+    let timeReductionRate = metrics.timeReductionRates?.[currentMode] || 0;
+    let costReductionRate = metrics.costReductionPercentage?.[currentMode] || 0;
     const adminDependency = metrics.administrativeDependency || 0;
 
     // 行政DXの波及効果を適用
