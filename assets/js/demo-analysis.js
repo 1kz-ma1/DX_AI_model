@@ -11,15 +11,25 @@ let timeChart = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    console.log('DOMContentLoaded event fired');
+    
     // URLパラメータから初期モードを取得
     const params = new URLSearchParams(window.location.search);
     if (params.get('mode')) {
       currentMode = params.get('mode');
+      console.log(`Mode from URL: ${currentMode}`);
     }
 
-    // domains.jsonを読み込み
-    const response = await fetch('assets/data/domains.json');
+    // domains.jsonを読み込み（pages/から見て ../assets/ 相対）
+    const basePath = window.location.pathname.includes('/pages/') ? '../' : '';
+    console.log(`Base path: ${basePath}, Full path will be: ${basePath}assets/data/domains.json`);
+    
+    const response = await fetch(basePath + 'assets/data/domains.json');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch domains.json: ${response.status}`);
+    }
     domainsData = await response.json();
+    console.log(`Loaded domains.json, found ${domainsData.domains.length} domains`);
 
     // demoMetricsをキャッシュ
     domainsData.domains.forEach(domain => {
@@ -27,15 +37,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         demoMetricsCache[domain.id] = domain.demoMetrics;
       }
     });
+    console.log(`Cached ${Object.keys(demoMetricsCache).length} demoMetrics`);
 
     // UI初期化
+    console.log('Initializing UI');
     initUI();
 
     // 初期描画
+    console.log('Updating analysis');
     updateAnalysis();
   } catch (error) {
     console.error('Failed to load data:', error);
-    alert('データの読み込みに失敗しました');
+    alert('データの読み込みに失敗しました: ' + error.message);
   }
 });
 
@@ -68,7 +81,10 @@ function initUI() {
   }
 
   // モード切り替えボタン
-  document.querySelectorAll('.mode-btn').forEach(btn => {
+  const modeBtns = document.querySelectorAll('.mode-btn');
+  console.log(`Found ${modeBtns.length} mode buttons`);
+  
+  modeBtns.forEach(btn => {
     if (btn.dataset.mode === currentMode) {
       btn.classList.add('active');
     } else {
@@ -77,6 +93,7 @@ function initUI() {
 
     btn.addEventListener('click', () => {
       const newMode = btn.dataset.mode;
+      console.log(`Mode button clicked: ${newMode}, current: ${currentMode}`);
       if (newMode !== currentMode) {
         currentMode = newMode;
         
@@ -87,6 +104,11 @@ function initUI() {
         btn.classList.add('active');
 
         // 分析更新
+        console.log(`Mode changed to: ${currentMode}`);
+        updateAnalysis();
+      }
+    });
+  });
         updateAnalysis();
       }
     });
