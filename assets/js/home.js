@@ -149,6 +149,11 @@ function renderDomainHub(domains) {
       const angle = (index / otherDomains.length) * 2 * Math.PI - Math.PI / 2;
       const x = radius * Math.cos(angle);
       const y = radius * Math.sin(angle);
+      
+      // 右側のノード（x > 0）にクラスを追加してツールチップを右に表示
+      if (x > 0) {
+        node.classList.add('tooltip-right');
+      }
       const railAngleDeg = (Math.atan2(-y, -x) * 180) / Math.PI;
       const railLength = Math.sqrt(x * x + y * y);
       
@@ -243,14 +248,14 @@ function createDomainNode(domain, isCenter) {
 function createModeButtons(domainId) {
   const currentMode = domainModes[domainId] || 'plain';
   return `
-    <div class="mode-buttons" onclick="event.stopPropagation()">
-      <button class="mode-btn ${currentMode === 'plain' ? 'active' : ''}" data-mode="plain" data-domain="${domainId}">
+    <div class="mode-buttons" onclick="event.stopPropagation(); event.preventDefault();">
+      <button class="mode-btn ${currentMode === 'plain' ? 'active' : ''}" data-mode="plain" data-domain="${domainId}" type="button">
         Plain
       </button>
-      <button class="mode-btn ${currentMode === 'smart' ? 'active' : ''}" data-mode="smart" data-domain="${domainId}">
+      <button class="mode-btn ${currentMode === 'smart' ? 'active' : ''}" data-mode="smart" data-domain="${domainId}" type="button">
         Smart
       </button>
-      <button class="mode-btn ${currentMode === 'ai' ? 'active' : ''}" data-mode="ai" data-domain="${domainId}">
+      <button class="mode-btn ${currentMode === 'ai' ? 'active' : ''}" data-mode="ai" data-domain="${domainId}" type="button">
         AI
       </button>
     </div>
@@ -287,6 +292,10 @@ function setupModeButtonListeners() {
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.mode-btn');
     if (!btn) return;
+    
+    // イベントの伝播とデフォルト動作を防ぐ
+    e.preventDefault();
+    e.stopPropagation();
     
     const mode = btn.dataset.mode;
     const domainId = btn.dataset.domain;
