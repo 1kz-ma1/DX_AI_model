@@ -271,7 +271,7 @@ function createDomainNode(domain, isCenter) {
 function createModeButtons(domainId) {
   const currentMode = domainModes[domainId] || 'plain';
   return `
-    <div class="mode-buttons" onclick="event.stopPropagation(); event.preventDefault();">
+    <div class="mode-buttons">
       <button class="mode-btn ${currentMode === 'plain' ? 'active' : ''}" data-mode="plain" data-domain="${domainId}" type="button">
         Plain
       </button>
