@@ -1,12 +1,14 @@
 # 多分野対応DX×AIポータル システム
 
 ## 概要
+
 複数分野（医療・行政・物流・災害対応等）のDX/AI化デモを統合したポータルシステムです。
 
 ## システム構成
 
 ### 1. フロー
-```
+
+```text
 初回訪問
   ↓
 intro.html (プロファイル収集)
@@ -19,7 +21,8 @@ summary.html (まとめページ) ※医療分野のみ現在対応
 ```
 
 ### 2. ファイル構造
-```
+
+```text
 hospitalization-dx-ai-app/
 ├── intro.html              # プロファイル収集ページ
 ├── home.html               # 分野ハブページ
@@ -102,6 +105,7 @@ hospitalization-dx-ai-app/
 ```
 
 #### inputFields の source 属性
+
 - `user`: ユーザーが手入力（全モード）
 - `shared`: 共有項目（Smart/AIで自動化、onlineフラグ必要）
 - `mynumber`: マイナンバー連携項目（AIモード、mynaフラグ必要）
@@ -109,6 +113,7 @@ hospitalization-dx-ai-app/
 - `derived`: 派生項目（Smart/AIで自動計算）
 
 #### requiredIf 条件
+
 - `null`: 常に必須
 - `"surgery"`: checklistのsurgeryがtrueの時のみ必須
 - チェックリストIDを指定することで動的表示制御
@@ -116,6 +121,7 @@ hospitalization-dx-ai-app/
 ### 4. 状態管理（state.js）
 
 #### プロファイル管理
+
 ```javascript
 // 保存
 saveProfile({ myna: true, online: true, consent_unify: true, persona: "single" });
@@ -128,6 +134,7 @@ clearProfile();
 ```
 
 #### URLパラメータ管理
+
 ```javascript
 // 取得（URL優先、次にlocalStorage、最後にデフォルト）
 const params = mergeWithProfile();
@@ -141,7 +148,8 @@ navigate('domain.html', { d: "medical", mode: "smart" });
 
 ### 5. 分野追加方法
 
-1. **domains.jsonに追加**
+- **domains.jsonに追加**
+
 ```json
 {
   "id": "education",
@@ -155,22 +163,27 @@ navigate('domain.html', { d: "medical", mode: "smart" });
 }
 ```
 
-2. **home.jsで自動認識**
-   - domains.jsonに追加するだけで自動的にハブに表示されます
+- **home.jsで自動認識**
 
-3. **domain.htmlで自動レンダリング**
-   - テンプレートが統一されているため、追加実装不要
+domains.jsonに追加するだけで自動的にハブに表示されます。
+
+- **domain.htmlで自動レンダリング**
+
+テンプレートが統一されているため、追加実装不要。
 
 ### 6. モード別削減ロジック
 
 #### Plain（①電子化）
+
 - すべて手入力
 
 #### Smart（②工夫）
+
 - `source: "shared"` + `profile.online === true` → 自動化
 - `source: "derived"` → 自動計算
 
 #### AI（③AI導入）
+
 - Smart の機能 +
 - `source: "mynumber"` + `profile.myna === true` → 自動化
 - `source: "ai"` → AI補完
@@ -178,10 +191,12 @@ navigate('domain.html', { d: "medical", mode: "smart" });
 ### 7. レスポンシブデザイン
 
 #### デスクトップ（>768px）
+
 - home.html: 円形リングレイアウト
 - domain.html: 3カラム（チェックリスト | 書類カード | 可視化）
 
 #### モバイル（≤768px）
+
 - home.html: 2カラムグリッド
 - domain.html: 縦1カラム（折りたたみセクション）
 
@@ -210,6 +225,7 @@ navigate('domain.html', { d: "medical", mode: "smart" });
 ### 11. 開発ガイド
 
 #### ローカル実行
+
 ```bash
 # シンプルなHTTPサーバーで起動
 python -m http.server 8000
@@ -221,11 +237,13 @@ http://localhost:8000/intro.html
 ```
 
 #### デバッグ
+
 - `localStorage`の内容確認: DevTools > Application > Local Storage
 - URLパラメータ確認: URL末尾を確認
 - プロファイルリセット: `clearProfile()`を実行
 
 #### 新分野追加チェックリスト
+
 - [ ] domains.jsonに分野定義追加
 - [ ] checklist項目定義
 - [ ] documents.base配列に書類定義
@@ -239,11 +257,13 @@ http://localhost:8000/intro.html
 ### 12. 既存システムとの互換性
 
 #### index.html（旧医療デモ）
+
 - 引き続き動作します
 - `flows.json`を参照
 - `app.js`を使用
 
 #### 移行パス
+
 1. `intro.html`から開始するとプロファイル収集
 2. `home.html`で分野選択
 3. `domain.html?d=medical`で新医療体験

@@ -413,7 +413,7 @@ function updateDomainDetails(metrics) {
         ` : ''}
       </div>
     </div>
-  `}.join('');
+  `}).join('');
 }
 
 /**

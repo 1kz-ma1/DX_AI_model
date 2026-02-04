@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       const profile = loadProfile() || {};
       profile.character = null;
       saveProfile(profile);
+
+      // デモモード時は戦略ボード導線を非表示
+      const strategyBanner = document.getElementById('strategyBoardBanner');
+      if (strategyBanner) {
+        strategyBanner.style.display = 'none';
+      }
     }
     
     // domains.jsonとcharacters.jsonを読み込み
