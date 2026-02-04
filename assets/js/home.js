@@ -312,7 +312,7 @@ async function updateDomainStats(domainId, mode) {
     const metrics = domain.demoMetrics;
     const reductionRate = metrics.reductionRates?.[mode] || 0;
     const timeReduction = metrics.timeReductionRates?.[mode] || 0;
-    const costReduction = metrics.costReductionPercentage || 0;
+    const costReduction = metrics.costReductionPercentage?.[mode] || 0;
     
     // 統計表示エリアを更新
     const statsDiv = document.getElementById(`stats-${domainId}`);
@@ -328,7 +328,7 @@ async function updateDomainStats(domainId, mode) {
         </div>
         <div class="stat-item">
           <span class="stat-label">コスト削減:</span> 
-          <span class="stat-value">${costReduction.toFixed(1)}%</span>
+          <span class="stat-value">${(costReduction * 100).toFixed(1)}%</span>
         </div>
       `;
       

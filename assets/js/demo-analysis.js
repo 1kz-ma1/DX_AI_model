@@ -5,7 +5,7 @@
 
 console.log('demo-analysis.js loaded');
 
-let currentMode = 'smart';
+let currentMode = 'plain'; // デフォルトモード
 let domainsData = null;
 let demoMetricsCache = {};
 let volumeChart = null;
