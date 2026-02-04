@@ -288,7 +288,7 @@ body {
   .domain-node .domain-desc {
     display: none;
     position: absolute;
-    bottom: -60px;
+    bottom: -56px;
     left: 50%;
     transform: translateX(-50%);
     background: white;
@@ -422,6 +422,10 @@ body {
   z-index: 3;
 }
 
+.domain-node:not(.center) .mode-buttons {
+  max-width: 120px;
+}
+
 .mode-btn {
   padding: 0.4rem 0.8rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -435,6 +439,12 @@ body {
   backdrop-filter: blur(4px);
   min-width: 58px;
   text-align: center;
+}
+
+.domain-node:not(.center) .mode-btn {
+  padding: 0.32rem 0.6rem;
+  font-size: 0.7rem;
+  min-width: 52px;
 }
 
 .mode-btn:hover {
@@ -514,24 +524,27 @@ body {
   display: none;
   position: absolute;
   left: 50%;
-  bottom: -98px;
+  top: -110px;
   transform: translateX(-50%);
   box-shadow: var(--shadow-xl);
   backdrop-filter: blur(6px);
   z-index: 20;
+  min-width: 190px;
+  max-width: 230px;
+  pointer-events: none;
 }
 
 .domain-stats::before {
   content: '';
   position: absolute;
-  top: -6px;
+  bottom: -6px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
   height: 0;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-bottom: 6px solid rgba(255, 255, 255, 0.2);
+  border-top: 6px solid rgba(255, 255, 255, 0.2);
 }
 
 .domain-node:hover .domain-stats {
@@ -540,10 +553,11 @@ body {
 
 .domain-node.center .domain-stats {
   background: rgba(0, 0, 0, 0.65);
+  top: -118px;
 }
 
 .domain-node.center .domain-stats::before {
-  border-bottom-color: rgba(0, 0, 0, 0.65);
+  border-top-color: rgba(0, 0, 0, 0.65);
 }
 
 @media (hover: none) {
@@ -580,12 +594,14 @@ body {
 .stat-label {
   color: rgba(255, 255, 255, 0.7);
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .stat-value {
   color: #4ade80;
   font-weight: bold;
   font-size: 1rem;
+  white-space: nowrap;
 }
 
 /* ���v�X�V���̃t���b�V���A�j���[�V���� */
