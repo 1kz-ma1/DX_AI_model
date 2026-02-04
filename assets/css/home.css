@@ -406,6 +406,27 @@ body {
     min-height: 140px;
     transition: all 0.2s ease;
   }
+
+  /* åˆ†é‡ã”ã¨ã®èƒŒæ™¯è‰²ï¼ˆãƒ¢ãƒã‚¤ãƒ«ï¼‰ */
+  .domain-node[data-domain-id="medical"] {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    color: white;
+  }
+
+  .domain-node[data-domain-id="education"] {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+  }
+
+  .domain-node[data-domain-id="logistics"] {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: white;
+  }
+
+  .domain-node[data-domain-id="disaster"] {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: white;
+  }
   
   .domain-node:active {
     transform: scale(0.95);
@@ -688,7 +709,7 @@ body {
   animation: stats-flash 0.5s ease-in-out;
 }
 
-/* ===== “Œv•ªÍƒZƒNƒVƒ‡ƒ“ ===== */
+/* ===== ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ÍƒZï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ ===== */
 .statistics-section {
   background: linear-gradient(to bottom, #f9fafb 0%, #ffffff 100%);
   padding: 3rem 1.5rem;
