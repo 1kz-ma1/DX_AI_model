@@ -278,7 +278,7 @@ function calculateMetrics() {
       costAfter,
       timeReductionRate,
       costReductionRate,
-      administrativeDependency,
+      administrativeDependency: adminDependency,
       impactOnOtherDomains: metrics.impactOnOtherDomains || {}
     };
   });
