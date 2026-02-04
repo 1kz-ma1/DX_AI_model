@@ -126,11 +126,9 @@ function renderDomainHub(domains) {
       `;
       
       centerNode.addEventListener('click', (e) => {
-        // mode-btnの場合は処理を止めて、上位のリスナーに委譲
-        const btn = e.target.closest('.mode-btn');
-        if (btn) {
-          e.stopImmediatePropagation();
-          return;
+        // mode-btnまたはmode-buttonsの場合は完全に無視
+        if (e.target.closest('.mode-btn') || e.target.closest('.mode-buttons')) {
+          return; // イベントを止めず、document levelのリスナーに委譲
         }
         
         e.preventDefault();
@@ -183,11 +181,9 @@ function renderDomainHub(domains) {
       `;
       
       node.addEventListener('click', (e) => {
-        // mode-btnの場合は処理を止めて、上位のリスナーに委譲
-        const btn = e.target.closest('.mode-btn');
-        if (btn) {
-          e.stopImmediatePropagation();
-          return;
+        // mode-btnまたはmode-buttonsの場合は完全に無視
+        if (e.target.closest('.mode-btn') || e.target.closest('.mode-buttons')) {
+          return; // イベントを止めず、document levelのリスナーに委譲
         }
         
         e.preventDefault();
@@ -245,11 +241,9 @@ function createDomainNode(domain, isCenter) {
   `;
   
   node.addEventListener('click', (e) => {
-    // mode-btnの場合は処理を止めて、上位のリスナーに委譲
-    const btn = e.target.closest('.mode-btn');
-    if (btn) {
-      e.stopImmediatePropagation();
-      return;
+    // mode-btnまたはmode-buttonsの場合は完全に無視
+    if (e.target.closest('.mode-btn') || e.target.closest('.mode-buttons')) {
+      return; // イベントを止めず、document levelのリスナーに委譲
     }
     
     e.preventDefault();
