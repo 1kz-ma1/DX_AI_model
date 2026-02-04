@@ -30,11 +30,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 各分野のモード状態を取得
     ['administration', 'medical', 'education', 'logistics', 'disaster'].forEach(domainId => {
       const modeParam = params.get(`${domainId}_mode`);
-      if (modeParam) {
+      if (modeParam && ['plain', 'smart', 'ai'].includes(modeParam)) {
         domainModes[domainId] = modeParam;
         console.log(`${domainId} mode: ${modeParam}`);
+      } else {
+        // デフォルトはplain
+        domainModes[domainId] = 'plain';
       }
     });
+    
+    // 行政分野のモードを表示用currentModeに設定
+    currentMode = domainModes['administration'] || 'plain';
 
     // 事前計算済みデータを優先的に読み込み
     let precomputedUrl = 'assets/data/demo-analysis-precomputed.json';
@@ -143,6 +149,8 @@ function initUI() {
     
     if (newMode !== currentMode) {
       currentMode = newMode;
+      // 行政分野のモード状態も同時に更新
+      domainModes['administration'] = newMode;
       
       // ボタンの状態更新
       document.querySelectorAll('.mode-selector .mode-btn').forEach(b => {
@@ -151,7 +159,7 @@ function initUI() {
       btn.classList.add('active');
 
       // 分析更新
-      console.log(`Mode changed to: ${currentMode}`);
+      console.log(`Mode changed to: ${currentMode}, updating domainModes:`, domainModes);
       updateAnalysis();
     }
   });
@@ -162,10 +170,8 @@ function initUI() {
  */
 function updateAnalysis() {
   // メトリクス計算
-  const precomputedModes = precomputedData?.modes || null;
-  const metrics = precomputedModes
-    ? (precomputedModes[currentMode] || precomputedModes.plain)
-    : calculateMetrics();
+  // precomputedDataがある場合でも、domainModesの個別モード設定が優先される
+  const metrics = calculateMetrics();
 
   // UI更新
   updateMetricsDisplay(metrics);
@@ -206,16 +212,21 @@ function calculateMetrics() {
       console.warn(`No demoMetrics found for domain: ${domain.id}`);
       return;
     }
+    
+    // 各分野の個別モードを使用（URLパラメータから取得）
+    const domainMode = domainModes[domain.id] || 'plain';
+    console.log(`Calculating metrics for ${domain.id} with mode: ${domainMode}`);
 
     const dailyVolume = metrics.dailyVolume || 0;
-    let reductionRate = metrics.reductionRates?.[mode] || 0;
-    let timeReductionRate = metrics.timeReductionRates?.[mode] || 0;
-    let costReductionRate = metrics.costReductionPercentage?.[mode] || 0;
+    let reductionRate = metrics.reductionRates?.[domainMode] || 0;
+    let timeReductionRate = metrics.timeReductionRates?.[domainMode] || 0;
+    let costReductionRate = metrics.costReductionPercentage?.[domainMode] || 0;
     const adminDependency = metrics.administrativeDependency || 0;
 
     // 行政DXの波及効果を適用
     // 行政がPlainの場合、行政に依存している分野は効率が低下
-    if (domain.id !== 'administration' && mode !== 'ai') {
+    const adminMode = domainModes['administration'] || 'plain';
+    if (domain.id !== 'administration' && adminMode !== 'ai') {
       const adminDegradation = adminDependency * 0.3; // 最大30%の効率低下
       reductionRate = Math.max(0, reductionRate - (reductionRate * adminDegradation));
       timeReductionRate = Math.max(0, timeReductionRate - (timeReductionRate * adminDegradation));
