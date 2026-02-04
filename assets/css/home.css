@@ -474,3 +474,41 @@ body {
     opacity: 0.6;
   }
 }
+
+/* デモモード：統計表示 */
+.domain-stats {
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  gap: 0.5rem;
+}
+
+.stat-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.stat-value {
+  color: #4ade80;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* 統計更新時のフラッシュアニメーション */
+@keyframes stats-flash {
+  0%, 100% { background: rgba(255, 255, 255, 0.1); }
+  50% { background: rgba(74, 222, 128, 0.3); }
+}
+
+.stats-flash {
+  animation: stats-flash 0.5s ease-in-out;
+}

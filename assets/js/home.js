@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // デモモード時：初期モードを設定
     if (experienceMode === 'demo') {
       data.domains.forEach(domain => {
-        domainModes[domain.id] = 'smart'; // デフォルトはSmart
+        domainModes[domain.id] = 'plain'; // デフォルトはPlain
       });
     }
     
@@ -187,6 +187,13 @@ function renderDomainHub(domains) {
       hub.appendChild(node);
     });
   }
+  
+  // デモモード時：初期統計を表示
+  if (experienceMode === 'demo') {
+    domains.forEach(domain => {
+      updateDomainStats(domain.id, domainModes[domain.id] || 'plain');
+    });
+  }
 }
 
 function createDomainNode(domain, isCenter) {
@@ -226,7 +233,7 @@ function createDomainNode(domain, isCenter) {
  * デモモード用：モード選択ボタンのHTML生成
  */
 function createModeButtons(domainId) {
-  const currentMode = domainModes[domainId] || 'smart';
+  const currentMode = domainModes[domainId] || 'plain';
   return `
     <div class="mode-buttons" onclick="event.stopPropagation()">
       <button class="mode-btn ${currentMode === 'plain' ? 'active' : ''}" data-mode="plain" data-domain="${domainId}">
@@ -238,6 +245,9 @@ function createModeButtons(domainId) {
       <button class="mode-btn ${currentMode === 'ai' ? 'active' : ''}" data-mode="ai" data-domain="${domainId}">
         AI
       </button>
+    </div>
+    <div class="domain-stats" id="stats-${domainId}">
+      <div class="stat-item">削減率: <span class="stat-value">0%</span></div>
     </div>
   `;
 }
@@ -278,8 +288,58 @@ document.addEventListener('click', (e) => {
       parent.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
+    
+    // リアルタイムで統計を更新
+    updateDomainStats(domainId, mode);
   }
 });
+
+/**
+ * ドメインの統計をリアルタイム更新
+ */
+async function updateDomainStats(domainId, mode) {
+  try {
+    // domains.json からデータを取得
+    const response = await fetch('assets/data/domains.json');
+    const data = await response.json();
+    const domain = data.domains.find(d => d.id === domainId);
+    
+    if (!domain || !domain.demoMetrics) {
+      console.warn(`No demoMetrics found for ${domainId}`);
+      return;
+    }
+    
+    const metrics = domain.demoMetrics;
+    const reductionRate = metrics.reductionRates?.[mode] || 0;
+    const timeReduction = metrics.timeReductionRates?.[mode] || 0;
+    const costReduction = metrics.costReductionPercentage || 0;
+    
+    // 統計表示エリアを更新
+    const statsDiv = document.getElementById(`stats-${domainId}`);
+    if (statsDiv) {
+      statsDiv.innerHTML = `
+        <div class="stat-item">
+          <span class="stat-label">書類削減率:</span> 
+          <span class="stat-value">${(reductionRate * 100).toFixed(1)}%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">時間短縮:</span> 
+          <span class="stat-value">${(timeReduction * 100).toFixed(1)}%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">コスト削減:</span> 
+          <span class="stat-value">${costReduction.toFixed(1)}%</span>
+        </div>
+      `;
+      
+      // フラッシュアニメーション
+      statsDiv.classList.add('stats-flash');
+      setTimeout(() => statsDiv.classList.remove('stats-flash'), 500);
+    }
+  } catch (error) {
+    console.error('Failed to update stats:', error);
+  }
+}
 
 function setupProfileLink() {
   const link = document.getElementById('changeProfileLink');
