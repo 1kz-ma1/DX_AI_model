@@ -44,6 +44,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 事前計算済みデータを優先的に読み込み
     let precomputedUrl = 'assets/data/demo-analysis-precomputed.json';
+    console.log(`Current URL: ${window.location.href}`);
+    console.log(`Pathname: ${window.location.pathname}`);
     console.log(`Attempting to fetch precomputed data: ${precomputedUrl}`);
     let precomputedResponse = await fetch(precomputedUrl);
     if (!precomputedResponse.ok && window.location.pathname.includes('/pages/')) {
@@ -57,33 +59,36 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.log('Loaded precomputed analysis data');
     } else {
       console.warn('Precomputed data not found. Falling back to domains.json calculation.');
-
-      // domains.jsonを読み込み（どこから実行されてもdocsパスを正しく解決）
-      let dataUrl = 'assets/data/domains.json';
-      console.log(`Attempting to fetch: ${dataUrl}`);
-      
-      let response = await fetch(dataUrl);
-      if (!response.ok && window.location.pathname.includes('/pages/')) {
-        // pages/ フォルダからアクセスされている場合は ../ を付ける
-        dataUrl = '../assets/data/domains.json';
-        console.log(`First attempt failed. Attempting: ${dataUrl}`);
-        response = await fetch(dataUrl);
-      }
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch domains.json: ${response.status}`);
-      }
-      domainsData = await response.json();
-      console.log(`Loaded domains.json, found ${domainsData.domains.length} domains`);
-
-      // demoMetricsをキャッシュ
-      domainsData.domains.forEach(domain => {
-        if (domain.demoMetrics) {
-          demoMetricsCache[domain.id] = domain.demoMetrics;
-        }
-      });
-      console.log(`Cached ${Object.keys(demoMetricsCache).length} demoMetrics`);
     }
+    
+    // domains.jsonを読み込み（どこから実行されてもdocsパスを正しく解決）
+    let dataUrl = 'assets/data/domains.json';
+    console.log(`Attempting to fetch: ${dataUrl}`);
+    
+    let response = await fetch(dataUrl);
+    console.log(`Response status: ${response.status}, ok: ${response.ok}`);
+    if (!response.ok && window.location.pathname.includes('/pages/')) {
+      // pages/ フォルダからアクセスされている場合は ../ を付ける
+      dataUrl = '../assets/data/domains.json';
+      console.log(`First attempt failed. Attempting: ${dataUrl}`);
+      response = await fetch(dataUrl);
+      console.log(`Retry response status: ${response.status}, ok: ${response.ok}`);
+    }
+    
+    if (!response.ok) {
+      console.error(`Failed to fetch domains.json. Status: ${response.status}, URL: ${dataUrl}`);
+      throw new Error(`Failed to fetch domains.json: ${response.status}`);
+    }
+    domainsData = await response.json();
+    console.log(`Loaded domains.json, found ${domainsData.domains.length} domains`);
+
+    // demoMetricsをキャッシュ
+    domainsData.domains.forEach(domain => {
+      if (domain.demoMetrics) {
+        demoMetricsCache[domain.id] = domain.demoMetrics;
+      }
+    });
+    console.log(`Cached ${Object.keys(demoMetricsCache).length} demoMetrics`);
 
     // UI初期化
     console.log('Initializing UI');
@@ -172,6 +177,13 @@ function updateAnalysis() {
   // メトリクス計算
   // precomputedDataがある場合でも、domainModesの個別モード設定が優先される
   const metrics = calculateMetrics();
+  
+  // metricsがnullの場合は処理中止
+  if (!metrics) {
+    console.error('Failed to calculate metrics');
+    alert('統計データの計算に失敗しました');
+    return;
+  }
 
   // UI更新
   updateMetricsDisplay(metrics);
@@ -191,6 +203,12 @@ function updateAnalysis() {
  * 行政DXの波及効果を正確に反映
  */
 function calculateMetrics() {
+  // domainsDataの有無を確認
+  if (!domainsData || !domainsData.domains) {
+    console.error('domainsData is not loaded');
+    return null;
+  }
+  
   // モード値をサニタイズ
   const mode = ['plain', 'smart', 'ai'].includes(currentMode) ? currentMode : 'plain';
   console.log(`calculateMetrics using mode: ${mode} (currentMode: ${currentMode})`);
