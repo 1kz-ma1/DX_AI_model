@@ -189,10 +189,9 @@ function initUI() {
 function navigateToAnalysis() {
   console.log('navigateToAnalysis() called');
   console.log(`Current mode: ${currentMode}, Current domain: ${currentDomain?.id}`);
-  navigate('demo-analysis.html', { 
+  navigate('home.html', { 
     experience: 'demo',
-    mode: currentMode, 
-    domain: currentDomain.id 
+    open: 'analysis'
   });
 }
 

@@ -52,6 +52,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (closeBtn) {
       closeBtn.addEventListener('click', closeStatistics);
     }
+
+    // クエリで統計を自動展開
+    if (params.open === 'analysis') {
+      showStatistics();
+    }
   } catch (error) {
     console.error('Error loading domains:', error);
     document.getElementById('domainHub').innerHTML = `
