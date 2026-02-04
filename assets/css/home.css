@@ -305,6 +305,16 @@ body {
     font-size: 4rem;
   }
   
+  .domain-node.center .domain-name {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .domain-node.center .domain-desc {
+    font-size: var(--font-size-sm);
+  }
+  
   /* ツールチップスタイル */
   .domain-node .domain-desc {
     display: none;
@@ -416,6 +426,21 @@ body {
 .domain-emoji {
   font-size: 3rem;
   margin-bottom: var(--spacing-sm);
+}
+
+.domain-name {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: inherit;
+  margin-bottom: 0.4rem;
+}
+
+.domain-desc {
+  font-size: var(--font-size-sm);
+  color: inherit;
+  opacity: 0.9;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .domain-name {

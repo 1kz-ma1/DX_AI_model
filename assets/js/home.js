@@ -120,12 +120,19 @@ function renderDomainHub(domains) {
       `;
       
       centerNode.addEventListener('click', (e) => {
+        // mode-btnの場合は処理を止めて、上位のリスナーに委譲
+        const btn = e.target.closest('.mode-btn');
+        if (btn) {
+          e.stopImmediatePropagation();
+          return;
+        }
+        
         e.preventDefault();
+        e.stopPropagation();
+        
         if (experienceMode === 'demo') {
           // デモモード時：行政分野は分析ページへ
-          if (!e.target.closest('.mode-btn')) {
-            navigateToAnalysis(admin.id);
-          }
+          navigateToAnalysis(admin.id);
         } else {
           // ゲームモード時：通常の分野詳細へ
           navigate('domain.html', { d: admin.id, mode: 'plain', experience: experienceMode });
@@ -170,12 +177,19 @@ function renderDomainHub(domains) {
       `;
       
       node.addEventListener('click', (e) => {
+        // mode-btnの場合は処理を止めて、上位のリスナーに委譲
+        const btn = e.target.closest('.mode-btn');
+        if (btn) {
+          e.stopImmediatePropagation();
+          return;
+        }
+        
         e.preventDefault();
+        e.stopPropagation();
+        
         if (experienceMode === 'demo') {
           // デモモード時：モードボタン以外のクリックは無視
-          if (!e.target.closest('.mode-btn')) {
-            return;
-          }
+          return;
         } else {
           // ゲームモード時：通常の分野詳細へ
           navigate('domain.html', { d: domain.id, mode: 'plain', experience: experienceMode });
@@ -225,10 +239,19 @@ function createDomainNode(domain, isCenter) {
   `;
   
   node.addEventListener('click', (e) => {
+    // mode-btnの場合は処理を止めて、上位のリスナーに委譲
+    const btn = e.target.closest('.mode-btn');
+    if (btn) {
+      e.stopImmediatePropagation();
+      return;
+    }
+    
     e.preventDefault();
+    e.stopPropagation();
+    
     if (experienceMode === 'demo') {
       // デモモード時
-      if (domain.id === 'administration' && !e.target.closest('.mode-btn')) {
+      if (domain.id === 'administration') {
         // 行政分野：分析ページへ
         navigateToAnalysis(domain.id);
       }
