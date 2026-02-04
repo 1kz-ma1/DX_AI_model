@@ -271,11 +271,15 @@ function navigateToAnalysis(domainId) {
 }
 
 // モードボタンのイベントリスナー（イベント委譲）
-document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('mode-btn') && experienceMode === 'demo') {
-    const btn = e.target;
+if (experienceMode === 'demo') {
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.mode-btn');
+    if (!btn) return;
+    
     const mode = btn.dataset.mode;
     const domainId = btn.dataset.domain;
+    
+    if (!mode || !domainId) return;
     
     console.log(`Mode changed for ${domainId}: ${mode}`);
     
@@ -291,8 +295,8 @@ document.addEventListener('click', (e) => {
     
     // リアルタイムで統計を更新
     updateDomainStats(domainId, mode);
-  }
-});
+  });
+}
 
 /**
  * ドメインの統計をリアルタイム更新
@@ -310,25 +314,29 @@ async function updateDomainStats(domainId, mode) {
     }
     
     const metrics = domain.demoMetrics;
-    const reductionRate = metrics.reductionRates?.[mode] || 0;
-    const timeReduction = metrics.timeReductionRates?.[mode] || 0;
-    const costReduction = metrics.costReductionPercentage?.[mode] || 0;
+    const reductionRate = Number(metrics.reductionRates?.[mode] ?? 0);
+    const timeReduction = Number(metrics.timeReductionRates?.[mode] ?? 0);
+    const costReduction = Number(metrics.costReductionPercentage?.[mode] ?? 0);
     
     // 統計表示エリアを更新
     const statsDiv = document.getElementById(`stats-${domainId}`);
     if (statsDiv) {
+      const redVal = isNaN(reductionRate) ? 0 : reductionRate;
+      const timVal = isNaN(timeReduction) ? 0 : timeReduction;
+      const costVal = isNaN(costReduction) ? 0 : costReduction;
+      
       statsDiv.innerHTML = `
         <div class="stat-item">
           <span class="stat-label">書類削減率:</span> 
-          <span class="stat-value">${(reductionRate * 100).toFixed(1)}%</span>
+          <span class="stat-value">${(redVal * 100).toFixed(1)}%</span>
         </div>
         <div class="stat-item">
           <span class="stat-label">時間短縮:</span> 
-          <span class="stat-value">${(timeReduction * 100).toFixed(1)}%</span>
+          <span class="stat-value">${(timVal * 100).toFixed(1)}%</span>
         </div>
         <div class="stat-item">
           <span class="stat-label">コスト削減:</span> 
-          <span class="stat-value">${(costReduction * 100).toFixed(1)}%</span>
+          <span class="stat-value">${(costVal * 100).toFixed(1)}%</span>
         </div>
       `;
       

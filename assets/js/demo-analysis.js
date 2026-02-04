@@ -18,9 +18,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // URLパラメータから初期モードと各分野のモード状態を取得
     const params = new URLSearchParams(window.location.search);
-    if (params.get('mode')) {
-      currentMode = params.get('mode');
+    const modeParam = params.get('mode');
+    if (modeParam && ['plain', 'smart', 'ai'].includes(modeParam)) {
+      currentMode = modeParam;
       console.log(`Mode from URL: ${currentMode}`);
+    } else {
+      console.log(`Mode parameter not found or invalid. Using default: ${currentMode}`);
     }
     
     // 各分野のモード状態を取得
@@ -103,30 +106,36 @@ function initUI() {
   const modeBtns = document.querySelectorAll('.mode-btn');
   console.log(`Found ${modeBtns.length} mode buttons`);
   
+  // 初期状態設定
   modeBtns.forEach(btn => {
     if (btn.dataset.mode === currentMode) {
       btn.classList.add('active');
     } else {
       btn.classList.remove('active');
     }
+  });
+  
+  // イベント委譲を使用してクリックを処理
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.mode-btn');
+    if (!btn || !btn.parentElement.closest('.mode-selector')) return;
+    
+    const newMode = btn.dataset.mode;
+    console.log(`Mode button clicked: ${newMode}, current: ${currentMode}`);
+    
+    if (newMode !== currentMode) {
+      currentMode = newMode;
+      
+      // ボタンの状態更新
+      document.querySelectorAll('.mode-selector .mode-btn').forEach(b => {
+        b.classList.remove('active');
+      });
+      btn.classList.add('active');
 
-    btn.addEventListener('click', () => {
-      const newMode = btn.dataset.mode;
-      console.log(`Mode button clicked: ${newMode}, current: ${currentMode}`);
-      if (newMode !== currentMode) {
-        currentMode = newMode;
-        
-        // ボタンの状態更新
-        document.querySelectorAll('.mode-btn').forEach(b => {
-          b.classList.remove('active');
-        });
-        btn.classList.add('active');
-
-        // 分析更新
-        console.log(`Mode changed to: ${currentMode}`);
-        updateAnalysis();
-      }
-    });
+      // 分析更新
+      console.log(`Mode changed to: ${currentMode}`);
+      updateAnalysis();
+    }
   });
 }
 
@@ -155,7 +164,11 @@ function updateAnalysis() {
  * 行政DXの波及効果を正確に反映
  */
 function calculateMetrics() {
-  const costPerHour = domainsData.meta.demoMetaInfo?.costPerHour || 3000;
+  // モード値をサニタイズ
+  const mode = ['plain', 'smart', 'ai'].includes(currentMode) ? currentMode : 'plain';
+  console.log(`calculateMetrics using mode: ${mode} (currentMode: ${currentMode})`);
+  
+  const costPerHour = domainsData?.meta?.demoMetaInfo?.costPerHour || 3000;
   
   let totalDailyVolume = 0;
   let totalProcessedAfter = 0;
@@ -174,14 +187,14 @@ function calculateMetrics() {
     }
 
     const dailyVolume = metrics.dailyVolume || 0;
-    let reductionRate = metrics.reductionRates?.[currentMode] || 0;
-    let timeReductionRate = metrics.timeReductionRates?.[currentMode] || 0;
-    let costReductionRate = metrics.costReductionPercentage?.[currentMode] || 0;
+    let reductionRate = metrics.reductionRates?.[mode] || 0;
+    let timeReductionRate = metrics.timeReductionRates?.[mode] || 0;
+    let costReductionRate = metrics.costReductionPercentage?.[mode] || 0;
     const adminDependency = metrics.administrativeDependency || 0;
 
     // 行政DXの波及効果を適用
     // 行政がPlainの場合、行政に依存している分野は効率が低下
-    if (domain.id !== 'administration' && currentMode !== 'ai') {
+    if (domain.id !== 'administration' && mode !== 'ai') {
       const adminDegradation = adminDependency * 0.3; // 最大30%の効率低下
       reductionRate = Math.max(0, reductionRate - (reductionRate * adminDegradation));
       timeReductionRate = Math.max(0, timeReductionRate - (timeReductionRate * adminDegradation));
@@ -231,16 +244,16 @@ function calculateMetrics() {
     .filter(([id, m]) => id !== 'administration' && m.administrativeDependency > 0.5)
     .map(([id, m]) => m.name);
 
-  if (currentMode === 'ai') {
+  if (mode === 'ai') {
     adminImpactMessage = `✅ 行政DXがAIレベルのため、${adminDependentDomains.join('・')}の効率が最大化されています`;
-  } else if (currentMode === 'plain') {
+  } else if (mode === 'plain') {
     adminImpactMessage = `⚠️ 行政DXがPlainのため、${adminDependentDomains.join('・')}の効率が制限されています`;
   } else {
     adminImpactMessage = `→ 行政DXが中程度のため、各分野の効率向上に部分的な制約があります`;
   }
 
   return {
-    currentMode,
+    currentMode: mode,
     totalDailyVolume,
     totalReductionRate,
     totalTimeBefore,
@@ -470,10 +483,10 @@ function updateAdminImpact(metrics) {
   let statusEmoji = '⚠️';
   let statusText = 'Plain（電子化のみ）';
   
-  if (metrics.currentMode === 'ai') {
+  if (currentMode === 'ai') {
     statusEmoji = '✅';
     statusText = 'AI（完全自動化）';
-  } else if (metrics.currentMode === 'smart') {
+  } else if (currentMode === 'smart') {
     statusEmoji = '💡';
     statusText = 'Smart（工夫活用）';
   }
@@ -490,9 +503,9 @@ function updateAdminImpact(metrics) {
     let impactText = '';
     const depPercent = Math.round(depRate * 100);
     
-    if (metrics.currentMode === 'ai') {
+    if (currentMode === 'ai') {
       impactText = `✅ ${domain.name}の処理がスムーズ（行政依存度${depPercent}%）`;
-    } else if (metrics.currentMode === 'plain') {
+    } else if (currentMode === 'plain') {
       const degradation = Math.round(depRate * 30); // 最大30%の効率低下
       impactText = `⚠️ ${domain.name}の処理が${degradation}%制限される（行政依存度${depPercent}%）`;
     } else {
