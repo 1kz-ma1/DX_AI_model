@@ -46,11 +46,17 @@ const DOMAIN_STATS = {
 let domainsData = null;
 let charactersData = null;
 let selectedCharacter = null;
+let isDemoMode = false;
+let demoMetricsCache = {};
 
 // ========================================
 // 初期化
 // ========================================
 document.addEventListener('DOMContentLoaded', async () => {
+  // デモモード判定
+  const params = new URLSearchParams(window.location.search);
+  isDemoMode = params.get('experience') === 'demo';
+  
   // domains.jsonとcharacters.jsonを読み込み
   await Promise.all([
     loadDomainsData(),
@@ -77,6 +83,21 @@ async function loadDomainsData() {
   try {
     const response = await fetch('assets/data/domains.json');
     domainsData = await response.json();
+    
+    // デモモード時はdemoMetricsをキャッシュして使用
+    if (isDemoMode && domainsData.domains) {
+      domainsData.domains.forEach(domain => {
+        if (domain.demoMetrics) {
+          demoMetricsCache[domain.id] = domain.demoMetrics;
+          // DOMAIN_STATSをdemoMetricsから初期化
+          DOMAIN_STATS[domain.id] = {
+            totalFields: Math.round(domain.demoMetrics.dailyVolume * 0.01),
+            paperTime: Math.round(domain.demoMetrics.averageTimePerCase * domain.demoMetrics.dailyVolume / 60)
+          };
+        }
+      });
+      console.log('Demo mode: Using demoMetrics from domains.json');
+    }
   } catch (error) {
     console.error('Failed to load domains data:', error);
   }
@@ -643,22 +664,26 @@ function updateDomainEffects() {
   Object.keys(strategyState.domainModes).forEach(domain => {
     const mode = strategyState.domainModes[domain];
     const stats = DOMAIN_STATS[domain];
-    
-    // 削減率を計算
     let reductionRate = 0;
-    if (mode === 'plain') {
-      reductionRate = 0;
-    } else if (mode === 'smart') {
-      reductionRate = 0.35; // 約35%削減
-    } else if (mode === 'ai') {
-      // マイナンバーの有無で変わる
-      reductionRate = strategyState.mynumberEnabled ? 0.93 : 0.60;
+    
+    // デモモード時はdemoMetricsから削減率を取得
+    if (isDemoMode && demoMetricsCache[domain]) {
+      const metrics = demoMetricsCache[domain];
+      reductionRate = metrics.reductionRates[mode] || 0;
+    } else {
+      // 非デモモード時は固定値
+      if (mode === 'plain') {
+        reductionRate = 0;
+      } else if (mode === 'smart') {
+        reductionRate = 0.35;
+      } else if (mode === 'ai') {
+        reductionRate = strategyState.mynumberEnabled ? 0.93 : 0.60;
+      }
     }
     
     const manualFields = Math.round(stats.totalFields * (1 - reductionRate));
     const timeMinutes = Math.round(manualFields * 20 / 60);
     
-    // 表示更新
     const inputEl = document.getElementById(`effect-${domain}-input`);
     const timeEl = document.getElementById(`effect-${domain}-time`);
     
