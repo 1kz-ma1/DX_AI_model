@@ -10,17 +10,27 @@ let domainsData = null;
 let demoMetricsCache = {};
 let volumeChart = null;
 let timeChart = null;
+let domainModes = {}; // 各分野のモード状態
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     console.log('DOMContentLoaded event fired');
     
-    // URLパラメータから初期モードを取得
+    // URLパラメータから初期モードと各分野のモード状態を取得
     const params = new URLSearchParams(window.location.search);
     if (params.get('mode')) {
       currentMode = params.get('mode');
       console.log(`Mode from URL: ${currentMode}`);
     }
+    
+    // 各分野のモード状態を取得
+    ['administration', 'medical', 'education', 'logistics', 'disaster'].forEach(domainId => {
+      const modeParam = params.get(`${domainId}_mode`);
+      if (modeParam) {
+        domainModes[domainId] = modeParam;
+        console.log(`${domainId} mode: ${modeParam}`);
+      }
+    });
 
     // domains.jsonを読み込み（どこから実行されてもdocsパスを正しく解決）
     let dataUrl = 'assets/data/domains.json';

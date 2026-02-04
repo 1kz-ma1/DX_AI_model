@@ -2,6 +2,7 @@
 
 let charactersData = null;
 let experienceMode = 'game'; // URLパラメータから取得
+let domainModes = {}; // デモモード時の各分野のモード状態
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -29,6 +30,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     if (!domainsResponse.ok) throw new Error('Failed to load domains.json');
     const data = await domainsResponse.json();
+    
+    // デモモード時：初期モードを設定
+    if (experienceMode === 'demo') {
+      data.domains.forEach(domain => {
+        domainModes[domain.id] = 'smart'; // デフォルトはSmart
+      });
+    }
     
     if (charactersResponse.ok) {
       charactersData = await charactersResponse.json();
@@ -105,11 +113,20 @@ function renderDomainHub(domains) {
         <div class="domain-emoji">${admin.emoji}</div>
         <div class="domain-name">${admin.name}</div>
         <div class="domain-desc">${admin.description || ''}</div>
+        ${experienceMode === 'demo' ? createModeButtons(admin.id) : ''}
       `;
       
       centerNode.addEventListener('click', (e) => {
         e.preventDefault();
-        navigate('domain.html', { d: admin.id, mode: 'plain', experience: experienceMode });
+        if (experienceMode === 'demo') {
+          // デモモード時：行政分野は分析ページへ
+          if (!e.target.closest('.mode-btn')) {
+            navigateToAnalysis(admin.id);
+          }
+        } else {
+          // ゲームモード時：通常の分野詳細へ
+          navigate('domain.html', { d: admin.id, mode: 'plain', experience: experienceMode });
+        }
       });
       
       hub.appendChild(centerNode);
@@ -136,11 +153,20 @@ function renderDomainHub(domains) {
         <div class="domain-emoji">${domain.emoji}</div>
         <div class="domain-name">${domain.name}</div>
         <div class="domain-desc">${domain.description || ''}</div>
+        ${experienceMode === 'demo' ? createModeButtons(domain.id) : ''}
       `;
       
       node.addEventListener('click', (e) => {
         e.preventDefault();
-        navigate('domain.html', { d: domain.id, mode: 'plain', experience: experienceMode });
+        if (experienceMode === 'demo') {
+          // デモモード時：モードボタン以外のクリックは無視
+          if (!e.target.closest('.mode-btn')) {
+            return;
+          }
+        } else {
+          // ゲームモード時：通常の分野詳細へ
+          navigate('domain.html', { d: domain.id, mode: 'plain', experience: experienceMode });
+        }
       });
       
       hub.appendChild(node);
@@ -173,15 +199,85 @@ function createDomainNode(domain, isCenter) {
     <div class="domain-emoji">${domain.emoji}</div>
     <div class="domain-name">${domain.name}</div>
     <div class="domain-desc">${domain.description || ''}</div>
+    ${experienceMode === 'demo' ? createModeButtons(domain.id) : ''}
   `;
   
   node.addEventListener('click', (e) => {
     e.preventDefault();
-    navigate('domain.html', { d: domain.id, mode: 'plain', experience: experienceMode });
+    if (experienceMode === 'demo') {
+      // デモモード時
+      if (domain.id === 'administration' && !e.target.closest('.mode-btn')) {
+        // 行政分野：分析ページへ
+        navigateToAnalysis(domain.id);
+      }
+      // 他の分野：モードボタンのみ有効（クリックは無視）
+    } else {
+      // ゲームモード時：通常の分野詳細へ
+      navigate('domain.html', { d: domain.id, mode: 'plain', experience: experienceMode });
+    }
   });
   
   return node;
 }
+
+/**
+ * デモモード用：モード選択ボタンのHTML生成
+ */
+function createModeButtons(domainId) {
+  const currentMode = domainModes[domainId] || 'smart';
+  return `
+    <div class="mode-buttons" onclick="event.stopPropagation()">
+      <button class="mode-btn ${currentMode === 'plain' ? 'active' : ''}" data-mode="plain" data-domain="${domainId}">
+        Plain
+      </button>
+      <button class="mode-btn ${currentMode === 'smart' ? 'active' : ''}" data-mode="smart" data-domain="${domainId}">
+        Smart
+      </button>
+      <button class="mode-btn ${currentMode === 'ai' ? 'active' : ''}" data-mode="ai" data-domain="${domainId}">
+        AI
+      </button>
+    </div>
+  `;
+}
+
+/**
+ * デモモード用：行政分野クリック時に分析ページへ遷移
+ */
+function navigateToAnalysis(domainId) {
+  console.log('Navigating to analysis page with modes:', domainModes);
+  // 全分野のモード状態を渡す
+  const modeParams = {};
+  Object.keys(domainModes).forEach(id => {
+    modeParams[`${id}_mode`] = domainModes[id];
+  });
+  
+  navigate('demo-analysis.html', { 
+    experience: 'demo',
+    domain: domainId,
+    ...modeParams
+  });
+}
+
+// モードボタンのイベントリスナー（イベント委譲）
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('mode-btn') && experienceMode === 'demo') {
+    const btn = e.target;
+    const mode = btn.dataset.mode;
+    const domainId = btn.dataset.domain;
+    
+    console.log(`Mode changed for ${domainId}: ${mode}`);
+    
+    // 状態更新
+    domainModes[domainId] = mode;
+    
+    // 同じ分野の他のボタンからactiveを削除
+    const parent = btn.closest('.mode-buttons');
+    if (parent) {
+      parent.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  }
+});
 
 function setupProfileLink() {
   const link = document.getElementById('changeProfileLink');

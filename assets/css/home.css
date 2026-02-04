@@ -387,3 +387,40 @@ body {
   opacity: 0.9;
   line-height: 1.6;
 }
+/* デモモード: モード選択ボタン */
+.mode-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  justify-content: center;
+}
+
+.mode-btn {
+  padding: 0.4rem 0.8rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.mode-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.mode-btn.active {
+  background: rgba(255, 255, 255, 0.95);
+  color: #667eea;
+  border-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.domain-node.center .mode-btn.active {
+  background: rgba(255, 255, 255, 0.95);
+  color: #f59e0b;
+}
