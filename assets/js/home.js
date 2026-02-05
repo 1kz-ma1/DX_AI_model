@@ -46,6 +46,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderDomainHub(data.domains);
     setupProfileLink();
     setupModeButtonListeners();
+      // 統計分析用にデータをキャッシュ
+      domainsDataForStats = data;
+      data.domains.forEach(domain => {
+        if (domain.demoMetrics) {
+          demoMetricsCache[domain.id] = domain.demoMetrics;
+        }
+      });
     
     // 統計セクションの閉じるボタン
     const closeBtn = document.getElementById('closeStatistics');
@@ -675,9 +682,7 @@ function setupModeButtonListeners() {
 async function updateDomainStats(domainId, mode) {
   try {
     // domains.json からデータを取得
-    const response = await fetch('assets/data/domains.json');
-    const data = await response.json();
-    const domain = data.domains.find(d => d.id === domainId);
+      const domain = domainsDataForStats.domains.find(d => d.id === domainId);
     
     if (!domain || !domain.demoMetrics) {
       console.warn(`No demoMetrics found for ${domainId}`);

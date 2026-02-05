@@ -526,9 +526,32 @@ body {
   box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
 }
 
+.mode-btn[data-mode="smart"] {
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.mode-btn[data-mode="smart"].active {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+.mode-btn[data-mode="plain"] {
+  border-color: rgba(156, 163, 175, 0.5);
+  background: rgba(156, 163, 175, 0.2);
+}
+
+.mode-btn[data-mode="plain"].active {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+  border-color: #9ca3af;
+  box-shadow: 0 2px 8px rgba(156, 163, 175, 0.4);
+}
+
 .domain-node:not(.center) .mode-btn {
-  font-size: 0.65rem;
-  padding: 0.4rem 0.6rem;
+  font-size: 0.7rem;
+  padding: 0.45rem 0.65rem;
+  min-height: 24px;
 }
 
 .mode-btn:hover {
@@ -1069,6 +1092,32 @@ body {
 }
 
 @media (max-width: 768px) {
+  .mode-buttons {
+    gap: 0.45rem;
+    margin-top: 0.6rem;
+    max-width: 110px;
+  }
+  
+  .mode-btn {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.7rem;
+    min-height: 24px;
+  }
+  
+  .domain-node:not(.center) .mode-btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.65rem;
+    min-height: 22px;
+  }
+  
+  .domain-node .domain-stats {
+    left: -100px;
+    bottom: 140px;
+    min-width: 130px;
+    font-size: 0.7rem;
+    padding: 0.6rem;
+  }
+  
   .statistics-section {
     padding: 2rem 1rem;
   }
