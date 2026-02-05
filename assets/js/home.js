@@ -106,8 +106,8 @@ function renderDomainHub(domains) {
   const isDesktop = window.innerWidth > 768;
   
   if (isDesktop) {
-    // 中心からの距離
-    const radius = 220;
+    // 中心からの距離（広くして重ならないように）
+    const radius = 280;
     
     // 行政DXを最初に中央に配置
     const admin = domains.find(d => d.id === 'administration');
@@ -277,14 +277,14 @@ function createModeButtons(domainId) {
   const currentMode = domainModes[domainId] || 'plain';
   return `
     <div class="mode-buttons">
-      <button class="mode-btn ${currentMode === 'plain' ? 'active' : ''}" data-mode="plain" data-domain="${domainId}" type="button">
-        Plain
+      <button class="mode-btn ${currentMode === 'ai' ? 'active' : ''}" data-mode="ai" data-domain="${domainId}" type="button">
+        🤖 AI
       </button>
       <button class="mode-btn ${currentMode === 'smart' ? 'active' : ''}" data-mode="smart" data-domain="${domainId}" type="button">
-        Smart
+        💡 Smart
       </button>
-      <button class="mode-btn ${currentMode === 'ai' ? 'active' : ''}" data-mode="ai" data-domain="${domainId}" type="button">
-        AI
+      <button class="mode-btn ${currentMode === 'plain' ? 'active' : ''}" data-mode="plain" data-domain="${domainId}" type="button">
+        📋 Plain
       </button>
     </div>
     <div class="domain-stats" id="stats-${domainId}">
@@ -714,6 +714,10 @@ async function updateDomainStats(domainId, mode) {
       // フラッシュアニメーション
       statsDiv.classList.add('stats-flash');
       setTimeout(() => statsDiv.classList.remove('stats-flash'), 500);
+      
+      // 吹き出しを3秒間強制表示
+      statsDiv.classList.add('force-show');
+      setTimeout(() => statsDiv.classList.remove('force-show'), 3000);
     }
     
     // 統計セクションが表示されている場合は更新
@@ -721,9 +725,32 @@ async function updateDomainStats(domainId, mode) {
     if (statisticsSection && statisticsSection.style.display === 'block') {
       updateStatisticsAnalysis();
     }
+    
+    // 行政分野の場合、全分野にリップル効果を表示
+    if (domainId === 'administration') {
+      showAdminImpactRipple();
+    }
   } catch (error) {
     console.error('Failed to update stats:', error);
   }
+}
+
+/**
+ * 行政モード変更時に他分野へのリップル効果を表示
+ */
+function showAdminImpactRipple() {
+  // 行政以外の全分野のノードにリップルエフェクトを適用
+  const allNodes = document.querySelectorAll('.domain-node[data-domain-id]:not([data-domain-id="administration"])');
+  
+  allNodes.forEach((node, index) => {
+    // 順次リップルを表示（遅延付き）
+    setTimeout(() => {
+      node.classList.add('admin-impact');
+      setTimeout(() => {
+        node.classList.remove('admin-impact');
+      }, 1500);
+    }, index * 200);
+  });
 }
 
 function setupProfileLink() {
