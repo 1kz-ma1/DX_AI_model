@@ -42,17 +42,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       charactersData = await charactersResponse.json();
     }
     
+    // 統計分析用にデータをキャッシュ（renderDomainHub前に設定）
+    domainsDataForStats = data;
+    data.domains.forEach(domain => {
+      if (domain.demoMetrics) {
+        demoMetricsCache[domain.id] = domain.demoMetrics;
+      }
+    });
+    
     displayCharacterInfo();
     renderDomainHub(data.domains);
     setupProfileLink();
     setupModeButtonListeners();
-      // 統計分析用にデータをキャッシュ
-      domainsDataForStats = data;
-      data.domains.forEach(domain => {
-        if (domain.demoMetrics) {
-          demoMetricsCache[domain.id] = domain.demoMetrics;
-        }
-      });
     
     // 統計セクションの閉じるボタン
     const closeBtn = document.getElementById('closeStatistics');
