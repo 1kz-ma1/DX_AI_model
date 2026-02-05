@@ -829,6 +829,10 @@ body {
   }
 }
 
+.statistics-section[style*="display: block"] {
+  display: block !important;
+}
+
 .statistics-header {
   max-width: 1400px;
   margin: 0 auto 2rem;
@@ -853,6 +857,8 @@ body {
   padding: 2rem 2rem;
   border-left: 4px solid #0ea5e9;
   box-shadow: 0 2px 8px rgba(14, 165, 233, 0.1);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .data-explanation h3 {
@@ -912,11 +918,12 @@ body {
 }
 
 .statistics-section .metrics-container {
-  display: grid;
+  display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   max-width: 1400px;
   margin: 0 auto 2rem;
+  width: 100%;
 }
 
 .statistics-section .metric-card {
@@ -926,6 +933,10 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   border-left: 4px solid #3b82f6;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .statistics-section .metric-card:hover {
@@ -964,11 +975,12 @@ body {
 }
 
 .statistics-section .charts-container {
-  display: grid;
+  display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto 2rem;
+  width: 100%;
 }
 
 .statistics-section .chart-wrapper {
@@ -976,6 +988,8 @@ body {
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .statistics-section .chart-title {
@@ -1000,11 +1014,12 @@ body {
 }
 
 .domain-details-grid {
-  display: grid;
+  display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;
   max-width: 1400px;
   margin: 0 auto 2rem;
+  width: 100%;
 }
 
 .domain-detail-card {
@@ -1013,6 +1028,8 @@ body {
   padding: 1.25rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .domain-detail-card:hover {
