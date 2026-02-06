@@ -269,6 +269,17 @@
   font-weight: 600;
 }
 
+.domain-detail-card .detail-note {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #f0f9ff;
+  border-left: 3px solid #0ea5e9;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #0369a1;
+  line-height: 1.5;
+}
+
 /* 行政影響 */
 .impact-details {
   max-width: 1400px;
@@ -328,6 +339,82 @@
   }
   
   .domain-details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* ===== デモ分析サマリーセクション ===== */
+
+.demo-analysis-summary {
+  max-width: 1400px;
+  margin: 2rem auto;
+  background: linear-gradient(to bottom, #ffffff 0%, #f9fafb 100%);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.analysis-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.analysis-summary-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.expand-analysis-btn {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.expand-analysis-btn:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.metrics-container.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .demo-analysis-summary {
+    margin: 2rem 1rem;
+    padding: 1.5rem;
+  }
+  
+  .analysis-summary-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .expand-analysis-btn {
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .metrics-container.summary {
     grid-template-columns: 1fr;
   }
 }

@@ -339,6 +339,16 @@
         },
         "averageTimePerCase": 18,
         "administrativeDependency": 1.0,
+        "implementationCost": {
+          "plain": 0,
+          "smart": 25000000,
+          "ai": 80000000
+        },
+        "annualMaintenanceCost": {
+          "plain": 0,
+          "smart": 2500000,
+          "ai": 8000000
+        },
         "impactOnOtherDomains": {
           "medical": 0.9,
           "education": 0.85,
@@ -659,6 +669,16 @@
         },
         "averageTimePerCase": 20,
         "administrativeDependency": 0.9,
+        "implementationCost": {
+          "plain": 0,
+          "smart": 35000000,
+          "ai": 95000000
+        },
+        "annualMaintenanceCost": {
+          "plain": 0,
+          "smart": 3500000,
+          "ai": 9500000
+        },
         "impactOnOtherDomains": {
           "administration": 0.1,
           "education": 0.3,
@@ -966,6 +986,16 @@
         },
         "averageTimePerCase": 15,
         "administrativeDependency": 0.85,
+        "implementationCost": {
+          "plain": 0,
+          "smart": 15000000,
+          "ai": 50000000
+        },
+        "annualMaintenanceCost": {
+          "plain": 0,
+          "smart": 1500000,
+          "ai": 5000000
+        },
         "impactOnOtherDomains": {
           "administration": 0.05,
           "medical": 0.15,
@@ -1266,6 +1296,16 @@
         },
         "averageTimePerCase": 3,
         "administrativeDependency": 0.15,
+        "implementationCost": {
+          "plain": 0,
+          "smart": 8000000,
+          "ai": 30000000
+        },
+        "annualMaintenanceCost": {
+          "plain": 0,
+          "smart": 800000,
+          "ai": 3000000
+        },
         "impactOnOtherDomains": {
           "administration": 0.02,
           "medical": 0.02,
@@ -1567,6 +1607,16 @@
         },
         "averageTimePerCase": 10,
         "administrativeDependency": 0.75,
+        "implementationCost": {
+          "plain": 0,
+          "smart": 5000000,
+          "ai": 20000000
+        },
+        "annualMaintenanceCost": {
+          "plain": 0,
+          "smart": 500000,
+          "ai": 2000000
+        },
         "impactOnOtherDomains": {
           "administration": 0.1,
           "medical": 0.2,
