@@ -48,7 +48,7 @@
     <!-- デモモード専用: プラン選択セクション -->
     <section id="planSelection" class="plan-selection" style="display: none;">
       <div class="plan-selection-header">
-        <h2>🎯 DX導入プランを選択</h2>
+        <h2 style="color: #ffffff;">🎯 DX導入プランを選択</h2>
         <p class="plan-selection-description">目的に応じた最適なプランをお選びください。各プランの効果は下部の分析で確認できます。</p>
       </div>
 
@@ -142,66 +142,10 @@
     </div>
 
 
-    <section id="scalingEfficiencySection" class="scaling-efficiency-section" style="display: block;">
-      <div class="scaling-header">
-        <h2>📈 スケーリング効率分析</h2>
-        <p class="scaling-subtitle">対象規模が変わるとROI（投資対効果）がどう変化するか可視化します</p>
-      </div>
-
-      <div class="scaling-chart-container">
-        <canvas id="scalingEfficiencyChart"></canvas>
-      </div>
-
-      <div class="scaling-insights">
-        <h3>💡 スケーリング効率の重要性</h3>
-        <ul>
-          <li><strong>実装コスト</strong>：規模に関わらずほぼ一定（システム開発・導入研修）</li>
-          <li><strong>削減効果</strong>：対象人口に比例して増加</li>
-          <li><strong>結果</strong>：規模が大きいほどROI（投資対効果）が劇的に向上</li>
-        </ul>
-      </div>
-    </section>
-
     <!-- 統計分析セクション（初期状態は非表示） -->
     <section id="statisticsSection" class="statistics-section" style="display: block;">
       <div class="statistics-header">
         <h2>🌍 社会全体への波及効果分析</h2>
-      </div>
-
-      <!-- データ設定説明 -->
-      <div class="data-explanation">
-        <h3>📋 シミュレーション条件</h3>
-        <div class="explanation-grid">
-          <div class="explanation-item">
-            <strong>対象自治体：</strong>人口100万人規模の都市圏
-          </div>
-          <div class="explanation-item">
-            <strong>試算期間：</strong>年間ベース（稼働日数252日）
-          </div>
-          <div class="explanation-item">
-            <strong>人件費単価：</strong>時給3,000円（行政職員平均）
-          </div>
-          <div class="explanation-item">
-            <strong>データ根拠：</strong>各分野の実績値と先行自治体の導入事例を基に算出
-          </div>
-        </div>
-        <!-- 分野別データソース説明（折り畳み可能） -->
-        <div class="data-sources-section collapsible-section">
-          <h4 class="collapsible-header">
-            <span>📊 各分野のデータソース</span>
-            <button class="toggle-btn" aria-label="セクションを開閉">▼</button>
-          </h4>
-          <div class="collapsible-content" style="display: none;">
-            <div id="domainDataSources" class="domain-sources-grid">
-              <!-- 動的生成（home.js）-->
-            </div>
-          </div>
-        </div>
-        
-        <p class="data-explanation-note">※ 本分析は複数の公開データと先行導入事例を基に算出しています。実装効果は自治体規模・既存システム・職員スキルにより変動します。</p>        <p class="explanation-note">
-          ※ 本分析は、各分野のDX・AI導入レベル（Plain/Smart/AI）を組み合わせた場合の効果を動的に計算しています。
-          実際の導入効果は、自治体規模・既存システム・運用体制により変動します。
-        </p>
       </div>
 
       <!-- メトリクスカード -->
@@ -246,6 +190,28 @@
         </div>
       </div>
 
+
+    <section id="scalingEfficiencySection" class="scaling-efficiency-section" style="display: block;">
+      <div class="scaling-header">
+        <h2>📈 スケーリング効率分析</h2>
+        <p class="scaling-subtitle">対象規模が変わるとROI（投資対効果）がどう変化するか可視化します</p>
+      </div>
+
+      <div class="scaling-chart-container">
+        <canvas id="scalingEfficiencyChart"></canvas>
+      </div>
+
+      <div class="scaling-insights">
+        <h3>💡 スケーリング効率の重要性</h3>
+        <ul>
+          <li><strong>実装コスト</strong>：規模に関わらずほぼ一定（システム開発・導入研修）</li>
+          <li><strong>削減効果</strong>：対象人口に比例して増加</li>
+          <li><strong>結果</strong>：規模が大きいほどROI（投資対効果）が劇的に向上</li>
+        </ul>
+      </div>
+    </section>
+
+    
       <!-- 分野別詳細（折り畳み可能） -->
       <div class="collapsible-section">
         <h3 class="section-title collapsible-header">
@@ -257,6 +223,45 @@
         </div>
       </div>
 
+
+      
+      <!-- データ設定説明 -->
+      <div class="data-explanation">
+        <h3>📋 シミュレーション条件</h3>
+        <div class="explanation-grid">
+          <div class="explanation-item">
+            <strong>対象自治体：</strong>人口100万人規模の都市圏
+          </div>
+          <div class="explanation-item">
+            <strong>試算期間：</strong>年間ベース（稼働日数252日）
+          </div>
+          <div class="explanation-item">
+            <strong>人件費単価：</strong>時給3,000円（行政職員平均）
+          </div>
+          <div class="explanation-item">
+            <strong>データ根拠：</strong>各分野の実績値と先行自治体の導入事例を基に算出
+          </div>
+        </div>
+        <!-- 分野別データソース説明（折り畳み可能） -->
+        <div class="data-sources-section collapsible-section">
+          <h4 class="collapsible-header">
+            <span>📊 各分野のデータソース</span>
+            <button class="toggle-btn" aria-label="セクションを開閉">▼</button>
+          </h4>
+          <div class="collapsible-content" style="display: none;">
+            <div id="domainDataSources" class="domain-sources-grid">
+              <!-- 動的生成（home.js）-->
+            </div>
+          </div>
+        </div>
+        
+        <p class="data-explanation-note">※ 本分析は複数の公開データと先行導入事例を基に算出しています。実装効果は自治体規模・既存システム・職員スキルにより変動します。</p>        <p class="explanation-note">
+          ※ 本分析は、各分野のDX・AI導入レベル（Plain/Smart/AI）を組み合わせた場合の効果を動的に計算しています。
+          実際の導入効果は、自治体規模・既存システム・運用体制により変動します。
+        </p>
+      </div>
+
+    
       <!-- 行政DXの波及効果（折り畳み可能） -->
       <div class="collapsible-section">
         <h3 class="section-title collapsible-header">
@@ -282,4 +287,17 @@
   <script src="assets/js/state.js"></script>
   <script src="assets/js/home.js"></script>
 </body>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.plan-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const target = document.getElementById('statisticsSection');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  });
+</script>
 </html>
