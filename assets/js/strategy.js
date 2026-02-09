@@ -10,6 +10,7 @@ let strategyState = {
   domainModes: {
     administration: 'plain',
     medical: 'plain',
+    insurance: 'plain',
     education: 'plain',
     logistics: 'plain',
     disaster: 'plain'
@@ -17,6 +18,7 @@ let strategyState = {
   hiddenPoints: {
     administration: false,
     medical: false,
+    insurance: false,
     education: false,
     logistics: false,
     disaster: false,
@@ -38,6 +40,7 @@ const MAX_POINTS = 12;
 const DOMAIN_STATS = {
   administration: { totalFields: 135, paperTime: 101 },
   medical: { totalFields: 140, paperTime: 105 },
+  insurance: { totalFields: 125, paperTime: 95 },
   education: { totalFields: 140, paperTime: 105 },
   logistics: { totalFields: 130, paperTime: 98 },
   disaster: { totalFields: 145, paperTime: 109 }
@@ -229,6 +232,7 @@ function getDomainInfo(domainId) {
   const names = {
     administration: '行政手続き',
     medical: '医療',
+    insurance: '保険手続き',
     education: '教育',
     logistics: '物流',
     disaster: '防災'
@@ -527,6 +531,7 @@ function updateHintPanel() {
   const domains = [
     { id: 'administration', name: '行政DX' },
     { id: 'medical', name: '医療DX' },
+    { id: 'insurance', name: '保険DX' },
     { id: 'education', name: '教育DX' },
     { id: 'logistics', name: '物流DX' },
     { id: 'disaster', name: '災害DX' }
@@ -945,6 +950,7 @@ ${characterInfo}
 各分野の投資:
 🏛️ 行政DX: ${strategyState.domainModes.administration.toUpperCase()}
 🏥 医療DX: ${strategyState.domainModes.medical.toUpperCase()}
+🛡️ 保険DX: ${strategyState.domainModes.insurance.toUpperCase()}
 🎓 教育DX: ${strategyState.domainModes.education.toUpperCase()}
 📦 物流DX: ${strategyState.domainModes.logistics.toUpperCase()}
 🚨 災害対応DX: ${strategyState.domainModes.disaster.toUpperCase()}

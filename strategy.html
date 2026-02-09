@@ -6,6 +6,7 @@
   <title>戦略ボード - DX×AIが変える、10年後の日本</title>
   <link rel="stylesheet" href="assets/css/common.css">
   <link rel="stylesheet" href="assets/css/strategy.css">
+  <script src="assets/js/api-client.js"></script>
 </head>
 <body>
   <div class="container">
@@ -40,6 +41,7 @@
           <ul id="hintList">
             <li class="hint-locked">🔒 行政DX: 詳細ページで条件を探索</li>
             <li class="hint-locked">🔒 医療DX: 詳細ページで条件を探索</li>
+            <li class="hint-locked">🔒 保険DX: 詳細ページで条件を探索</li>
             <li class="hint-locked">🔒 教育DX: 詳細ページで条件を探索</li>
             <li class="hint-locked">🔒 物流DX: 詳細ページで条件を探索</li>
             <li class="hint-locked">🔒 災害DX: 詳細ページで条件を探索</li>
@@ -127,6 +129,12 @@
               <span class="bar-value">0分</span>
             </div>
             <div class="bar-label">🏥<br>医療</div>
+          </div>
+          <div class="histogram-bar" data-domain="insurance">
+            <div class="bar-fill" id="bar-insurance">
+              <span class="bar-value">0分</span>
+            </div>
+            <div class="bar-label">🛡️<br>保険</div>
           </div>
           <div class="histogram-bar" data-domain="education">
             <div class="bar-fill" id="bar-education">
@@ -262,6 +270,54 @@
             <div class="effect-item">
               <span class="effect-label">推定時間:</span>
               <span class="effect-value" id="effect-medical-time">-</span>
+            </div>
+          </div>
+          
+          <div class="mynumber-warning" style="display: none;">
+            ⚠️ マイナンバー未導入のためAI効果が制限されています
+          </div>
+        </div>
+
+        <!-- 保険DX -->
+        <div class="domain-card" data-domain="insurance">
+          <div class="domain-header">
+            <span class="domain-icon">🛡️</span>
+            <h3>保険DX</h3>
+            <a href="domain.html?d=insurance" class="detail-link" target="_blank">詳細 →</a>
+          </div>
+          
+          <div class="domain-modes">
+            <label class="mode-option">
+              <input type="radio" name="mode-insurance" value="plain" checked>
+              <span class="mode-label">
+                <span class="mode-name">Plain</span>
+                <span class="mode-cost">0pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-insurance" value="smart">
+              <span class="mode-label">
+                <span class="mode-name">Smart</span>
+                <span class="mode-cost">1pt</span>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode-insurance" value="ai">
+              <span class="mode-label">
+                <span class="mode-name">AI</span>
+                <span class="mode-cost">2pt</span>
+              </span>
+            </label>
+          </div>
+          
+          <div class="domain-effect">
+            <div class="effect-item">
+              <span class="effect-label">入力項目:</span>
+              <span class="effect-value" id="effect-insurance-input">-</span>
+            </div>
+            <div class="effect-item">
+              <span class="effect-label">推定時間:</span>
+              <span class="effect-value" id="effect-insurance-time">-</span>
             </div>
           </div>
           

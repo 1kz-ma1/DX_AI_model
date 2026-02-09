@@ -3,6 +3,35 @@
 let charactersData = null;
 let experienceMode = 'game'; // URLパラメータから取得
 let domainModes = {}; // デモモード時の各分野のモード状態
+let isCustomMode = false; // カスタムプランモードかどうか
+
+// プラン定義
+const PLANS = {
+  plain: {
+    name: '最小デジタル化プラン',
+    modes: { administration: 'plain', medical: 'plain', insurance: 'plain', education: 'plain', logistics: 'plain', disaster: 'plain', tax: 'plain', welfare: 'plain', infrastructure: 'plain' }
+  },
+  cost: {
+    name: 'コスト重視',
+    modes: { administration: 'smart', medical: 'smart', insurance: 'plain', education: 'plain', logistics: 'plain', disaster: 'plain', tax: 'smart', welfare: 'plain', infrastructure: 'plain' }
+  },
+  basic: {
+    name: '基本プラン',
+    modes: { administration: 'smart', medical: 'plain', insurance: 'smart', education: 'plain', logistics: 'smart', disaster: 'plain', tax: 'smart', welfare: 'plain', infrastructure: 'smart' }
+  },
+  recommended: {
+    name: '推奨プラン',
+    modes: { administration: 'ai', medical: 'ai', insurance: 'smart', education: 'smart', logistics: 'smart', disaster: 'smart', tax: 'smart', welfare: 'smart', infrastructure: 'smart' }
+  },
+  emergency: {
+    name: '緊急対応優先',
+    modes: { administration: 'ai', medical: 'ai', insurance: 'ai', education: 'plain', logistics: 'smart', disaster: 'ai', tax: 'ai', welfare: 'ai', infrastructure: 'smart' }
+  },
+  advanced: {
+    name: '最先端プラン',
+    modes: { administration: 'ai', medical: 'ai', insurance: 'ai', education: 'ai', logistics: 'ai', disaster: 'ai', tax: 'ai', welfare: 'ai', infrastructure: 'ai' }
+  }
+};
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -22,14 +51,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
     
-    // domains.jsonとcharacters.jsonを読み込み
-    const [domainsResponse, charactersResponse] = await Promise.all([
-      fetch('assets/data/domains.json'),
-      fetch('assets/data/characters.json')
+    // domains.jsonとcharacters.jsonを読み込み（API経由）
+    const [data, charactersDataResponse, jsonData] = await Promise.all([
+      ApiClient.getDomains(),
+      ApiClient.getCharacters(),
+      fetch('assets/data/domains.json').then(r => r.json()).catch(() => ({ domains: [] }))
     ]);
     
-    if (!domainsResponse.ok) throw new Error('Failed to load domains.json');
-    const data = await domainsResponse.json();
+    // JSON ファイルからのドメインデータを ID でマップ化
+    const jsonDomainsMap = {};
+    if (jsonData && jsonData.domains) {
+      jsonData.domains.forEach(domain => {
+        jsonDomainsMap[domain.id] = domain;
+      });
+    }
     
     // デモモード時：初期モードを設定
     if (experienceMode === 'demo') {
@@ -38,28 +73,87 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
     
-    if (charactersResponse.ok) {
-      charactersData = await charactersResponse.json();
+    // キャラクターデータを設定
+    if (charactersDataResponse && charactersDataResponse.characters) {
+      charactersData = charactersDataResponse;
     }
     
     // 統計分析用にデータをキャッシュ（renderDomainHub前に設定）
     domainsDataForStats = data;
+    
+    // demoMetricsCacheに直接データを格納（JSON値を優先）
     data.domains.forEach(domain => {
+      const jsonDomain = jsonDomainsMap[domain.id];
+      
       if (domain.demoMetrics) {
-        demoMetricsCache[domain.id] = domain.demoMetrics;
+        // JSON から直接 dailyVolume と averageTimePerCase を取得
+        let dailyVolume = (jsonDomain?.demoMetrics?.dailyVolume) || 
+                         (domain.demoMetrics?.dailyVolume) ||
+                         (domain.demoMetrics?.dailyDocuments?.plain) ||
+                         (domain.demoMetrics?.dailyDocuments?.smart) ||
+                         (domain.demoMetrics?.dailyDocuments?.ai) || 0;
+        
+        let averageTimePerCase = (jsonDomain?.demoMetrics?.averageTimePerCase) || 
+                                (domain.demoMetrics?.averageTimePerCase) || 60;
+        
+        demoMetricsCache[domain.id] = {
+          ...domain.demoMetrics,
+          dailyVolume: dailyVolume,
+          averageTimePerCase: averageTimePerCase
+        };
+      } else if (domain.metrics) {
+        // API から返されたデータ構造が異なる場合に対応
+        let dailyVolume = (jsonDomain?.demoMetrics?.dailyVolume) ||
+                         (domain.metrics?.dailyVolume) ||
+                         (domain.metrics?.dailyDocuments?.plain) ||
+                         (domain.metrics?.dailyDocuments?.smart) ||
+                         (domain.metrics?.dailyDocuments?.ai) || 0;
+        
+        let averageTimePerCase = (jsonDomain?.demoMetrics?.averageTimePerCase) ||
+                                (domain.metrics?.averageTimePerCase) || 60;
+        
+        demoMetricsCache[domain.id] = {
+          ...domain.metrics,
+          dailyVolume: dailyVolume,
+          averageTimePerCase: averageTimePerCase
+        };
+      } else {
+        // フォールバック：JSON から取得
+        if (jsonDomain?.demoMetrics) {
+          const dailyVolume = jsonDomain.demoMetrics.dailyVolume || 0;
+          const averageTimePerCase = jsonDomain.demoMetrics.averageTimePerCase || 60;
+          demoMetricsCache[domain.id] = {
+            ...jsonDomain.demoMetrics,
+            dailyVolume: dailyVolume,
+            averageTimePerCase: averageTimePerCase
+          };
+        } else {
+          demoMetricsCache[domain.id] = domain;
+        }
       }
     });
+    
+    // デバッグ用：キャッシュの内容をコンソール出力
+    console.log('demoMetricsCache loaded:', demoMetricsCache);
     
     displayCharacterInfo();
     renderDomainHub(data.domains);
     setupProfileLink();
     setupModeButtonListeners();
     
+    // デモモード時：プラン選択UIを表示
+    if (experienceMode === 'demo') {
+      setupPlanSelection();
+    }
+    
     // 統計セクションの閉じるボタン
     const closeBtn = document.getElementById('closeStatistics');
     if (closeBtn) {
       closeBtn.addEventListener('click', closeStatistics);
     }
+
+    // 折り畳みセクションのイベントリスナーを設定
+    setupCollapsibleSections();
 
     // クエリで統計を自動展開
     if (params.open === 'analysis') {
@@ -123,6 +217,8 @@ function renderDomainHub(domains) {
  * ツリー構造レイアウト（デモモード用）
  */
 function renderTreeLayout(hub, domains) {
+  // 既存の要素をクリア（重複を防ぐ）
+  hub.innerHTML = '';
   hub.classList.add('tree-view');
   
   // 行政DXを頂点に配置
@@ -167,17 +263,12 @@ function renderTreeLayout(hub, domains) {
     
     // コンテンツを構築（接続線も含めて一度に設定）
     const lineClass = adminDependency >= 0.8 ? 'high' : adminDependency >= 0.4 ? 'medium' : 'low';
+    
     branchNode.innerHTML = `
       <div class="tree-branch-line ${lineClass}"></div>
       <div class="domain-emoji">${domain.emoji}</div>
       <div class="domain-name">${domain.name}</div>
       ${createModeButtons(domain.id)}
-      <div class="domain-stats" id="stats-${domain.id}">
-        <div class="stat-item"><span class="stat-label">書類削減率:</span> <span class="stat-value">--%</span></div>
-        <div class="stat-item"><span class="stat-label">時間短縮:</span> <span class="stat-value">--%</span></div>
-        <div class="stat-item"><span class="stat-label">コスト削減:</span> <span class="stat-value">--%</span></div>
-      </div>
-      <div class="dependency-indicator">依存度: ${(adminDependency * 100).toFixed(0)}%</div>
     `;
     
     branchesContainer.appendChild(branchNode);
@@ -185,48 +276,11 @@ function renderTreeLayout(hub, domains) {
   
   hub.appendChild(branchesContainer);
   
-  // 凡例を作成（ツリーの下に配置）
-  const legend = document.createElement('div');
-  legend.className = 'dependency-legend';
-  legend.innerHTML = `
-    <div class="legend-item">
-      <div class="legend-color high"></div>
-      <span>高依存（0.8以上）</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-color medium"></div>
-      <span>中依存（0.4～0.8）</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-color low"></div>
-      <span>低依存（0.4未満）</span>
-    </div>
-  `;
-  hub.appendChild(legend);
-  
   // デモモード時：初期統計を表示
   domains.forEach(domain => {
     updateDomainStats(domain.id, domainModes[domain.id] || 'plain');
   });
   
-  // 分析サマリーセクションを表示
-  const summarySection = document.getElementById('demoAnalysisSummary');
-  if (summarySection) {
-    summarySection.style.display = 'block';
-    updateAnalysisSummary();
-  }
-  
-  // 詳細表示ボタンのイベントリスナー
-  const expandBtn = document.getElementById('expandAnalysis');
-  if (expandBtn) {
-    expandBtn.addEventListener('click', () => {
-      showStatistics();
-      // 統計セクションまでスクロール
-      setTimeout(() => {
-        document.getElementById('statisticsSection').scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    });
-  }
 }
 
 /**
@@ -253,7 +307,12 @@ function renderRingLayout(hub, domains) {
       centerNode.style.left = 'calc(50% - 90px)';
       centerNode.style.top = 'calc(50% - 90px)';
       
+      const adminCurrentMode = experienceMode === 'demo' ? (domainModes[admin.id] || 'plain') : 'plain';
+      const adminModeLabel = adminCurrentMode === 'ai' ? '🤖 AI' : adminCurrentMode === 'smart' ? '💡 Smart' : '📋 Plain';
+      const adminModeBadge = experienceMode === 'demo' ? `<div class="mode-badge" style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: #333; z-index: 10;">${adminModeLabel}</div>` : '';
+      
       centerNode.innerHTML = `
+        ${adminModeBadge}
         <div class="domain-emoji">${admin.emoji}</div>
         <div class="domain-name">${admin.name}</div>
         ${experienceMode === 'demo' ? '<div class="analysis-badge">📊 クリックで統計分析</div>' : ''}
@@ -309,7 +368,12 @@ function renderRingLayout(hub, domains) {
       node.style.setProperty('--rail-angle', `${railAngleDeg}deg`);
       node.style.setProperty('--rail-length', `${railLength}px`);
       
+      const ringCurrentMode = experienceMode === 'demo' ? (domainModes[domain.id] || 'plain') : 'plain';
+      const ringModeLabel = ringCurrentMode === 'ai' ? '🤖 AI' : ringCurrentMode === 'smart' ? '💡 Smart' : '📋 Plain';
+      const ringModeBadge = experienceMode === 'demo' ? `<div class="mode-badge" style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: #333; z-index: 10;">${ringModeLabel}</div>` : '';
+      
       node.innerHTML = `
+        ${ringModeBadge}
         <div class="domain-emoji">${domain.emoji}</div>
         <div class="domain-name">${domain.name}</div>
         <div class="domain-desc">${domain.description || ''}</div>
@@ -368,7 +432,12 @@ function createDomainNode(domain, isCenter) {
   node.setAttribute('data-domain-id', domain.id);
   node.setAttribute('aria-label', `${domain.name}の体験へ移動`);
   
+  const mobileCurrentMode = experienceMode === 'demo' ? (domainModes[domain.id] || 'plain') : 'plain';
+  const mobileModeLabel = mobileCurrentMode === 'ai' ? '🤖 AI' : mobileCurrentMode === 'smart' ? '💡 Smart' : '📋 Plain';
+  const mobileModeBadge = experienceMode === 'demo' ? `<div class="mode-badge" style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: #333; z-index: 10;">${mobileModeLabel}</div>` : '';
+  
   node.innerHTML = `
+    ${mobileModeBadge}
     <div class="domain-emoji">${domain.emoji}</div>
     <div class="domain-name">${domain.name}</div>
     ${experienceMode === 'demo' && domain.id === 'administration' ? '<div class="analysis-badge">📊 クリックで統計分析</div>' : ''}
@@ -406,8 +475,10 @@ function createDomainNode(domain, isCenter) {
  */
 function createModeButtons(domainId) {
   const currentMode = domainModes[domainId] || 'plain';
+  // カスタムモードでない場合は非表示のスタイルを追加
+  const displayStyle = isCustomMode ? '' : 'style="display: none;"';
   return `
-    <div class="mode-buttons">
+    <div class="mode-buttons" ${displayStyle}>
       <button class="mode-btn ${currentMode === 'ai' ? 'active' : ''}" data-mode="ai" data-domain="${domainId}" type="button">
         🤖 AI
       </button>
@@ -462,6 +533,7 @@ function closeStatistics() {
 let volumeChart = null;
 let timeChart = null;
 let roiChart = null;
+let scalingEfficiencyChart = null;
 let domainsDataForStats = null;
 let demoMetricsCache = {};
 
@@ -472,9 +544,7 @@ async function updateStatisticsAnalysis() {
   try {
     // データ未読み込みの場合は読み込み
     if (!domainsDataForStats) {
-      const response = await fetch('assets/data/domains.json');
-      if (!response.ok) throw new Error('Failed to load domains.json');
-      domainsDataForStats = await response.json();
+      domainsDataForStats = await ApiClient.getDomains();
       
       // demoMetricsをキャッシュ
       domainsDataForStats.domains.forEach(domain => {
@@ -493,9 +563,11 @@ async function updateStatisticsAnalysis() {
     
     // UI更新
     updateMetricsDisplay(metrics);
+    drawScalingEfficiencyChart(metrics);
     updateCharts(metrics);
     updateDomainDetails(metrics);
     updateAdminImpact(metrics);
+    displayDomainDataSources();
     
   } catch (error) {
     console.error('Failed to update statistics:', error);
@@ -511,6 +583,11 @@ function calculateMetrics() {
     return null;
   }
   
+  // デバッグ：キャッシュの状態を確認
+  console.log('calculateMetrics called');
+  console.log('demoMetricsCache keys:', Object.keys(demoMetricsCache));
+  console.log('domains count:', domainsDataForStats.domains.length);
+  
   const costPerHour = domainsDataForStats?.meta?.demoMetaInfo?.costPerHour || 3000;
   
   let totalDailyVolume = 0;
@@ -525,11 +602,20 @@ function calculateMetrics() {
 
   // 各分野のメトリクス計算
   domainsDataForStats.domains.forEach(domain => {
-    const metrics = demoMetricsCache[domain.id];
+    let metrics = demoMetricsCache[domain.id];
+    
+    // dailyVolume がない場合は数値をチェックしてデバッグ
     if (!metrics) {
-      console.warn(`No demoMetrics found for domain: ${domain.id}`);
+      console.warn(`No metrics found for domain: ${domain.id}`);
       return;
     }
+    
+    // dailyVolume が 0 または undefined の場合はログ出力
+    if (!metrics.dailyVolume) {
+      console.warn(`dailyVolume is missing for ${domain.id}:`, metrics);
+    }
+    
+    console.log(`Processing domain: ${domain.id}, metrics:`, metrics);
     
     const domainMode = domainModes[domain.id] || 'plain';
     const dailyVolume = metrics.dailyVolume || 0;
@@ -545,6 +631,11 @@ function calculateMetrics() {
 
     // 行政DXの波及効果を適用（依存度ベース）
     const adminMode = domainModes['administration'] || 'plain';
+    const baseReductionRate = reductionRate; // 基本削減率を保持
+    const baseTimeReductionRate = timeReductionRate;
+    const baseCostReductionRate = costReductionRate;
+    
+    let adminAdjustmentDetails = null;
     if (domain.id !== 'administration' && adminDependency > 0) {
       // 行政DXのモードに基づいて効率係数を決定
       let adminEfficiencyRate = 0; // Plain時は0%の効率
@@ -558,13 +649,28 @@ function calculateMetrics() {
       const dependencyFactor = adminDependency;
       const adminAdjustment = (1 - adminEfficiencyRate) * dependencyFactor;
       
-      reductionRate = Math.max(0, reductionRate * (1 - adminAdjustment));
-      timeReductionRate = Math.max(0, timeReductionRate * (1 - adminAdjustment));
-      costReductionRate = Math.max(0, costReductionRate * (1 - adminAdjustment));
+      const adjustedRate = Math.max(0, reductionRate * (1 - adminAdjustment));
+      const adjustedTimeRate = Math.max(0, timeReductionRate * (1 - adminAdjustment));
+      const adjustedCostRate = Math.max(0, costReductionRate * (1 - adminAdjustment));
+      
+      adminAdjustmentDetails = {
+        adminMode: adminMode,
+        adminDependency: adminDependency,
+        adminEfficiencyRate: adminEfficiencyRate,
+        adminAdjustmentRate: adminAdjustment,
+        beforeRate: baseReductionRate,
+        afterRate: adjustedRate,
+        reduction: (baseReductionRate - adjustedRate)
+      };
+      
+      reductionRate = adjustedRate;
+      timeReductionRate = adjustedTimeRate;
+      costReductionRate = adjustedCostRate;
     }
     
     // 相互依存関係を適用：他分野の影響を計算
     const impactOnThisDomain = {};
+    const interdependencyDetails = [];
     let cumulativeImpactPenalty = 0;
     
     domainsDataForStats.domains.forEach(otherDomain => {
@@ -586,15 +692,40 @@ function calculateMetrics() {
         const otherImpactPenalty = (1 - otherEfficiency) * dependsOnOther;
         impactOnThisDomain[otherDomain.id] = otherImpactPenalty;
         cumulativeImpactPenalty += otherImpactPenalty;
+        
+        // 詳細情報を記録
+        const otherDomainData = domainsDataForStats.domains.find(d => d.id === otherDomain.id);
+        interdependencyDetails.push({
+          domainId: otherDomain.id,
+          domainName: otherDomainData?.name || '',
+          domainEmoji: otherDomainData?.emoji || '',
+          dependencyLevel: dependsOnOther,
+          otherMode: otherMode,
+          otherEfficiency: otherEfficiency,
+          impactPenalty: otherImpactPenalty
+        });
       }
     });
     
     // 相互依存による削減（複数分野から受ける影響を考慮）
+    let interdependencyAdjustmentDetails = null;
     if (cumulativeImpactPenalty > 0) {
       const impactAdjustment = Math.min(0.8, cumulativeImpactPenalty); // 最大80%まで削減
-      reductionRate = Math.max(0, reductionRate * (1 - impactAdjustment));
-      timeReductionRate = Math.max(0, timeReductionRate * (1 - impactAdjustment));
-      costReductionRate = Math.max(0, costReductionRate * (1 - impactAdjustment));
+      const adjustedRate = Math.max(0, reductionRate * (1 - impactAdjustment));
+      const adjustedTimeRate = Math.max(0, timeReductionRate * (1 - impactAdjustment));
+      const adjustedCostRate = Math.max(0, costReductionRate * (1 - impactAdjustment));
+      
+      interdependencyAdjustmentDetails = {
+        cumulativeImpactPenalty: cumulativeImpactPenalty,
+        actualAdjustment: impactAdjustment,
+        beforeRate: reductionRate,
+        afterRate: adjustedRate,
+        reduction: (reductionRate - adjustedRate)
+      };
+      
+      reductionRate = adjustedRate;
+      timeReductionRate = adjustedTimeRate;
+      costReductionRate = adjustedCostRate;
     }
 
     const processedBefore = dailyVolume;
@@ -616,6 +747,7 @@ function calculateMetrics() {
       emoji: domain.emoji,
       dailyVolume,
       reductionRate,
+      baseReductionRate: baseReductionRate,
       processedBefore,
       processedAfter,
       timeBefore,
@@ -628,13 +760,17 @@ function calculateMetrics() {
       annualMaintenanceCost,
       administrativeDependency: adminDependency,
       interdependencies: impactOnThisDomain,
-      impactOnOtherDomains: metrics.impactOnOtherDomains || {}
+      impactOnOtherDomains: metrics.impactOnOtherDomains || {},
+      // 詳細ロジック情報
+      adminAdjustmentDetails: adminAdjustmentDetails,
+      interdependencyDetails: interdependencyDetails,
+      interdependencyAdjustmentDetails: interdependencyAdjustmentDetails
     };
   });
 
-  const totalReductionRate = 1 - (totalProcessedAfter / totalDailyVolume);
-  const totalTimeSaving = totalTimeBefore - totalTimeAfter;
-  const totalCostSaving = totalCostBefore - totalCostAfter;
+  const totalReductionRate = totalDailyVolume > 0 ? 1 - (totalProcessedAfter / totalDailyVolume) : 0;
+  const totalTimeSaving = isNaN(totalTimeBefore - totalTimeAfter) ? 0 : totalTimeBefore - totalTimeAfter;
+  const totalCostSaving = isNaN(totalCostBefore - totalCostAfter) ? 0 : totalCostBefore - totalCostAfter;
 
   // ROI分析用データを計算（5年間）
   const roiData = calculateROIData(totalCostSaving, totalImplementationCost, totalAnnualMaintenanceCost);
@@ -642,15 +778,19 @@ function calculateMetrics() {
   const adminMode = domainModes['administration'] || 'plain';
   let adminImpactMessage = '';
   const adminDependentDomains = Object.entries(domainMetrics)
-    .filter(([id, m]) => id !== 'administration' && m.administrativeDependency > 0.5)
+    .filter(([id, m]) => id !== 'administration' && m.administrativeDependency > 0.4)
     .map(([id, m]) => m.name);
 
+  const domainList = adminDependentDomains.length > 0 
+    ? adminDependentDomains.join('・') 
+    : '全分野';
+
   if (adminMode === 'ai') {
-    adminImpactMessage = `✅ 行政DXがAIレベルのため、${adminDependentDomains.join('・')}の効率が最大化されています`;
+    adminImpactMessage = `✅ 行政DXがAIレベルのため、${domainList}の効率が最大化されています`;
   } else if (adminMode === 'plain') {
-    adminImpactMessage = `⚠️ 行政DXがPlainのため、${adminDependentDomains.join('・')}の効率が制限されています`;
+    adminImpactMessage = `⚠️ 行政DXがPlainのため、${domainList}の効率が制限されています`;
   } else {
-    adminImpactMessage = `🔄 行政DXがSmartレベルのため、${adminDependentDomains.join('・')}への影響は中程度です`;
+    adminImpactMessage = `🔄 行政DXがSmartレベルのため、${domainList}への影響は中程度です`;
   }
 
   return {
@@ -659,6 +799,8 @@ function calculateMetrics() {
     totalDailyVolume,
     totalTimeSaving,
     totalCostSaving,
+    totalImplementationCost,
+    totalAnnualMaintenanceCost,
     domainMetrics,
     adminImpactMessage,
     roiData
@@ -692,15 +834,43 @@ function updateMetricsDisplay(metrics) {
 }
 
 /**
- * ROI分析用のデータを計算（5年間）
+ * ROI分析用のデータを計算（10年間）
+ * 
+ * 【削減効果の段階的な推移について】
+ * DX/AI導入後の効果は、統計的に以下の理由で段階的に現れます：
+ * 
+ * 1. 学習曲線効果（Learning Curve）
+ *    - 職員のシステム操作習熟に時間が必要
+ *    - 新しいワークフローへの適応期間
+ * 
+ * 2. システム最適化期間
+ *    - 初期の不具合修正・調整
+ *    - データの蓄積によるAI精度の向上
+ * 
+ * 3. 組織変革管理（Change Management）
+ *    - 既存プロセスからの移行抵抗
+ *    - 段階的なロールアウト戦略
+ * 
+ * 4. 実測データに基づく推定
+ *    - 多くの導入事例で、初年度は理論値の30～40%程度
+ *    - 2年目で80～90%に達し、3年目以降に安定
+ * 
+ * 参考：McKinsey Digital Transformation Study, Gartner IT Implementation Research
  */
 function calculateROIData(annualCostSaving, totalImplementationCost, totalAnnualMaintenanceCost) {
-  const years = [0, 1, 2, 3, 4, 5];
+  const years = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const cumulativeCosts = []; // 累積コスト（実装+運用保守）
   const cumulativeSavings = []; // 累積削減効果
-  const annualNetBenefits = []; // 年間純利益（削減 - 保守）
+  const cumulativeNetBenefits = []; // 累計回収額（削減 - コスト）
   
-  years.forEach(year => {
+  // 年別の削減効果率（段階的な効果モデル / S字カーブ）
+  // 0年目: 実装期間（効果なし）
+  // 1年目: 稼働開始・学習期間（35%の効果）
+  // 2年目: 最適化期間（85%の効果）
+  // 3年目以降: 安定稼働期間（100%の効果）
+  const effectRateByYear = [0, 0.35, 0.85, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
+  
+  years.forEach((year, index) => {
     let cost = 0;
     let saving = 0;
     
@@ -711,24 +881,30 @@ function calculateROIData(annualCostSaving, totalImplementationCost, totalAnnual
     } else {
       // 2年目以降：実装コスト + 毎年の運用保守費（year年分）
       cost = totalImplementationCost + (totalAnnualMaintenanceCost * year);
-      // 削減効果は2年目から開始
-      saving = annualCostSaving * (year - 1);
+      
+      // 削減効果を段階的に計上（学習曲線を考慮）
+      let cumulativeSaving = 0;
+      for (let i = 1; i <= year; i++) {
+        cumulativeSaving += annualCostSaving * effectRateByYear[i];
+      }
+      saving = cumulativeSaving;
     }
     
     cumulativeCosts.push(cost);
     cumulativeSavings.push(saving);
     
-    // 年間純利益 = 削減額 - その年の運用保守費
-    const annualBenefit = (year === 0) ? (-totalImplementationCost) : (annualCostSaving - totalAnnualMaintenanceCost);
-    annualNetBenefits.push(annualBenefit);
+    // 累計回収額 = 累積削減効果 - 累積コスト
+    // ゼロを超えた年が投資回収年
+    const netBenefit = saving - cost;
+    cumulativeNetBenefits.push(netBenefit);
   });
   
   return {
     years,
     cumulativeCosts,
     cumulativeSavings,
-    annualNetBenefits,
-    paybackYear: cumulativeSavings.findIndex((s, i) => s >= cumulativeCosts[i]) || -1
+    cumulativeNetBenefits,
+    paybackYear: cumulativeNetBenefits.findIndex(net => net >= 0)
   };
 }
 
@@ -737,44 +913,12 @@ function calculateROIData(annualCostSaving, totalImplementationCost, totalAnnual
  */
 function updateCharts(metrics) {
   const labels = [];
-  const volumeData = [];
   const timeData = [];
   
   Object.entries(metrics.domainMetrics).forEach(([id, m]) => {
     labels.push(m.emoji + ' ' + m.name);
-    volumeData.push((m.reductionRate * 100).toFixed(1));
     timeData.push((m.timeReductionRate * 100).toFixed(1));
   });
-  
-  // 流通件数削減グラフ
-  const volumeCtx = document.getElementById('volumeChart');
-  if (volumeCtx) {
-    if (volumeChart) volumeChart.destroy();
-    volumeChart = new Chart(volumeCtx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: '削減率 (%)',
-          data: volumeData,
-          backgroundColor: 'rgba(59, 130, 246, 0.7)',
-          borderColor: 'rgba(59, 130, 246, 1)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            ticks: { callback: value => value + '%' }
-          }
-        }
-      }
-    });
-  }
   
   // 時間削減グラフ
   const timeCtx = document.getElementById('timeChart');
@@ -825,47 +969,48 @@ function updateROIChart(roiData) {
   const yearLabels = roiData.years.map(y => `${y}年目`);
   
   roiChart = new Chart(roiCtx, {
-    type: 'bar',
+    type: 'line',
     data: {
       labels: yearLabels,
       datasets: [
         {
           label: '累積コスト（実装+運用保守）',
           data: roiData.cumulativeCosts,
-          type: 'line',
           borderColor: 'rgba(239, 68, 68, 1)',
-          backgroundColor: 'transparent',
+          backgroundColor: 'rgba(239, 68, 68, 0.1)',
           borderWidth: 3,
           tension: 0.4,
           fill: false,
           pointRadius: 6,
           pointBackgroundColor: 'rgba(239, 68, 68, 1)',
           pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          yAxisID: 'y'
+          pointBorderWidth: 2
         },
         {
           label: '累積削減効果',
           data: roiData.cumulativeSavings,
-          type: 'line',
           borderColor: 'rgba(34, 197, 94, 1)',
-          backgroundColor: 'transparent',
+          backgroundColor: 'rgba(34, 197, 94, 0.1)',
           borderWidth: 3,
           tension: 0.4,
           fill: false,
           pointRadius: 6,
           pointBackgroundColor: 'rgba(34, 197, 94, 1)',
           pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          yAxisID: 'y'
+          pointBorderWidth: 2
         },
         {
-          label: '年間回収額（削減-保守費）',
-          data: roiData.annualNetBenefits,
-          backgroundColor: 'rgba(59, 130, 246, 0.6)',
+          label: '累計回収額（削減-コスト）',
+          data: roiData.cumulativeNetBenefits,
           borderColor: 'rgba(59, 130, 246, 1)',
-          borderWidth: 1,
-          yAxisID: 'y1'
+          backgroundColor: 'rgba(59, 130, 246, 0.2)',
+          borderWidth: 3,
+          tension: 0.4,
+          fill: true,
+          pointRadius: 6,
+          pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2
         }
       ]
     },
@@ -889,22 +1034,6 @@ function updateROIChart(roiData) {
               return '￥' + (value / 1000000).toFixed(0) + 'M';
             }
           }
-        },
-        y1: {
-          type: 'linear',
-          position: 'right',
-          title: {
-            display: true,
-            text: '年間回収額（￥）'
-          },
-          ticks: {
-            callback: function(value) {
-              return '￥' + (value / 1000000).toFixed(1) + 'M';
-            }
-          },
-          grid: {
-            drawOnChartArea: false
-          }
         }
       },
       plugins: {
@@ -912,15 +1041,22 @@ function updateROIChart(roiData) {
           display: true,
           position: 'top'
         },
-        annotation: {
-          annotations: {
-            payback: {
-              type: 'box',
-              drawTime: 'beforeDraw',
-              position: {
-                x: roiData.paybackYear,
-                y: 'center'
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.dataset.label || '';
+              const value = context.parsed.y;
+              const year = context.label;
+              
+              // 累計回収額がプラスに転じた年を強調
+              if (label.includes('累計回収額') && value >= 0 && context.dataIndex > 0) {
+                const prevValue = context.dataset.data[context.dataIndex - 1];
+                if (prevValue < 0) {
+                  return label + ': ￥' + value.toLocaleString() + ' 🎉 投資回収達成！';
+                }
               }
+              
+              return label + ': ￥' + value.toLocaleString();
             }
           }
         }
@@ -971,10 +1107,84 @@ function updateDomainDetails(metrics) {
       }
     }
     
+    const currentMode = domainModes[id] || 'plain';
+    const modeLabel = currentMode === 'ai' ? '🤖 AI' : currentMode === 'smart' ? '💡 Smart' : '📋 Plain';
+    
     const card = document.createElement('div');
     card.className = 'domain-detail-card';
+    
+    // 詳細セクションの生成（最初は非表示）
+    let detailsHTML = '';
+    if (m.adminAdjustmentDetails || m.interdependencyDetails.length > 0) {
+      detailsHTML = `
+        <div class="detail-expandable" style="margin-top: 12px; border-top: 1px solid #eee; padding-top: 12px;">
+          <button class="detail-toggle-btn" type="button" style="background: none; border: none; color: #0066cc; cursor: pointer; padding: 0; text-decoration: underline; font-size: 12px;">
+            📊 計算ロジックと相互依存を表示
+          </button>
+          <div class="detail-content" style="display: none; margin-top: 8px; padding: 8px; background: #f5f5f5; border-radius: 4px; font-size: 12px; color: #333;">
+      `;
+      
+      // 削減率計算の内訳
+      if (m.adminAdjustmentDetails) {
+        const adminDetails = m.adminAdjustmentDetails;
+        const adminModeLabel = adminDetails.adminMode === 'ai' ? '🤖 AI' : 
+                                adminDetails.adminMode === 'smart' ? '💡 Smart' : '📋 Plain';
+        detailsHTML += `
+          <div style="margin-bottom: 8px;">
+            <strong>🔧 行政DX依存度による調整：</strong><br>
+            • 基本削減率: ${(adminDetails.beforeRate * 100).toFixed(1)}%<br>
+            • 行政DXモード: ${adminModeLabel}<br>
+            • 依存度: ${(adminDetails.adminDependency * 100).toFixed(0)}%<br>
+            • 行政効率: ${(adminDetails.adminEfficiencyRate * 100).toFixed(0)}%<br>
+            • 調整率: ${(adminDetails.adminAdjustmentRate * 100).toFixed(1)}%<br>
+            <span style="color: #d32f2f;">→ 調整後: ${(adminDetails.afterRate * 100).toFixed(1)}% (${(adminDetails.reduction * 100).toFixed(1)}%低下)</span>
+          </div>
+        `;
+      }
+      
+      // 相互依存関係の詳細
+      if (m.interdependencyDetails.length > 0) {
+        detailsHTML += `
+          <div>
+            <strong>🔗 相互依存関係の詳細：</strong><br>
+        `;
+        m.interdependencyDetails.forEach(dep => {
+          const modeLabel = dep.otherMode === 'ai' ? '🤖 AI' : 
+                           dep.otherMode === 'smart' ? '💡 Smart' : '📋 Plain';
+          detailsHTML += `
+            • ${dep.domainEmoji} ${dep.domainName}<br>
+              依存度: ${(dep.dependencyLevel * 100).toFixed(0)}%、モード: ${modeLabel}、効率: ${(dep.otherEfficiency * 100).toFixed(0)}%<br>
+              <span style="color: #f57c00;">→ 削減効果: ${(dep.impactPenalty * 100).toFixed(1)}%</span><br>
+          `;
+        });
+        detailsHTML += `</div>`;
+      }
+      
+      // 相互依存による最終調整
+      if (m.interdependencyAdjustmentDetails) {
+        const interpDetails = m.interdependencyAdjustmentDetails;
+        detailsHTML += `
+          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #ddd;">
+            <strong>📉 相互依存による最終調整：</strong><br>
+            • 累積ペナルティ: ${(interpDetails.cumulativeImpactPenalty * 100).toFixed(1)}%<br>
+            • 実際の調整: ${Math.min(0.8, interpDetails.cumulativeImpactPenalty * 100).toFixed(1)}%<br>
+            • 調整前: ${(interpDetails.beforeRate * 100).toFixed(1)}%<br>
+            <span style="color: #d32f2f;">→ 最終削減率: ${(interpDetails.afterRate * 100).toFixed(1)}% (${(interpDetails.reduction * 100).toFixed(1)}%低下)</span>
+          </div>
+        `;
+      }
+      
+      detailsHTML += `
+          </div>
+        </div>
+      `;
+    }
+    
     card.innerHTML = `
-      <h4>${m.emoji} ${m.name}</h4>
+      <div style="position: relative;">
+        <div style="position: absolute; top: 0; right: 0; background: rgba(255,255,255,0.95); padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; color: #333; border: 1px solid #ddd;">${modeLabel}</div>
+        <h4>${m.emoji} ${m.name}</h4>
+      </div>
       <div class="detail-stat">
         <span class="detail-label">処理件数</span>
         <span class="detail-value">${m.processedBefore} → ${m.processedAfter}</span>
@@ -993,10 +1203,29 @@ function updateDomainDetails(metrics) {
       </div>
       ${m.implementationCost > 0 ? `<div class="detail-stat"><span class="detail-label">実装コスト</span><span class="detail-value">￥${m.implementationCost.toLocaleString()}</span></div>` : ''}
       ${m.annualMaintenanceCost > 0 ? `<div class="detail-stat"><span class="detail-label">年間運用保守費</span><span class="detail-value">￥${m.annualMaintenanceCost.toLocaleString()}</span></div>` : ''}
+      ${id !== 'administration' ? `<div class="detail-stat"><span class="detail-label">行政DX依存度</span><span class="detail-value" style="color: ${m.administrativeDependency >= 0.8 ? '#d32f2f' : m.administrativeDependency >= 0.4 ? '#f57c00' : '#388e3c'}">${(m.administrativeDependency * 100).toFixed(0)}%</span></div>` : ''}
       ${adminDependencyNote ? `<div class="detail-note">${adminDependencyNote}</div>` : ''}
       ${interdependencyNote ? `<div class="detail-note">${interdependencyNote}</div>` : ''}
+      ${detailsHTML}
     `;
+    
     grid.appendChild(card);
+    
+    // 折り畳みボタンのイベントリスナー
+    const toggleBtn = card.querySelector('.detail-toggle-btn');
+    if (toggleBtn) {
+      const detailContent = card.querySelector('.detail-content');
+      toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (detailContent.style.display === 'none') {
+          detailContent.style.display = 'block';
+          toggleBtn.textContent = '📊 計算ロジックと相互依存を非表示';
+        } else {
+          detailContent.style.display = 'none';
+          toggleBtn.textContent = '📊 計算ロジックと相互依存を表示';
+        }
+      });
+    }
   });
 }
 
@@ -1020,6 +1249,171 @@ function updateAdminImpact(metrics) {
   });
 }
 
+/**
+ * 分野別データソースを表示
+ */
+async function displayDomainDataSources() {
+  try {
+    const dataSourcesResponse = await fetch('assets/data/data-sources.json');
+    const dataSources = await dataSourcesResponse.json();
+    
+    const container = document.getElementById('domainDataSources');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    // domainsDataForStats から分野リストを取得
+    if (domainsDataForStats && domainsDataForStats.domains) {
+      domainsDataForStats.domains.forEach(domain => {
+        const sources = dataSources.domains[domain.id];
+        if (!sources) return;
+        
+        const sourceDiv = document.createElement('div');
+        sourceDiv.className = 'domain-source-card';
+        sourceDiv.innerHTML = `
+          <div class="source-header">
+            <h5>${domain.emoji} ${domain.name}</h5>
+          </div>
+          <ul class="source-list">
+            ${Object.entries(sources.sources)
+              .map(([key, value]) => {
+                const keyLabel = key === 'dailyVolume' ? '処理件数' :
+                                key === 'reductionRates' ? '削減率' :
+                                key === 'implementationCost' ? '実装コスト' :
+                                key === 'timeReductionRate' ? '時間削減' : key;
+                return `<li><strong>${keyLabel}：</strong> ${value}</li>`;
+              })
+              .join('')}
+          </ul>
+        `;
+        container.appendChild(sourceDiv);
+      });
+    }
+  } catch (error) {
+    console.error('Failed to load data sources:', error);
+  }
+}
+
+/**
+ * プランカードのコスト情報を計算して更新
+ */
+function updatePlanCardCosts() {
+  Object.keys(PLANS).forEach(planId => {
+    // 該当プランでモードを設定
+    const modes = PLANS[planId].modes;
+    
+    // 各分野のコストを合計
+    let totalImplementationCost = 0;
+    
+    if (domainsDataForStats && domainsDataForStats.domains) {
+      domainsDataForStats.domains.forEach(domain => {
+        const mode = modes[domain.id] || 'plain';
+        const metrics = demoMetricsCache[domain.id];
+        if (metrics && metrics.implementationCost) {
+          totalImplementationCost += metrics.implementationCost[mode] || 0;
+        }
+      });
+    }
+    
+    // プランカードのコスト表示を更新
+    const card = document.querySelector(`.plan-card[data-plan="${planId}"]`);
+    if (card) {
+      const featuresList = card.querySelector('.plan-features');
+      if (featuresList) {
+        // 最後のli要素を取得（コスト表示部分）
+        const costItem = featuresList.querySelector('li:last-child');
+        if (costItem && costItem.textContent.includes('コスト')) {
+          // コストを更新
+          const costInMillions = Math.round(totalImplementationCost / 10000000) / 10; // 百万円単位
+          costItem.textContent = `コスト: 約￥${costInMillions}億` + (costInMillions < 1 ? ` (${Math.round(totalImplementationCost / 1000000)}百万)` : '');
+        }
+      }
+    }
+  });
+}
+
+/**
+ * プラン選択UIのセットアップ
+ */
+function setupPlanSelection() {
+  const planSection = document.getElementById('planSelection');
+  if (!planSection) {
+    console.warn('planSelection element not found');
+    return;
+  }
+  planSection.style.display = 'block';
+  
+  // プランカードのコスト情報を更新
+  updatePlanCardCosts();
+  
+  // プランカードのクリックイベント
+  const planCards = document.querySelectorAll('.plan-card');
+  planCards.forEach(card => {
+    card.addEventListener('click', () => {
+      const planId = card.dataset.plan;
+      selectPlan(planId);
+      
+      // 選択状態の更新
+      planCards.forEach(c => c.classList.remove('plan-card-selected'));
+      card.classList.add('plan-card-selected');
+    });
+  });
+  
+  // カスタムプランの折りたたみ
+  const toggleBtn = document.getElementById('toggleCustomPlan');
+  const customContent = document.getElementById('customPlanContent');
+  if (!toggleBtn || !customContent) {
+    console.warn('toggleCustomPlan or customPlanContent element not found');
+  } else {
+    toggleBtn.addEventListener('click', () => {
+      const isVisible = customContent.style.display !== 'none';
+      customContent.style.display = isVisible ? 'none' : 'block';
+      const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+      if (toggleIcon) {
+        toggleIcon.textContent = isVisible ? '▶' : '▼';
+      }
+      
+      // カスタムプラン展開時はカスタムモードを有効化
+      if (!isVisible) {
+        isCustomMode = true;
+        // プラン選択をクリア
+        document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('plan-card-selected'));
+        // ツリービューのボタンを表示
+        const hub = document.getElementById('domainHub');
+        if (hub && domainsDataForStats) {
+          renderTreeLayout(hub, domainsDataForStats.domains);
+        }
+      }
+    });
+  }
+  
+  // デフォルトで推奨プランを選択
+  selectPlan('recommended');
+  const recommendedCard = document.querySelector('.plan-card[data-plan="recommended"]');
+  if (recommendedCard) {
+    recommendedCard.classList.add('plan-card-selected');
+  }
+}
+
+/**
+ * プランを選択してモードを設定
+ */
+function selectPlan(planId) {
+  const plan = PLANS[planId];
+  if (!plan) return;
+  
+  // カスタムモードを無効化
+  isCustomMode = false;
+  
+  // 各分野のモードを設定
+  domainModes = { ...plan.modes };
+  
+  // ツリービューを更新
+  const hub = document.getElementById('domainHub');
+  if (domainsDataForStats && hub) {
+    renderTreeLayout(hub, domainsDataForStats.domains);
+  }
+}
 
 /**
  * モードボタンのリスナーをセットアップ
@@ -1127,12 +1521,6 @@ async function updateDomainStats(domainId, mode) {
       updateStatisticsAnalysis();
     }
     
-    // サマリーセクションが表示されている場合は更新
-    const summarySection = document.getElementById('demoAnalysisSummary');
-    if (summarySection && summarySection.style.display === 'block') {
-      updateAnalysisSummary();
-    }
-    
     // 行政分野の場合、全分野にリップル効果を表示
     if (domainId === 'administration') {
       showAdminImpactRipple();
@@ -1140,39 +1528,6 @@ async function updateDomainStats(domainId, mode) {
   } catch (error) {
     console.error('Failed to update stats:', error);
   }
-}
-
-/**
- * 分析サマリーを更新
- */
-function updateAnalysisSummary() {
-  const metrics = calculateMetrics();
-  if (!metrics) {
-    console.error('Failed to calculate metrics for summary');
-    return;
-  }
-  
-  // サマリーメトリクスを更新
-  document.getElementById('summaryReductionPercentage').textContent = 
-    `${(metrics.totalReductionRate * 100).toFixed(1)}%`;
-  document.getElementById('summaryReductionDetail').textContent = 
-    `${metrics.totalDailyVolume} → ${metrics.totalProcessedAfter} 件`;
-  
-  const daysPerYear = metrics.totalTimeSaving / 8;
-  document.getElementById('summaryTimeSaving').textContent = 
-    `${metrics.totalTimeSaving.toLocaleString()}時間`;
-  document.getElementById('summaryTimeSavingDetail').textContent = 
-    `年間 ${daysPerYear.toFixed(0)} 日分`;
-  
-  document.getElementById('summaryCostSaving').textContent = 
-    `￥${metrics.totalCostSaving.toLocaleString()}`;
-  document.getElementById('summaryCostSavingDetail').textContent = 
-    `月額削減`;
-  
-  document.getElementById('summaryAdminImpact').textContent = 
-    metrics.adminImpactMessage.split('のため')[0];
-  document.getElementById('summaryAdminImpactDetail').textContent = 
-    '全体への効果';
 }
 
 /**
@@ -1195,10 +1550,181 @@ function showAdminImpactRipple() {
 
 function setupProfileLink() {
   const link = document.getElementById('changeProfileLink');
+  if (!link) {
+    console.warn('changeProfileLink element not found');
+    return;
+  }
   link.addEventListener('click', (e) => {
     e.preventDefault();
     // プロファイルをクリアして intro に戻る
     clearProfile();
     window.location.href = 'intro.html';
+  });
+}
+
+/**
+ * スケーリング効率グラフを描画
+ * 異なる人口規模でのROI倍率を可視化
+ */
+function drawScalingEfficiencyChart(metrics) {
+  const canvas = document.getElementById('scalingEfficiencyChart');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  
+  // 複数規模でのROI計算
+  const populations = [300000, 500000, 1000000, 1500000, 2000000];
+  const roiData = [];
+
+  populations.forEach(pop => {
+    // スケール係数（現在は100万人ベース）
+    const scaleFactor = pop / 1000000;
+    
+    // スケール後のメトリクス計算
+    const scaledCostSaving = metrics.totalCostSaving * scaleFactor;
+    const costSavingInBillions = scaledCostSaving / 100000000; // 億円単位
+    const roi = metrics.totalImplementationCost > 0 
+      ? scaledCostSaving / metrics.totalImplementationCost 
+      : 0;
+    
+    roiData.push({
+      population: pop,
+      costSaving: costSavingInBillions,
+      roi: roi,
+      label: `${(pop / 10000).toFixed(0)}万人`
+    });
+  });
+
+  // 既存グラフがあれば破棄
+  if (scalingEfficiencyChart) {
+    scalingEfficiencyChart.destroy();
+  }
+
+  // グラフ作成
+  scalingEfficiencyChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: roiData.map(d => d.label),
+      datasets: [{
+        label: '年間削減効果（億円）',
+        data: roiData.map(d => d.costSaving.toFixed(1)),
+        borderColor: '#10b981',
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 6,
+        pointBackgroundColor: '#10b981',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointHoverRadius: 8,
+        hoverBackgroundColor: '#059669'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            font: { size: 14, weight: 'bold' },
+            color: '#374151',
+            padding: 20
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          titleFont: { size: 14, weight: 'bold' },
+          bodyFont: { size: 13 },
+          callbacks: {
+            label: function(context) {
+              const costSaving = parseFloat(context.parsed.y);
+              return `年間削減効果: ¥${costSaving.toFixed(1)}億円`;
+            },
+            afterLabel: function(context) {
+              const idx = context.dataIndex;
+              const roi = roiData[idx].roi;
+              const implCost = metrics.totalImplementationCost / 100000000; // 億円
+              return [
+                `実装コスト: ¥${implCost.toFixed(1)}億円`,
+                `ROI倍率: ${roi.toFixed(2)}倍`
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 12,
+          title: {
+            display: true,
+            text: '年間削減効果（億円）',
+            font: { size: 14, weight: 'bold' }
+          },
+          ticks: {
+            color: '#6b7280',
+            font: { size: 12 },
+            callback: function(value) {
+              return '¥' + value.toFixed(1) + '億';
+            }
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)',
+            drawBorder: false
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: '対象規模（人口）',
+            font: { size: 14, weight: 'bold' }
+          },
+          ticks: {
+            color: '#6b7280',
+            font: { size: 12 }
+          },
+          grid: {
+            display: false
+          }
+        }
+      }
+    }
+  });
+
+  // スケーリングセクションを表示
+  const scalingSection = document.getElementById('scalingEfficiencySection');
+  if (scalingSection) {
+    scalingSection.style.display = 'block';
+  }
+}
+
+/**
+ * 折り畳み可能セクションのイベントリスナー設定
+ */
+function setupCollapsibleSections() {
+  const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
+  
+  collapsibleHeaders.forEach(header => {
+    header.addEventListener('click', function(e) {
+      // toggle-btn 自身のクリックも処理する
+      e.preventDefault();
+      
+      const section = this.closest('.collapsible-section');
+      const content = section.querySelector('.collapsible-content');
+      const isExpanded = section.classList.contains('expanded');
+      
+      if (isExpanded) {
+        // 折りたたむ
+        section.classList.remove('expanded');
+        content.style.display = 'none';
+      } else {
+        // 展開する
+        section.classList.add('expanded');
+        content.style.display = 'block';
+      }
+    });
   });
 }

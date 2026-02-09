@@ -89,6 +89,79 @@
   border-top: 1px solid rgba(14, 165, 233, 0.2);
 }
 
+/* 分野別データソース */
+.data-sources-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(14, 165, 233, 0.2);
+}
+
+.data-sources-section h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0c4a6e;
+  margin: 0 0 1rem;
+}
+
+.domain-sources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.domain-source-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+.domain-source-card:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.source-header {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.source-header h5 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.source-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.source-list li {
+  font-size: 0.8rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin: 0.5rem 0;
+}
+
+.source-list strong {
+  color: #075985;
+  font-weight: 600;
+}
+
+.data-explanation-note {
+  font-size: 0.875rem;
+  color: #0369a1;
+  line-height: 1.6;
+  margin: 1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(14, 165, 233, 0.2);
+}
+
 .close-statistics-btn {
   width: 40px;
   height: 40px;
@@ -342,79 +415,218 @@
     grid-template-columns: 1fr;
   }
 }
-/* ===== デモ分析サマリーセクション ===== */
+/* ===== スケーリング効率分析セクション ===== */
 
-.demo-analysis-summary {
-  max-width: 1400px;
-  margin: 2rem auto;
-  background: linear-gradient(to bottom, #ffffff 0%, #f9fafb 100%);
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+.scaling-efficiency-section {
+  display: none !important;
+  background: linear-gradient(to bottom, #f3f4f6 0%, #ffffff 100%);
+  padding: 4rem 2rem 3rem;
+  margin-top: 3rem;
+  border-top: 3px solid #3b82f6;
+  animation: slideDown 0.4s ease-out;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
-.analysis-summary-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+.scaling-efficiency-section[style*="block"] {
+  display: block !important;
 }
 
-.analysis-summary-header h2 {
-  font-size: 1.75rem;
+.scaling-header {
+  max-width: 1400px;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+}
+
+.scaling-header h2 {
+  font-size: 2.2rem;
   font-weight: 700;
   color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.scaling-subtitle {
+  font-size: 1.1rem;
+  color: #6b7280;
   margin: 0;
 }
 
-.expand-analysis-btn {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+.scaling-chart-container {
+  max-width: 1400px;
+  margin: 0 auto 3rem;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
 }
 
-.expand-analysis-btn:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-  transform: translateY(-2px);
+.scaling-chart-container canvas {
+  max-height: 400px;
 }
 
-.metrics-container.summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+.scaling-insights {
   max-width: 1400px;
   margin: 0 auto;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  border-left: 4px solid #f59e0b;
 }
 
-/* レスポンシブ対応 */
+.scaling-insights h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #92400e;
+  margin-top: 0;
+}
+
+.scaling-insights ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+.scaling-insights li {
+  font-size: 1rem;
+  color: #78350f;
+  margin: 0.8rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.scaling-insights li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+  color: #f59e0b;
+}
+
+.scaling-insights li strong {
+  color: #b45309;
+}
+
 @media (max-width: 768px) {
-  .demo-analysis-summary {
-    margin: 2rem 1rem;
-    padding: 1.5rem;
+  .scaling-efficiency-section {
+    padding: 2rem 1rem;
   }
-  
-  .analysis-summary-header h2 {
+
+  .scaling-header h2 {
     font-size: 1.5rem;
   }
-  
-  .expand-analysis-btn {
-    width: 100%;
-    padding: 1rem;
+
+  .scaling-insights {
+    padding: 1.5rem;
   }
-  
-  .metrics-container.summary {
-    grid-template-columns: 1fr;
+
+  .scaling-insights h3 {
+    font-size: 1.1rem;
+  }
+}
+
+/* ===== 折り畳み可能セクション ===== */
+
+.collapsible-section {
+  margin: 2rem 0;
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 8px;
+  border-left: 4px solid #9ca3af;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.collapsible-header:hover {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  border-left-color: #6b7280;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.collapsible-header span {
+  font-weight: 600;
+  color: #374151;
+}
+
+.collapsible-header .toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collapsible-header .toggle-btn:hover {
+  color: #374151;
+}
+
+.collapsible-section.expanded .collapsible-header {
+  border-left-color: #3b82f6;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.collapsible-section.expanded .toggle-btn {
+  transform: rotate(180deg);
+  color: #3b82f6;
+}
+
+.collapsible-content {
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  max-height: 0;
+  opacity: 0;
+}
+
+.collapsible-content[style*="display: block"] {
+  max-height: 5000px;
+  opacity: 1;
+  padding-top: 1rem;
+}
+
+/* データソースセクション内の折り畳み用スタイル調整 */
+.data-sources-section.collapsible-section {
+  margin-top: 1.5rem;
+}
+
+.data-sources-section .collapsible-header {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left-color: #0ea5e9;
+}
+
+.data-sources-section .collapsible-header:hover {
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+  border-left-color: #0284c7;
+}
+
+.data-sources-section.expanded .collapsible-header {
+  border-left-color: #0ea5e9;
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+}
+
+@media (max-width: 768px) {
+  .collapsible-header {
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .collapsible-header .toggle-btn {
+    width: 25px;
+    height: 25px;
+    font-size: 1rem;
   }
 }

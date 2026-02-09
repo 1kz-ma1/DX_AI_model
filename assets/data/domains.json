@@ -4,7 +4,7 @@
     "defaultMode": "plain",
     "demoMetaInfo": {
       "description": "デモモード: 社会全体のデータ流通を俯瞰する体験。一日あたりの各分野の処理件数、削減率、時間削減、コスト削減を可視化。行政DXが他分野に与える影響も考慮。",
-      "populationBase": 300000,
+      "populationBase": 1000000,
       "timeUnit": "日",
       "costPerHour": 3000
     }
@@ -340,12 +340,12 @@
         "averageTimePerCase": 18,
         "administrativeDependency": 1.0,
         "implementationCost": {
-          "plain": 0,
+          "plain": 7500000,
           "smart": 25000000,
           "ai": 80000000
         },
         "annualMaintenanceCost": {
-          "plain": 0,
+          "plain": 750000,
           "smart": 2500000,
           "ai": 8000000
         },
@@ -670,20 +670,226 @@
         "averageTimePerCase": 20,
         "administrativeDependency": 0.9,
         "implementationCost": {
-          "plain": 0,
+          "plain": 10500000,
           "smart": 35000000,
           "ai": 95000000
         },
         "annualMaintenanceCost": {
-          "plain": 0,
+          "plain": 1050000,
           "smart": 3500000,
           "ai": 9500000
         },
         "impactOnOtherDomains": {
           "administration": 0.1,
+          "insurance": 0.25,
           "education": 0.3,
           "logistics": 0.05,
           "disaster": 0.4
+        }
+      }
+    },
+    {
+      "id": "insurance",
+      "name": "保険DX",
+      "emoji": "🛡️",
+      "intro": "給付申請・契約管理・保険請求の再設計デモ",
+      "description": "保険手続きの重複書類と手作業をなくす",
+      "checklist": [
+        {"id": "hce_claim", "label": "高額療養費給付申請をする", "key": "hce_claim"},
+        {"id": "disability_claim", "label": "障害給付を申請する", "key": "disability_claim"},
+        {"id": "death_benefit", "label": "死亡保険金を請求する", "key": "death_benefit"},
+        {"id": "hospitalization_claim", "label": "入院給付金を請求する", "key": "hospitalization_claim"},
+        {"id": "surgical_claim", "label": "手術給付金を請求する", "key": "surgical_claim"},
+        {"id": "policy_change", "label": "保険契約を変更する", "key": "policy_change"},
+        {"id": "claim_history", "label": "給付履歴を確認する", "key": "claim_history"}
+      ],
+      "documents": {
+        "base": [
+          {
+            "id": "hce_benefit_application",
+            "name": "高額療養費給付申請書",
+            "description": "高額療養費の給付請求",
+            "inputFields": [
+              {"id": "hce_app_insured_name", "label": "被保険者氏名", "source": "mynumber", "requiredIf": "hce_claim"},
+              {"id": "hce_app_insured_birth", "label": "被保険者生年月日", "source": "mynumber", "requiredIf": "hce_claim"},
+              {"id": "hce_app_policy_no", "label": "保険証番号", "source": "mynumber", "requiredIf": "hce_claim"},
+              {"id": "hce_app_household_income", "label": "世帯年収", "source": "mynumber", "requiredIf": "hce_claim"},
+              {"id": "hce_app_income_bracket", "label": "所得区分", "source": "mynumber", "requiredIf": "hce_claim"},
+              {"id": "hce_app_treatment_period", "label": "治療期間", "source": "shared", "requiredIf": "hce_claim"},
+              {"id": "hce_app_medical_fee", "label": "医療費総額", "source": "shared", "requiredIf": "hce_claim"},
+              {"id": "hce_app_copay_limit", "label": "自己負担限度額", "source": "derived", "requiredIf": "hce_claim"},
+              {"id": "hce_app_refund_amount", "label": "給付金額", "source": "derived", "requiredIf": "hce_claim"},
+              {"id": "hce_app_bank_account", "label": "振込口座", "source": "shared", "requiredIf": "hce_claim"},
+              {"id": "hce_app_medical_receipts", "label": "医療費領収書", "source": "shared", "requiredIf": "hce_claim"}
+            ]
+          },
+          {
+            "id": "disability_benefit_application",
+            "name": "障害給付申請書",
+            "description": "障害に対する給付金の請求",
+            "inputFields": [
+              {"id": "dis_app_insured_name", "label": "被保険者氏名", "source": "mynumber", "requiredIf": "disability_claim"},
+              {"id": "dis_app_insured_birth", "label": "生年月日", "source": "mynumber", "requiredIf": "disability_claim"},
+              {"id": "dis_app_policy_no", "label": "保険証番号", "source": "mynumber", "requiredIf": "disability_claim"},
+              {"id": "dis_app_disability_type", "label": "障害の種類", "source": "user", "requiredIf": "disability_claim"},
+              {"id": "dis_app_disability_grade", "label": "障害等級", "source": "ai", "requiredIf": "disability_claim"},
+              {"id": "dis_app_onset_date", "label": "障害発生日", "source": "shared", "requiredIf": "disability_claim"},
+              {"id": "dis_app_doctor_diagnosis", "label": "医師診断書", "source": "shared", "requiredIf": "disability_claim"},
+              {"id": "dis_app_disability_certificate", "label": "障害者手帳", "source": "user", "requiredIf": "disability_claim"},
+              {"id": "dis_app_benefit_amount", "label": "給付金額", "source": "derived", "requiredIf": "disability_claim"},
+              {"id": "dis_app_payment_method", "label": "給付方法", "source": "user", "requiredIf": "disability_claim"}
+            ]
+          },
+          {
+            "id": "death_benefit_claim",
+            "name": "死亡保険金請求書",
+            "description": "死亡保険金の請求",
+            "inputFields": [
+              {"id": "death_policy_no", "label": "保険証番号", "source": "shared", "requiredIf": "death_benefit"},
+              {"id": "death_insured_name", "label": "被保険者氏名", "source": "shared", "requiredIf": "death_benefit"},
+              {"id": "death_date", "label": "死亡日", "source": "user", "requiredIf": "death_benefit"},
+              {"id": "death_cause", "label": "死亡原因", "source": "user", "requiredIf": "death_benefit"},
+              {"id": "death_certificate", "label": "死亡診断書", "source": "user", "requiredIf": "death_benefit"},
+              {"id": "beneficiary_name", "label": "受取人氏名", "source": "user", "requiredIf": "death_benefit"},
+              {"id": "beneficiary_relation", "label": "被保険者との続柄", "source": "user", "requiredIf": "death_benefit"},
+              {"id": "beneficiary_birth", "label": "受取人生年月日", "source": "user", "requiredIf": "death_benefit"},
+              {"id": "death_benefit_amount", "label": "保険金額", "source": "derived", "requiredIf": "death_benefit"},
+              {"id": "death_payment_account", "label": "振込口座", "source": "shared", "requiredIf": "death_benefit"}
+            ]
+          },
+          {
+            "id": "hospitalization_benefit_claim",
+            "name": "入院給付金請求書",
+            "description": "入院時の給付金請求",
+            "inputFields": [
+              {"id": "hosp_policy_no", "label": "保険証番号", "source": "mynumber", "requiredIf": "hospitalization_claim"},
+              {"id": "hosp_insured_name", "label": "被保険者氏名", "source": "mynumber", "requiredIf": "hospitalization_claim"},
+              {"id": "hosp_admission_date", "label": "入院日", "source": "shared", "requiredIf": "hospitalization_claim"},
+              {"id": "hosp_discharge_date", "label": "退院日", "source": "shared", "requiredIf": "hospitalization_claim"},
+              {"id": "hosp_days", "label": "入院日数", "source": "derived", "requiredIf": "hospitalization_claim"},
+              {"id": "hosp_facility", "label": "入院医療機関名", "source": "shared", "requiredIf": "hospitalization_claim"},
+              {"id": "hosp_diagnosis", "label": "入院理由（診断名）", "source": "ai", "requiredIf": "hospitalization_claim"},
+              {"id": "hosp_daily_benefit", "label": "日額給付金", "source": "derived", "requiredIf": "hospitalization_claim"},
+              {"id": "hosp_total_benefit", "label": "合計給付金", "source": "derived", "requiredIf": "hospitalization_claim"},
+              {"id": "hosp_discharge_certificate", "label": "退院証明書", "source": "shared", "requiredIf": "hospitalization_claim"}
+            ]
+          },
+          {
+            "id": "surgery_benefit_claim",
+            "name": "手術給付金請求書",
+            "description": "手術時の給付金請求",
+            "inputFields": [
+              {"id": "sur_policy_no", "label": "保険証番号", "source": "mynumber", "requiredIf": "surgical_claim"},
+              {"id": "sur_insured_name", "label": "被保険者氏名", "source": "mynumber", "requiredIf": "surgical_claim"},
+              {"id": "sur_date", "label": "手術日", "source": "shared", "requiredIf": "surgical_claim"},
+              {"id": "sur_type", "label": "手術の種類", "source": "ai", "requiredIf": "surgical_claim"},
+              {"id": "sur_facility", "label": "手術医療機関", "source": "shared", "requiredIf": "surgical_claim"},
+              {"id": "sur_code", "label": "手術コード", "source": "derived", "requiredIf": "surgical_claim"},
+              {"id": "sur_grade", "label": "手術給付倍率", "source": "derived", "requiredIf": "surgical_claim"},
+              {"id": "sur_benefit_amount", "label": "給付金額", "source": "derived", "requiredIf": "surgical_claim"},
+              {"id": "sur_surgery_consent", "label": "手術同意書", "source": "shared", "requiredIf": "surgical_claim"}
+            ]
+          },
+          {
+            "id": "policy_change_request",
+            "name": "契約変更申請書",
+            "description": "保険契約の変更申請",
+            "inputFields": [
+              {"id": "change_policy_no", "label": "保険証番号", "source": "mynumber", "requiredIf": "policy_change"},
+              {"id": "change_insured_name", "label": "被保険者氏名", "source": "mynumber", "requiredIf": "policy_change"},
+              {"id": "change_type", "label": "変更内容", "source": "ai", "requiredIf": "policy_change"},
+              {"id": "change_effective_date", "label": "変更予定日", "source": "user", "requiredIf": "policy_change"},
+              {"id": "change_reason", "label": "変更理由", "source": "user", "requiredIf": "policy_change"},
+              {"id": "change_coverage_amount", "label": "変更後の保障額", "source": "user", "requiredIf": "policy_change"},
+              {"id": "change_premium", "label": "変更後の保険料", "source": "derived", "requiredIf": "policy_change"},
+              {"id": "change_signature", "label": "申請者署名", "source": "user", "requiredIf": "policy_change"}
+            ]
+          },
+          {
+            "id": "claim_history_request",
+            "name": "給付履歴確認依頼書",
+            "description": "過去の給付履歴の確認",
+            "inputFields": [
+              {"id": "history_policy_no", "label": "保険証番号", "source": "mynumber", "requiredIf": "claim_history"},
+              {"id": "history_insured_name", "label": "被保険者氏名", "source": "mynumber", "requiredIf": "claim_history"},
+              {"id": "history_period_from", "label": "確認期間（開始）", "source": "user", "requiredIf": "claim_history"},
+              {"id": "history_period_to", "label": "確認期間（終了）", "source": "user", "requiredIf": "claim_history"},
+              {"id": "history_claim_type", "label": "給付種別", "source": "user", "requiredIf": "claim_history"},
+              {"id": "history_format", "label": "提供形式", "source": "user", "requiredIf": "claim_history"}
+            ]
+          }
+        ]
+      },
+      "aiFlow": {
+        "questions": [
+          {
+            "id": "insurance_type",
+            "text": "ご利用の保険は？",
+            "options": [
+              {"value": "public", "label": "公的保険（健康保険・共済）"},
+              {"value": "private", "label": "民間医療保険"},
+              {"value": "both", "label": "両方"}
+            ]
+          },
+          {
+            "id": "claim_urgency",
+            "text": "給付の処理速度は重要ですか？",
+            "options": [
+              {"value": "standard", "label": "標準（10営業日）"},
+              {"value": "fast", "label": "迅速（3営業日）"}
+            ]
+          }
+        ]
+      },
+      "modes": {
+        "plain": {
+          "title": "①電子化（Plain）",
+          "description": "紙の申請書を電子フォームに置き換えた状態"
+        },
+        "smart": {
+          "title": "②工夫（Smart）",
+          "description": "医療機関からの診療情報を自動取得して申請書を自動作成"
+        },
+        "ai": {
+          "title": "③AI導入",
+          "description": "対話型AIで必要な給付を提案し、一括申請を実現"
+        }
+      },
+      "demoMetrics": {
+        "dailyVolume": 1600,
+        "description": "一日あたりの保険給付申請、契約変更、請求処理等の件数",
+        "reductionRates": {
+          "plain": 0,
+          "smart": 0.35,
+          "ai": 0.72
+        },
+        "timeReductionRates": {
+          "plain": 0,
+          "smart": 0.40,
+          "ai": 0.78
+        },
+        "costReductionPercentage": {
+          "plain": 0,
+          "smart": 0.35,
+          "ai": 0.68
+        },
+        "averageTimePerCase": 18,
+        "administrativeDependency": 0.65,
+        "implementationCost": {
+          "plain": 8000000,
+          "smart": 25000000,
+          "ai": 75000000
+        },
+        "annualMaintenanceCost": {
+          "plain": 800000,
+          "smart": 2500000,
+          "ai": 7500000
+        },
+        "impactOnOtherDomains": {
+          "administration": 0.08,
+          "medical": 0.25,
+          "education": 0.05,
+          "disaster": 0.15
         }
       }
     },
@@ -987,12 +1193,12 @@
         "averageTimePerCase": 15,
         "administrativeDependency": 0.85,
         "implementationCost": {
-          "plain": 0,
+          "plain": 4500000,
           "smart": 15000000,
           "ai": 50000000
         },
         "annualMaintenanceCost": {
-          "plain": 0,
+          "plain": 450000,
           "smart": 1500000,
           "ai": 5000000
         },
@@ -1297,12 +1503,12 @@
         "averageTimePerCase": 3,
         "administrativeDependency": 0.15,
         "implementationCost": {
-          "plain": 0,
+          "plain": 2400000,
           "smart": 8000000,
           "ai": 30000000
         },
         "annualMaintenanceCost": {
-          "plain": 0,
+          "plain": 240000,
           "smart": 800000,
           "ai": 3000000
         },
@@ -1608,12 +1814,12 @@
         "averageTimePerCase": 10,
         "administrativeDependency": 0.75,
         "implementationCost": {
-          "plain": 0,
+          "plain": 1500000,
           "smart": 5000000,
           "ai": 20000000
         },
         "annualMaintenanceCost": {
-          "plain": 0,
+          "plain": 150000,
           "smart": 500000,
           "ai": 2000000
         },
@@ -1622,6 +1828,225 @@
           "medical": 0.2,
           "education": 0.1,
           "logistics": 0.1
+        }
+      }
+    },
+    {
+      "id": "tax",
+      "name": "税務DX",
+      "emoji": "💰",
+      "intro": "確定申告・納税・税務調査の再設計デモ",
+      "description": "複雑な申告手続きを簡潔にする設計",
+      "checklist": [
+        {"id": "return", "label": "確定申告を行う", "key": "return"},
+        {"id": "payment", "label": "納税する", "key": "payment"},
+        {"id": "deduction", "label": "控除を申告する", "key": "deduction"},
+        {"id": "audit", "label": "税務調査に対応する", "key": "audit"},
+        {"id": "correction", "label": "修正申告を行う", "key": "correction"},
+        {"id": "invoice", "label": "インボイス登録", "key": "invoice"},
+        {"id": "withholding", "label": "源泉徴収の手続き", "key": "withholding"},
+        {"id": "refund", "label": "還付申請をする", "key": "refund"},
+        {"id": "advance", "label": "予定納税の変更", "key": "advance"},
+        {"id": "record", "label": "帳簿記録を管理", "key": "record"}
+      ],
+      "documents": {
+        "base": []
+      },
+      "modes": {
+        "plain": {
+          "title": "①電子化（Plain）",
+          "description": "紙での申告書・帳簿をデジタル化"
+        },
+        "smart": {
+          "title": "②工夫（Smart）",
+          "description": "会計システムと税務申告の自動連携"
+        },
+        "ai": {
+          "title": "③AI導入",
+          "description": "AIが最適な控除・納税スケジュールを自動提案"
+        }
+      },
+      "demoMetrics": {
+        "dailyVolume": 3000,
+        "description": "一日あたりの申告・納税・帳簿関連手続きの件数",
+        "reductionRates": {
+          "plain": 0.25,
+          "smart": 0.50,
+          "ai": 0.78
+        },
+        "timeReductionRates": {
+          "plain": 0.30,
+          "smart": 0.55,
+          "ai": 0.82
+        },
+        "costReductionPercentage": {
+          "plain": 0.25,
+          "smart": 0.50,
+          "ai": 0.75
+        },
+        "averageTimePerCase": 25,
+        "administrativeDependency": 0.5,
+        "implementationCost": {
+          "plain": 3000000,
+          "smart": 10000000,
+          "ai": 35000000
+        },
+        "annualMaintenanceCost": {
+          "plain": 300000,
+          "smart": 1000000,
+          "ai": 3500000
+        },
+        "impactOnOtherDomains": {
+          "administration": 0.3,
+          "medical": 0.1,
+          "education": 0.2,
+          "logistics": 0.2
+        }
+      }
+    },
+    {
+      "id": "welfare",
+      "name": "福祉DX",
+      "emoji": "❤️",
+      "intro": "生活保護・介護保険・障害者支援の再設計デモ",
+      "description": "複数の福祉制度の申請を一元化する設計",
+      "checklist": [
+        {"id": "assistance", "label": "生活保護を申請する", "key": "assistance"},
+        {"id": "elderly", "label": "介護保険の認定を受ける", "key": "elderly"},
+        {"id": "disability", "label": "障害者手帳を申請", "key": "disability"},
+        {"id": "benefit", "label": "福祉給付金を受給", "key": "benefit"},
+        {"id": "verification", "label": "所得認定を受ける", "key": "verification"},
+        {"id": "care", "label": "介護サービスを利用", "key": "care"},
+        {"id": "employment", "label": "就労支援を受ける", "key": "employment"},
+        {"id": "housing", "label": "住宅困窮者支援を申請", "key": "housing"},
+        {"id": "child", "label": "児童手当・養子給付", "key": "child"},
+        {"id": "support", "label": "相談・支援計画作成", "key": "support"}
+      ],
+      "documents": {
+        "base": []
+      },
+      "modes": {
+        "plain": {
+          "title": "①電子化（Plain）",
+          "description": "福祉申請書をデジタル化・電子申請実現"
+        },
+        "smart": {
+          "title": "②工夫（Smart）",
+          "description": "複数福祉制度の統合申請・自動判定"
+        },
+        "ai": {
+          "title": "③AI導入",
+          "description": "AIが生活状況から最適な支援メニューを自動提案"
+        }
+      },
+      "demoMetrics": {
+        "dailyVolume": 2500,
+        "description": "一日あたりの福祉申請・認定・支給関連業務の件数",
+        "reductionRates": {
+          "plain": 0.20,
+          "smart": 0.45,
+          "ai": 0.72
+        },
+        "timeReductionRates": {
+          "plain": 0.25,
+          "smart": 0.50,
+          "ai": 0.78
+        },
+        "costReductionPercentage": {
+          "plain": 0.20,
+          "smart": 0.45,
+          "ai": 0.70
+        },
+        "averageTimePerCase": 20,
+        "administrativeDependency": 0.85,
+        "implementationCost": {
+          "plain": 2500000,
+          "smart": 8000000,
+          "ai": 28000000
+        },
+        "annualMaintenanceCost": {
+          "plain": 250000,
+          "smart": 800000,
+          "ai": 2800000
+        },
+        "impactOnOtherDomains": {
+          "administration": 0.8,
+          "medical": 0.6,
+          "education": 0.3,
+          "logistics": 0.1
+        }
+      }
+    },
+    {
+      "id": "infrastructure",
+      "name": "インフラDX",
+      "emoji": "🌉",
+      "intro": "道路・水道・電力等の保守・点検の再設計デモ",
+      "description": "インフラの点検・保守業務を可視化・最適化",
+      "checklist": [
+        {"id": "inspection", "label": "施設点検を行う", "key": "inspection"},
+        {"id": "maintenance", "label": "予防保全を計画", "key": "maintenance"},
+        {"id": "emergency", "label": "緊急対応を実施", "key": "emergency"},
+        {"id": "report", "label": "点検報告書を作成", "key": "report"},
+        {"id": "budget", "label": "予算計画を立案", "key": "budget"},
+        {"id": "contractor", "label": "工事発注・管理", "key": "contractor"},
+        {"id": "safety", "label": "安全対策を強化", "key": "safety"},
+        {"id": "sensor", "label": "センサー・IoT導入", "key": "sensor"},
+        {"id": "communication", "label": "関係機関に通知", "key": "communication"},
+        {"id": "asset", "label": "資産管理を実施", "key": "asset"}
+      ],
+      "documents": {
+        "base": []
+      },
+      "modes": {
+        "plain": {
+          "title": "①電子化（Plain）",
+          "description": "点検結果・報告書のデジタル記録化"
+        },
+        "smart": {
+          "title": "②工夫（Smart）",
+          "description": "点検スケジュール・劣化予測の自動化"
+        },
+        "ai": {
+          "title": "③AI導入",
+          "description": "画像解析AIで劣化状況を自動判定・優先度付け"
+        }
+      },
+      "demoMetrics": {
+        "dailyVolume": 2000,
+        "description": "一日あたりのインフラ点検・保全・報告関連業務の件数",
+        "reductionRates": {
+          "plain": 0.22,
+          "smart": 0.48,
+          "ai": 0.75
+        },
+        "timeReductionRates": {
+          "plain": 0.28,
+          "smart": 0.52,
+          "ai": 0.80
+        },
+        "costReductionPercentage": {
+          "plain": 0.22,
+          "smart": 0.48,
+          "ai": 0.73
+        },
+        "averageTimePerCase": 22,
+        "administrativeDependency": 0.4,
+        "implementationCost": {
+          "plain": 2200000,
+          "smart": 7500000,
+          "ai": 25000000
+        },
+        "annualMaintenanceCost": {
+          "plain": 220000,
+          "smart": 750000,
+          "ai": 2500000
+        },
+        "impactOnOtherDomains": {
+          "administration": 0.2,
+          "medical": 0.1,
+          "education": 0.2,
+          "logistics": 0.3
         }
       }
     }

@@ -42,33 +42,31 @@
 .tree-branches-container {
   position: relative;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 2rem;
-  row-gap: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  justify-items: center;
+  align-items: start;
+  gap: 2.5rem 2rem;
+  row-gap: 4.5rem;
   flex-wrap: wrap;
   margin-top: 1.5rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   padding-top: 1rem;
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ツリーの接続線 */
 .tree-branches-container::before {
-  content: '';
-  position: absolute;
-  top: -2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 2.5rem;
-  background: linear-gradient(to bottom, #667eea, transparent);
+  display: none;
 }
 
 /* 依存度別に色を分ける */
 .domain-node.tree-branch {
   position: relative;
-  width: 160px;
+  width: 100%;
+  max-width: 170px;
   padding: 0.5rem 0.5rem 0.75rem;
   background: transparent;
   border-radius: 12px;
@@ -98,6 +96,8 @@
 
 .domain-node.tree-branch:hover {
   transform: translateY(-2px);
+  z-index: 100;
+  position: relative;
 }
 
 .domain-node.tree-branch .domain-emoji {
@@ -149,28 +149,7 @@
 
 /* 接続線（親から子へ） */
 .tree-branch-line {
-  position: absolute;
-  top: -1.5rem;
-  left: 50%;
-  width: 2px;
-  height: 1.5rem;
-  background: linear-gradient(to bottom, #667eea, #dbeafe);
-  transform: translateX(-50%);
-}
-
-.tree-branch-line.high {
-  width: 4px;
-  background: linear-gradient(to bottom, #ef4444, #fecaca);
-}
-
-.tree-branch-line.medium {
-  width: 3px;
-  background: linear-gradient(to bottom, #f59e0b, #fed7aa);
-}
-
-.tree-branch-line.low {
-  width: 2px;
-  background: linear-gradient(to bottom, #10b981, #a7f3d0);
+  display: none;
 }
 
 /* モード選択ボタン */
@@ -191,7 +170,7 @@
 
 /* 統計情報 */
 .domain-node.tree-branch .domain-stats {
-  position: static;
+  position: relative;
   display: block !important;
   background: rgba(255, 255, 255, 0.98);
   color: #1f2937;

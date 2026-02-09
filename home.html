@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="assets/css/home.css">
   <link rel="stylesheet" href="assets/css/statistics.css">
   <link rel="stylesheet" href="assets/css/tree-layout.css">
+  <link rel="stylesheet" href="assets/css/plan-selection.css">
 </head>
 <body>
   <header class="site-header">
@@ -44,55 +45,127 @@
       </a>
     </div>
 
+    <!-- デモモード専用: プラン選択セクション -->
+    <section id="planSelection" class="plan-selection" style="display: none;">
+      <div class="plan-selection-header">
+        <h2>🎯 DX導入プランを選択</h2>
+        <p class="plan-selection-description">目的に応じた最適なプランをお選びください。各プランの効果は下部の分析で確認できます。</p>
+      </div>
+
+      <div class="plan-cards">
+        <div class="plan-card" data-plan="plain">
+          <div class="plan-icon">📊</div>
+          <h3 class="plan-title">電子化のみ</h3>
+          <p class="plan-subtitle">最小限のDX</p>
+          <ul class="plan-features">
+            <li>全分野: Plain</li>
+            <li>コスト: ￥0</li>
+          </ul>
+        </div>
+
+        <div class="plan-card" data-plan="cost">
+          <div class="plan-icon">💰</div>
+          <h3 class="plan-title">コスト重視</h3>
+          <p class="plan-subtitle">予算制約がある場合</p>
+          <ul class="plan-features">
+            <li>行政・医療: Smart</li>
+            <li>その他: Plain</li>
+            <li>コスト: 約￥8千万</li>
+          </ul>
+        </div>
+
+        <div class="plan-card" data-plan="basic">
+          <div class="plan-icon">📋</div>
+          <h3 class="plan-title">基本プラン</h3>
+          <p class="plan-subtitle">標準的なバランス</p>
+          <ul class="plan-features">
+            <li>Smart中心の導入</li>
+            <li>低リスク・段階的</li>
+            <li>コスト: 約￥1億</li>
+          </ul>
+        </div>
+
+        <div class="plan-card plan-card-recommended" data-plan="recommended">
+          <div class="plan-badge">おすすめ</div>
+          <div class="plan-icon">⭐</div>
+          <h3 class="plan-title">推奨プラン</h3>
+          <p class="plan-subtitle">依存度最適化</p>
+          <ul class="plan-features">
+            <li>行政・医療: AI</li>
+            <li>依存度に基づく最適配置</li>
+            <li>コスト: 約￥2億</li>
+          </ul>
+        </div>
+
+        <div class="plan-card" data-plan="emergency">
+          <div class="plan-icon">🚨</div>
+          <h3 class="plan-title">緊急対応優先</h3>
+          <p class="plan-subtitle">人命重視</p>
+          <ul class="plan-features">
+            <li>医療・災害: AI</li>
+            <li>人命に関わる分野優先</li>
+            <li>コスト: 約￥2.5億</li>
+          </ul>
+        </div>
+
+        <div class="plan-card" data-plan="advanced">
+          <div class="plan-icon">🚀</div>
+          <h3 class="plan-title">最先端プラン</h3>
+          <p class="plan-subtitle">全面AI化</p>
+          <ul class="plan-features">
+            <li>全分野: AI</li>
+            <li>最大効果</li>
+            <li>コスト: 約￥3.5億</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- カスタムプラン（折りたたみ） -->
+      <div class="custom-plan-section">
+        <button id="toggleCustomPlan" class="toggle-custom-btn">
+          <span class="toggle-icon">▶</span>
+          カスタムプラン（個別に設定）
+        </button>
+        <div id="customPlanContent" class="custom-plan-content" style="display: none;">
+          <p class="custom-plan-note">各分野のDXレベルを個別に設定できます。下記のツリービューで調整してください。</p>
+        </div>
+      </div>
+    </section>
+
     <!-- デスクトップ: リング配置 / モバイル: グリッド -->
     <div id="domainHub" class="domain-hub" role="navigation" aria-label="分野選択">
       <!-- home.jsで動的生成 -->
     </div>
 
-    <!-- デモモード専用: 分析サマリーセクション -->
-    <section id="demoAnalysisSummary" class="demo-analysis-summary" style="display: none;">
-      <div class="analysis-summary-header">
-        <h2>📊 社会全体への波及効果（サマリー）</h2>
-        <button id="expandAnalysis" class="expand-analysis-btn">詳細を表示 ▼</button>
-      </div>
-
-      <!-- メトリクスカード（簡易版） -->
-      <div class="metrics-container summary">
-        <div class="metric-card reduction">
-          <div class="metric-label">📊 流通件数削減率</div>
-          <div class="metric-value" id="summaryReductionPercentage">--%</div>
-          <div class="metric-detail" id="summaryReductionDetail">件数削減</div>
-        </div>
-
-        <div class="metric-card time">
-          <div class="metric-label">⏱️ 必要時間削減</div>
-          <div class="metric-value" id="summaryTimeSaving">--日分</div>
-          <div class="metric-detail" id="summaryTimeSavingDetail">年間削減</div>
-        </div>
-
-        <div class="metric-card cost">
-          <div class="metric-label">💰 コスト削減</div>
-          <div class="metric-value" id="summaryCostSaving">￥--</div>
-          <div class="metric-detail" id="summaryCostSavingDetail">月額削減</div>
-        </div>
-
-        <div class="metric-card admin">
-          <div class="metric-label">🏛️ 行政DXの波及</div>
-          <div class="metric-value" id="summaryAdminImpact">状況確認中</div>
-          <div class="metric-detail" id="summaryAdminImpactDetail">全体への効果</div>
-        </div>
-      </div>
-    </section>
-
     <div class="hub-note">
       <p>※ 本デモは制度・施設運用の単純化・誇張を含みます。実際の効果は環境により異なります。</p>
     </div>
 
+
+    <section id="scalingEfficiencySection" class="scaling-efficiency-section" style="display: block;">
+      <div class="scaling-header">
+        <h2>📈 スケーリング効率分析</h2>
+        <p class="scaling-subtitle">対象規模が変わるとROI（投資対効果）がどう変化するか可視化します</p>
+      </div>
+
+      <div class="scaling-chart-container">
+        <canvas id="scalingEfficiencyChart"></canvas>
+      </div>
+
+      <div class="scaling-insights">
+        <h3>💡 スケーリング効率の重要性</h3>
+        <ul>
+          <li><strong>実装コスト</strong>：規模に関わらずほぼ一定（システム開発・導入研修）</li>
+          <li><strong>削減効果</strong>：対象人口に比例して増加</li>
+          <li><strong>結果</strong>：規模が大きいほどROI（投資対効果）が劇的に向上</li>
+        </ul>
+      </div>
+    </section>
+
     <!-- 統計分析セクション（初期状態は非表示） -->
-    <section id="statisticsSection" class="statistics-section" style="display: none;">
+    <section id="statisticsSection" class="statistics-section" style="display: block;">
       <div class="statistics-header">
         <h2>🌍 社会全体への波及効果分析</h2>
-        <button id="closeStatistics" class="close-statistics-btn" aria-label="統計を閉じる">×</button>
       </div>
 
       <!-- データ設定説明 -->
@@ -100,7 +173,7 @@
         <h3>📋 シミュレーション条件</h3>
         <div class="explanation-grid">
           <div class="explanation-item">
-            <strong>対象自治体：</strong>人口30万人規模の地方自治体
+            <strong>対象自治体：</strong>人口100万人規模の都市圏
           </div>
           <div class="explanation-item">
             <strong>試算期間：</strong>年間ベース（稼働日数252日）
@@ -112,7 +185,20 @@
             <strong>データ根拠：</strong>各分野の実績値と先行自治体の導入事例を基に算出
           </div>
         </div>
-        <p class="explanation-note">
+        <!-- 分野別データソース説明（折り畳み可能） -->
+        <div class="data-sources-section collapsible-section">
+          <h4 class="collapsible-header">
+            <span>📊 各分野のデータソース</span>
+            <button class="toggle-btn" aria-label="セクションを開閉">▼</button>
+          </h4>
+          <div class="collapsible-content" style="display: none;">
+            <div id="domainDataSources" class="domain-sources-grid">
+              <!-- 動的生成（home.js）-->
+            </div>
+          </div>
+        </div>
+        
+        <p class="data-explanation-note">※ 本分析は複数の公開データと先行導入事例を基に算出しています。実装効果は自治体規模・既存システム・職員スキルにより変動します。</p>        <p class="explanation-note">
           ※ 本分析は、各分野のDX・AI導入レベル（Plain/Smart/AI）を組み合わせた場合の効果を動的に計算しています。
           実際の導入効果は、自治体規模・既存システム・運用体制により変動します。
         </p>
@@ -148,42 +234,51 @@
       <!-- グラフセクション -->
       <div class="charts-container">
         <div class="chart-wrapper">
-          <h3 class="chart-title">📊 流通件数削減率</h3>
-          <p class="chart-description">各分野がどれだけ処理件数を削減できるかを示します</p>
-          <canvas id="volumeChart"></canvas>
-        </div>
-
-        <div class="chart-wrapper">
           <h3 class="chart-title">⏱️ 必要時間削減率</h3>
           <p class="chart-description">一件当たりに必要な時間をどれだけ短縮できるかを示します</p>
           <canvas id="timeChart"></canvas>
         </div>
 
         <div class="chart-wrapper">
-          <h3 class="chart-title">💹 5年間のROI分析（投資回収期間）</h3>
-          <p class="chart-description">実装コスト + 運用保守費 vs 累積削減効果。どの年で投資が回収されるか確認できます</p>
+          <h3 class="chart-title">💹 10年間のROI分析（投資回収期間）</h3>
+          <p class="chart-description">実装コスト + 運用保守費 vs 累積削減効果 + 累計回収額。累計回収額がゼロを超えた年が投資回収年です</p>
           <canvas id="roiChart"></canvas>
         </div>
       </div>
 
-      <!-- 分野別詳細 -->
-      <h3 class="section-title">📋 分野別の詳細指標</h3>
-      <div id="domainDetailsGrid" class="domain-details-grid"></div>
+      <!-- 分野別詳細（折り畳み可能） -->
+      <div class="collapsible-section">
+        <h3 class="section-title collapsible-header">
+          <span>📋 分野別の詳細指標</span>
+          <button class="toggle-btn" aria-label="セクションを開閉">▼</button>
+        </h3>
+        <div class="collapsible-content" style="display: none;">
+          <div id="domainDetailsGrid" class="domain-details-grid"></div>
+        </div>
+      </div>
 
-      <!-- 行政DXの波及効果 -->
-      <h3 class="section-title">🏛️ 行政DXが他分野に与える影響</h3>
-      <div id="impactDetails" class="impact-details">
-        <ul></ul>
+      <!-- 行政DXの波及効果（折り畳み可能） -->
+      <div class="collapsible-section">
+        <h3 class="section-title collapsible-header">
+          <span>🏛️ 行政DXが他分野に与える影響</span>
+          <button class="toggle-btn" aria-label="セクションを開閉">▼</button>
+        </h3>
+        <div class="collapsible-content" style="display: none;">
+          <div id="impactDetails" class="impact-details">
+            <ul></ul>
+          </div>
+        </div>
       </div>
 
       <footer class="statistics-footer">
-        <p>本分析は、全人口30万人の自治体におけるシミュレーション結果です。</p>
+        <p>本分析は、全人口100万人の都市圏におけるシミュレーション結果です。</p>
         <p>実際の導入効果は、自治体規模や既存システムにより異なります。</p>
       </footer>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  <script src="assets/js/api-client.js"></script>
   <script src="assets/js/state.js"></script>
   <script src="assets/js/home.js"></script>
 </body>

@@ -56,9 +56,32 @@
           "administrativeDependency": 0.9,
           "impactOnOtherDomains": {
             "administration": 0.1,
+            "insurance": 0.25,
             "education": 0.3,
             "logistics": 0.05,
             "disaster": 0.4
+          }
+        },
+        "insurance": {
+          "id": "insurance",
+          "name": "保険DX",
+          "emoji": "🛡️",
+          "dailyVolume": 1600.0,
+          "processedBefore": 1600.0,
+          "processedAfter": 1600,
+          "timeBefore": 480,
+          "timeAfter": 480,
+          "costBefore": 32000000,
+          "costAfter": 32000000,
+          "reductionRate": 0.0,
+          "timeReductionRate": 0.0,
+          "costReductionRate": 0.0,
+          "administrativeDependency": 0.65,
+          "impactOnOtherDomains": {
+            "administration": 0.08,
+            "medical": 0.25,
+            "education": 0.05,
+            "disaster": 0.15
           }
         },
         "education": {
@@ -181,9 +204,32 @@
           "administrativeDependency": 0.9,
           "impactOnOtherDomains": {
             "administration": 0.1,
+            "insurance": 0.25,
             "education": 0.3,
             "logistics": 0.05,
             "disaster": 0.4
+          }
+        },
+        "insurance": {
+          "id": "insurance",
+          "name": "保険DX",
+          "emoji": "🛡️",
+          "dailyVolume": 1600.0,
+          "processedBefore": 1600.0,
+          "processedAfter": 1152,
+          "timeBefore": 480,
+          "timeAfter": 288,
+          "costBefore": 32000000,
+          "costAfter": 19200000,
+          "reductionRate": 0.28,
+          "timeReductionRate": 0.4,
+          "costReductionRate": 0.28,
+          "administrativeDependency": 0.65,
+          "impactOnOtherDomains": {
+            "administration": 0.08,
+            "medical": 0.25,
+            "education": 0.05,
+            "disaster": 0.15
           }
         },
         "education": {
@@ -306,9 +352,32 @@
           "administrativeDependency": 0.9,
           "impactOnOtherDomains": {
             "administration": 0.1,
+            "insurance": 0.25,
             "education": 0.3,
             "logistics": 0.05,
             "disaster": 0.4
+          }
+        },
+        "insurance": {
+          "id": "insurance",
+          "name": "保険DX",
+          "emoji": "🛡️",
+          "dailyVolume": 1600.0,
+          "processedBefore": 1600.0,
+          "processedAfter": 448,
+          "timeBefore": 480,
+          "timeAfter": 105.6,
+          "costBefore": 32000000,
+          "costAfter": 7056000,
+          "reductionRate": 0.72,
+          "timeReductionRate": 0.78,
+          "costReductionRate": 0.68,
+          "administrativeDependency": 0.65,
+          "impactOnOtherDomains": {
+            "administration": 0.08,
+            "medical": 0.25,
+            "education": 0.05,
+            "disaster": 0.15
           }
         },
         "education": {

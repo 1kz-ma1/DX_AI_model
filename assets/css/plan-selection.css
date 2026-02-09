@@ -1,0 +1,176 @@
+/* プラン選択セクション */
+.plan-selection {
+  max-width: 1400px;
+  margin: 0 auto 3rem auto;
+  padding: 0 1rem;
+}
+
+.plan-selection-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.plan-selection-header h2 {
+  font-size: 1.8rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.plan-selection-description {
+  color: #64748b;
+  font-size: 0.95rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* プランカード */
+.plan-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.plan-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.plan-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15);
+}
+
+.plan-card-selected {
+  border-color: #3b82f6;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.plan-card-recommended {
+  border-color: #f59e0b;
+}
+
+.plan-card-recommended:hover,
+.plan-card-recommended.plan-card-selected {
+  border-color: #f59e0b;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+.plan-badge {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.plan-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.plan-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+
+.plan-subtitle {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.plan-features li {
+  font-size: 0.9rem;
+  color: #475569;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.plan-features li:last-child {
+  border-bottom: none;
+}
+
+/* カスタムプランセクション */
+.custom-plan-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.toggle-custom-btn {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1e293b;
+  transition: background 0.2s ease;
+}
+
+.toggle-custom-btn:hover {
+  background: #f1f5f9;
+}
+
+.toggle-icon {
+  display: inline-block;
+  width: 1rem;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.custom-plan-content {
+  padding: 1.5rem;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+}
+
+.custom-plan-note {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0;
+  text-align: center;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .plan-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .plan-selection-header h2 {
+    font-size: 1.5rem;
+  }
+}

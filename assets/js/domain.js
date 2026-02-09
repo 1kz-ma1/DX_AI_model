@@ -748,6 +748,13 @@ const HIDDEN_POINT_CHALLENGES = {
       return viewHistory.plain && viewHistory.smart && viewHistory.ai;
     }
   },
+  insurance: {
+    description: '全てのモード（Plain/Smart/AI）を確認すると、隠しポイントを獲得できます',
+    checkCondition: () => {
+      const viewHistory = JSON.parse(localStorage.getItem('viewHistory_insurance') || '{}');
+      return viewHistory.plain && viewHistory.smart && viewHistory.ai;
+    }
+  },
   education: {
     description: 'AIモードとSummaryモードの両方を確認すると、隠しポイントを獲得できます',
     checkCondition: () => {
@@ -865,7 +872,7 @@ function unlockHiddenPoint() {
  */
 function checkCompleteBonus() {
   const hiddenPoints = JSON.parse(localStorage.getItem('hiddenPoints') || '{}');
-  const allDomains = ['administration', 'medical', 'education', 'logistics', 'disaster'];
+  const allDomains = ['administration', 'medical', 'insurance', 'education', 'logistics', 'disaster'];
   
   const allUnlocked = allDomains.every(domain => hiddenPoints[domain]);
   

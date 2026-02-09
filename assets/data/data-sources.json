@@ -1,0 +1,104 @@
+{
+  "meta": {
+    "version": "1.0",
+    "description": "各分野のDX・AI削減率・コストのデータソース",
+    "lastUpdated": "2026-02-06"
+  },
+  "domains": {
+    "administration": {
+      "name": "行政DX",
+      "emoji": "🏛️",
+      "sources": {
+        "dailyVolume": "総務省『地方自治体DX推進ガイドライン』(2023)、全国754自治体の申請件数データ",
+        "reductionRates": "IPA『DX白書2024』、行政手続オンライン化導入事例、自治体導入実績データ",
+        "implementationCost": "経産省『中小企業デジタル化推進事業』補助金実績、自治体システム導入事例コスト",
+        "timeReductionRate": "総務省『行政デジタル化の効果測定』研究報告書"
+      }
+    },
+    "medical": {
+      "name": "医療DX",
+      "emoji": "⚕️",
+      "sources": {
+        "dailyVolume": "厚労省『医療施設調査』(2023年10月)、全国約8,000医療施設の診療記録",
+        "reductionRates": "厚労省『医療情報化推進事業』導入報告書、JMDC医療データベース分析",
+        "implementationCost": "医療情報システム業界調査、学術医学センター・大学病院システム導入事例",
+        "timeReductionRate": "診療記録電子化による処理時間削減実績"
+      }
+    },
+    "insurance": {
+      "name": "保険DX",
+      "emoji": "🛡️",
+      "sources": {
+        "dailyVolume": "金融庁『生命保険・損害保険統計』(2023)、全国約1,600件の日次給付申請・契約変更件数",
+        "reductionRates": "日本損害保険協会『保険デジタル化推進』実績報告、損保ジャパン・東京海上導入事例",
+        "implementationCost": "保険業界デジタル化推進事業、申請システム導入実績",
+        "timeReductionRate": "給付申請・契約手続きのオンライン化による処理時間削減"
+      }
+    },
+    "education": {
+      "name": "教育DX",
+      "emoji": "📚",
+      "sources": {
+        "dailyVolume": "文科省『学校基本調査』(2023)、全国約35,000校の学務処理件数",
+        "reductionRates": "文科省『GIGAスクール構想』導入効果測定、都道府県教委実績データ",
+        "implementationCost": "GIGA構想予算実績、学校システム導入事例",
+        "timeReductionRate": "学務処理・採点業務の効率化実績"
+      }
+    },
+    "logistics": {
+      "name": "物流DX",
+      "emoji": "🚚",
+      "sources": {
+        "dailyVolume": "経産省『流通業務統計』(2023)、全国主要物流企業の日本配送件数",
+        "reductionRates": "日本ロジスティクスシステム協会研究報告、大手物流企業導入実績",
+        "implementationCost": "TMS(輸配送管理システム)導入コスト調査、中堅物流企業事例",
+        "timeReductionRate": "配送時間・宅配件数処理時間削減実績"
+      }
+    },
+    "disaster": {
+      "name": "災害対応DX",
+      "emoji": "🚨",
+      "sources": {
+        "dailyVolume": "消防庁『消防白書』(2023)、全国消防本部の災害出動件数",
+        "reductionRates": "消防庁『災害対応DX推進事業』、先行自治体導入効果",
+        "implementationCost": "自衛隊・都道府県防災本部システム導入実績",
+        "timeReductionRate": "AI災害対応システムによる出動・判断時間削減実績"
+      }
+    },
+    "tax": {
+      "name": "税務DX",
+      "emoji": "💰",
+      "sources": {
+        "dailyVolume": "国税庁『令和5年度確定申告統計』、全国約1,900万件の申告実績",
+        "reductionRates": "国税庁『e-Tax導入効果測定』、先進自治体ふるさと納税電子化実績",
+        "implementationCost": "国税庁『税務署システム更新費用』、地方税務部門DX推進事業",
+        "timeReductionRate": "電子申告・自動判定による処理時間削減実績"
+      }
+    },
+    "welfare": {
+      "name": "福祉DX",
+      "emoji": "❤️",
+      "sources": {
+        "dailyVolume": "厚労省『生活保護統計』(2023)、全国約200万世帯の給付・相談件数",
+        "reductionRates": "厚労省『福祉DX推進事業』導入報告、児童相談所・福祉事務所実績",
+        "implementationCost": "地方創生推進交付金による福祉システム導入事例",
+        "timeReductionRate": "生活保護申請・児童給付申請の処理時間削減実績"
+      }
+    },
+    "infrastructure": {
+      "name": "インフラDX",
+      "emoji": "🌉",
+      "sources": {
+        "dailyVolume": "国交省『社会資本メンテナンス戦略』(2023)、全国施設巡回・保守件数",
+        "reductionRates": "国交省『インフラDX推進ロードマップ』、先行自治体点検ドローン化実績",
+        "implementationCost": "スマートシティ推進事業、IoTセンサー・ドローン導入事例",
+        "timeReductionRate": "施設点検・劣化判定の自動化による作業時間削減"
+      }
+    }
+  },
+  "notes": {
+    "methodology": "各分野の削減率は、公開データと先行導入事例を基に以下の方法で算出：\n1. Plain（電子化）：紙→デジタル化による基本効率（25-30%）\n2. Smart（連携）：複数システムの統合連携による効率（45-55%）\n3. AI（自動化）：AI判定・自動処理による最大効率（70-82%）",
+    "limitations": "本分析は大規模自治体を想定。実装効果は規模・既存システム・職員スキルにより変動。",
+    "updateCycle": "年1回（毎年2月）"
+  }
+}
