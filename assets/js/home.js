@@ -1576,22 +1576,29 @@ function drawScalingEfficiencyChart(metrics) {
   const populations = [300000, 500000, 1000000, 1500000, 2000000];
   const roiData = [];
 
+  // 規模ラベル定義
+  const scaleLabels = {
+    300000: '中核市',
+    500000: '大規模中核市',
+    1000000: '政令指定都市',
+    1500000: '都市圏',
+    2000000: '大規模都市圏'
+  };
   populations.forEach(pop => {
     // スケール係数（現在は100万人ベース）
     const scaleFactor = pop / 1000000;
-    
     // スケール後のメトリクス計算
     const scaledCostSaving = metrics.totalCostSaving * scaleFactor;
     const costSavingInBillions = scaledCostSaving / 100000000; // 億円単位
     const roi = metrics.totalImplementationCost > 0 
       ? scaledCostSaving / metrics.totalImplementationCost 
       : 0;
-    
     roiData.push({
       population: pop,
       costSaving: costSavingInBillions,
       roi: roi,
-      label: `${(pop / 10000).toFixed(0)}万人`
+      label: `${(pop / 10000).toFixed(0)}万人`,
+      scaleLabel: scaleLabels[pop] || ''
     });
   });
 
@@ -1647,10 +1654,15 @@ function drawScalingEfficiencyChart(metrics) {
               const idx = context.dataIndex;
               const roi = roiData[idx].roi;
               const implCost = metrics.totalImplementationCost / 100000000; // 億円
-              return [
+              const scaleLabel = roiData[idx].scaleLabel;
+              const arr = [
                 `実装コスト: ¥${implCost.toFixed(1)}億円`,
                 `ROI倍率: ${roi.toFixed(2)}倍`
               ];
+              if (scaleLabel) {
+                arr.push(`規模: ${scaleLabel}`);
+              }
+              return arr;
             }
           }
         }
