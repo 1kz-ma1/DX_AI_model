@@ -1659,9 +1659,7 @@ function drawScalingEfficiencyChart(metrics) {
                 `実装コスト: ¥${implCost.toFixed(1)}億円`,
                 `ROI倍率: ${roi.toFixed(2)}倍`
               ];
-              if (scaleLabel) {
-                arr.push(`規模: ${scaleLabel}`);
-              }
+              arr.push(`規模: ${scaleLabel}`);
               return arr;
             }
           }
