@@ -21,6 +21,18 @@
   </header>
 
   <main class="hub-container">
+        <!-- デモモード説明カード -->
+        <div id="demoModeInfoCard" class="demo-mode-info-card" style="display: none;">
+          <div class="demo-mode-info-content">
+            <h3>デモモードについて</h3>
+            <ul>
+              <li>このモードでは、DX・AI導入による社会変化をシミュレーションできます。</li>
+              <li>まずは「プラン選択」機能で各プランの効果をグラフで比較できます。</li>
+              <li>さらに「カスタムプラン」で分野ごとにDXレベルを個別設定し、詳細な分析が可能です。</li>
+            </ul>
+            <button id="closeDemoModeInfoBtn" class="demo-mode-info-close-btn">閉じる</button>
+          </div>
+        </div>
     <!-- キャラクター情報バー -->
     <div id="characterInfoBar" class="character-info-bar">
       <!-- home.jsで動的生成 -->
@@ -286,6 +298,22 @@
   <script src="assets/js/api-client.js"></script>
   <script src="assets/js/state.js"></script>
   <script src="assets/js/home.js"></script>
+  <script>
+    // デモモード説明カードの表示制御
+    document.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('experience') === 'demo') {
+        const card = document.getElementById('demoModeInfoCard');
+        if (card) card.style.display = 'block';
+        const closeBtn = document.getElementById('closeDemoModeInfoBtn');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() {
+            card.style.display = 'none';
+          });
+        }
+      }
+    });
+  </script>
 </body>
 
 <script>
