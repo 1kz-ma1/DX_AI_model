@@ -21,18 +21,26 @@
   </header>
 
   <main class="hub-container">
+            <!-- 都市イメージバナー -->
+            <div class="top-image-banner">
+              <img src="assets/img/tokyo-night.jpg" alt="都市イメージ" class="top-image-banner-img">
+              <div class="top-image-overlay"></div>
+            </div>
         <!-- デモモード説明カード（統計セクション風デザイン） -->
         <div id="demoModeInfoCard" class="demo-mode-info-card" style="display: none;">
           <div class="demo-mode-info-content statistics-header" style="background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(59,130,246,0.08); padding: 2rem 1.5rem; margin-bottom: 2rem; display: flex; align-items: flex-start; gap: 1.5rem;">
             <div class="demo-mode-info-icon" style="font-size: 2.5rem; color: #3b82f6;">🎯</div>
-            <div style="flex:1;">
+            <div style="flex:1; display: flex; flex-direction: column; min-width:0;">
               <h2 style="font-size: 1.3rem; color: #1e293b; margin-bottom: 0.5rem;">デモモードのご案内</h2>
               <ul style="color: #475569; font-size: 1rem; margin-bottom: 1rem;">
                 <li>DX・AI導入による社会変化をシミュレーションできます。</li>
                 <li>「プラン選択」機能で各プランの効果をグラフで比較できます。</li>
                 <li>「カスタムプラン」で分野ごとにDXレベルを個別設定し、詳細な分析が可能です。</li>
               </ul>
-              <button id="closeDemoModeInfoBtn" class="demo-mode-info-close-btn" style="background: #3b82f6; color: #fff; border: none; border-radius: 8px; padding: 0.5rem 1.2rem; font-size: 1rem; cursor: pointer;">閉じる</button>
+              <div style="flex:1"></div>
+              <div style="display: flex; justify-content: flex-end;">
+                <button id="closeDemoModeInfoBtn" class="demo-mode-info-close-btn" style="background: #3b82f6; color: #fff; border: none; border-radius: 8px; padding: 0.5rem 1.2rem; font-size: 1rem; cursor: pointer;">閉じる</button>
+              </div>
             </div>
           </div>
         </div>
