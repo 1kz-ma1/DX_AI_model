@@ -1,5 +1,18 @@
 /* intro.css - キャラクター選択ページのスタイル */
+.card-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px; /* カード間の余白 */
+  align-items: start;
+}
 
+/* スマホや狭い画面では1列にする */
+@media (max-width: 767px) {
+  .card-grid{
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
 body {
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   min-height: 100vh;
@@ -277,6 +290,13 @@ body {
   transform: translateY(0);
 }
 
+.card{
+  background: #f9ffff6d;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
 /* デモモードカード */
 .demo-mode-card {
   width: 100%;
@@ -289,7 +309,23 @@ body {
   transition: all 0.3s ease;
 }
 
+.game-mode-card {
+  width: 100%;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 3px solid #8f33ff;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  margin-top: var(--spacing-2xl);
+  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.2);
+  transition: all 0.3s ease;
+}
+
 .demo-mode-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(56, 189, 248, 0.3);
+}
+
+.game-mode-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(56, 189, 248, 0.3);
 }
