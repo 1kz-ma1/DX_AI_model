@@ -13,8 +13,8 @@
   <header class="domain-header">
     <div class="container">
       <nav class="breadcrumb">
-        <a href="#" id="backToHub" class="breadcrumb-link">← 分野一覧に戻る</a>
-        <a href="strategy.html" class="strategy-board-link">🎮 戦略ボードに戻る →</a>
+        <a href="#" id="backToHub"></a>
+        <a href="strategy.html" class="strategy-board-link">🎮 ← 戦略ボードに戻る</a>
       </nav>
       <h1 id="domainTitle" class="domain-title">
         <span id="domainEmoji"></span>
@@ -26,27 +26,6 @@
 
   <main class="domain-main">
     <div class="container">
-      <!-- 体験モード選択（ゲームモードのみ表示） -->
-      <div class="experience-mode-selector" id="experienceModeSelector">
-        <div class="mode-toggle">
-          <button class="toggle-btn active" data-experience="game">
-            🎮 ゲームモード
-            <span class="mode-hint">簡潔で分かりやすい</span>
-          </button>
-          <button class="toggle-btn" data-experience="demo">
-            📊 デモモード
-            <span class="mode-hint">実際のスケール感</span>
-          </button>
-        </div>
-        <div class="mode-description">
-          <div class="description-content active" id="gameDescription">
-            <strong>🎮 ゲームモード：</strong> 簡略化されたデータで、DX・AIの効果を分かりやすく体験できます。ゲーム感覚で隠しポイントを獲得しましょう。
-          </div>
-          <div class="description-content" id="demoDescription">
-            <strong>📊 デモモード：</strong> 実際の規模に近いデータ量で、リアルなDX・AI導入の効果を体験できます。より詳細な分析が可能です。
-          </div>
-        </div>
-      </div>
 
       <!-- モード切替 -->
       <nav class="mode-switcher" role="tablist" aria-label="DXステージ選択">
@@ -54,16 +33,12 @@
           <span class="mode-label">①電子化</span>
           <span class="mode-desc">Plain</span>
         </button>
-        <button class="mode-btn" data-mode="smart" role="tab" aria-selected="false">
-          <span class="mode-label">②工夫</span>
-          <span class="mode-desc">Smart</span>
-        </button>
         <button class="mode-btn" data-mode="ai" role="tab" aria-selected="false">
-          <span class="mode-label">③AI導入</span>
+          <span class="mode-label">②AI導入</span>
           <span class="mode-desc">AI</span>
         </button>
         <button class="mode-btn" data-mode="summary" role="tab" aria-selected="false">
-          <span class="mode-label">④まとめ</span>
+          <span class="mode-label">③まとめ</span>
           <span class="mode-desc">Summary</span>
         </button>
       </nav>
@@ -83,13 +58,7 @@
             </div>
             <span id="metricDocsPlainValue" class="metric-row-value">-</span>
           </div>
-          <div class="metric-row">
-            <span class="metric-row-label">Smart</span>
-            <div class="metric-bar">
-              <div id="metricDocsSmart" class="metric-bar-fill smart"></div>
-            </div>
-            <span id="metricDocsSmartValue" class="metric-row-value">-</span>
-          </div>
+          
           <div class="metric-row">
             <span class="metric-row-label">AI</span>
             <div class="metric-bar">
@@ -107,13 +76,7 @@
             </div>
             <span id="metricInputPlainValue" class="metric-row-value">-</span>
           </div>
-          <div class="metric-row">
-            <span class="metric-row-label">Smart</span>
-            <div class="metric-bar">
-              <div id="metricInputSmart" class="metric-bar-fill smart"></div>
-            </div>
-            <span id="metricInputSmartValue" class="metric-row-value">-</span>
-          </div>
+          
           <div class="metric-row">
             <span class="metric-row-label">AI</span>
             <div class="metric-bar">
@@ -138,13 +101,7 @@
             </div>
             <span id="metricTimePlainValue" class="metric-row-value">-</span>
           </div>
-          <div class="metric-row">
-            <span class="metric-row-label">Smart</span>
-            <div class="metric-bar">
-              <div id="metricTimeSmart" class="metric-bar-fill smart"></div>
-            </div>
-            <span id="metricTimeSmartValue" class="metric-row-value">-</span>
-          </div>
+
           <div class="metric-row">
             <span class="metric-row-label">AI</span>
             <div class="metric-bar">

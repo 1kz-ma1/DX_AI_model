@@ -51,132 +51,6 @@
       </div>
     </section>
 
-    <!-- マイナンバーシステム -->
-    <section class="mynumber-section">
-      <div class="mynumber-card" id="mynumberCard">
-        <div class="mynumber-header">
-          <h2>💳 マイナンバーシステム</h2>
-          <span class="mynumber-status" id="mynumberStatus">未導入</span>
-        </div>
-        
-        <div class="mynumber-body">
-          <div class="mynumber-cost">
-            <span class="cost-label">導入コスト:</span>
-            <span class="cost-value">5pt</span>
-            <span class="cost-note">(高額だが全分野に効果)</span>
-          </div>
-          
-          <div class="mynumber-effect">
-            <h3>📊 導入効果シミュレーション</h3>
-            <div class="effect-comparison">
-              <div class="effect-column">
-                <h4>未導入の場合</h4>
-                <ul id="effectWithout">
-                  <li>AI化の削減率: 約60%</li>
-                  <li>mynumberフィールドは手入力</li>
-                </ul>
-              </div>
-              <div class="effect-column highlight">
-                <h4>導入した場合 ⚡</h4>
-                <ul id="effectWith">
-                  <li>AI化の削減率: 約93%</li>
-                  <li>mynumberフィールドが自動化</li>
-                  <li>全分野で効果が3倍に！</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          
-          <div class="mynumber-warning-box">
-            <strong>⚠️ 重要な注意</strong>
-            <p>マイナンバーシステムは<strong>基盤インフラ</strong>です。各分野を<strong>AI化</strong>して初めて効果を発揮します。マイナンバー単体では入力削減効果はありません。</p>
-          </div>
-          
-          <div class="mynumber-actions">
-            <button class="btn-primary" id="enableMynumberBtn" disabled>
-              💳 導入する (5pt)
-            </button>
-            <button class="btn-secondary" id="mynumberDetailBtn">
-              ℹ️ 詳細を見る
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 効率値ヒストグラム -->
-    <section class="histogram-section">
-      <h2>📊 分野別効率値</h2>
-      <p class="section-description">各分野の効率値（時間削減量）をリアルタイム表示。投資によって全体が向上します。</p>
-      
-      <div id="histogramContainer" class="histogram-container">
-        <div class="histogram-y-axis">
-          <div class="y-label">100分</div>
-          <div class="y-label">75分</div>
-          <div class="y-label">50分</div>
-          <div class="y-label">25分</div>
-          <div class="y-label">0分</div>
-        </div>
-        <div class="histogram-chart">
-          <div class="histogram-bar" data-domain="administration">
-            <div class="bar-fill" id="bar-administration">
-              <span class="bar-value">0分</span>
-            </div>
-            <div class="bar-label">🏛️<br>行政</div>
-          </div>
-          <div class="histogram-bar" data-domain="medical">
-            <div class="bar-fill" id="bar-medical">
-              <span class="bar-value">0分</span>
-            </div>
-            <div class="bar-label">🏥<br>医療</div>
-          </div>
-          <div class="histogram-bar" data-domain="insurance">
-            <div class="bar-fill" id="bar-insurance">
-              <span class="bar-value">0分</span>
-            </div>
-            <div class="bar-label">🛡️<br>保険</div>
-          </div>
-          <div class="histogram-bar" data-domain="education">
-            <div class="bar-fill" id="bar-education">
-              <span class="bar-value">0分</span>
-            </div>
-            <div class="bar-label">🎓<br>教育</div>
-          </div>
-          <div class="histogram-bar" data-domain="logistics">
-            <div class="bar-fill" id="bar-logistics">
-              <span class="bar-value">0分</span>
-            </div>
-            <div class="bar-label">📦<br>物流</div>
-          </div>
-          <div class="histogram-bar" data-domain="disaster">
-            <div class="bar-fill" id="bar-disaster">
-              <span class="bar-value">0分</span>
-            </div>
-            <div class="bar-label">🚨<br>災害</div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="histogram-legend">
-        <div class="legend-item">
-          <span class="legend-color plain"></span>
-          <span>Plain（電子化のみ）</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color smart"></span>
-          <span>Smart（工夫で連携）</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color ai"></span>
-          <span>AI（AI活用）</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color mynumber"></span>
-          <span>＋マイナンバー効果</span>
-        </div>
-      </div>
-    </section>
-
     <!-- 分野別投資 -->
     <section class="domains-section">
       <h2>📋 分野別DX投資</h2>
@@ -198,13 +72,7 @@
                 <span class="mode-cost">0pt</span>
               </span>
             </label>
-            <label class="mode-option">
-              <input type="radio" name="mode-administration" value="smart">
-              <span class="mode-label">
-                <span class="mode-name">Smart</span>
-                <span class="mode-cost">1pt</span>
-              </span>
-            </label>
+
             <label class="mode-option">
               <input type="radio" name="mode-administration" value="ai">
               <span class="mode-label">
@@ -246,13 +114,7 @@
                 <span class="mode-cost">0pt</span>
               </span>
             </label>
-            <label class="mode-option">
-              <input type="radio" name="mode-medical" value="smart">
-              <span class="mode-label">
-                <span class="mode-name">Smart</span>
-                <span class="mode-cost">1pt</span>
-              </span>
-            </label>
+
             <label class="mode-option">
               <input type="radio" name="mode-medical" value="ai">
               <span class="mode-label">
@@ -294,13 +156,7 @@
                 <span class="mode-cost">0pt</span>
               </span>
             </label>
-            <label class="mode-option">
-              <input type="radio" name="mode-insurance" value="smart">
-              <span class="mode-label">
-                <span class="mode-name">Smart</span>
-                <span class="mode-cost">1pt</span>
-              </span>
-            </label>
+            
             <label class="mode-option">
               <input type="radio" name="mode-insurance" value="ai">
               <span class="mode-label">
@@ -342,13 +198,7 @@
                 <span class="mode-cost">0pt</span>
               </span>
             </label>
-            <label class="mode-option">
-              <input type="radio" name="mode-education" value="smart">
-              <span class="mode-label">
-                <span class="mode-name">Smart</span>
-                <span class="mode-cost">1pt</span>
-              </span>
-            </label>
+            
             <label class="mode-option">
               <input type="radio" name="mode-education" value="ai">
               <span class="mode-label">
@@ -390,13 +240,7 @@
                 <span class="mode-cost">0pt</span>
               </span>
             </label>
-            <label class="mode-option">
-              <input type="radio" name="mode-logistics" value="smart">
-              <span class="mode-label">
-                <span class="mode-name">Smart</span>
-                <span class="mode-cost">1pt</span>
-              </span>
-            </label>
+            
             <label class="mode-option">
               <input type="radio" name="mode-logistics" value="ai">
               <span class="mode-label">
@@ -438,13 +282,7 @@
                 <span class="mode-cost">0pt</span>
               </span>
             </label>
-            <label class="mode-option">
-              <input type="radio" name="mode-disaster" value="smart">
-              <span class="mode-label">
-                <span class="mode-name">Smart</span>
-                <span class="mode-cost">1pt</span>
-              </span>
-            </label>
+            
             <label class="mode-option">
               <input type="radio" name="mode-disaster" value="ai">
               <span class="mode-label">
@@ -462,6 +300,132 @@
             <div class="effect-item">
               <span class="effect-label">推定時間:</span>
               <span class="effect-value" id="effect-disaster-time">-</span>
+            </div>
+          </div>
+          
+          <div class="mynumber-warning" style="display: none;">
+            ⚠️ マイナンバー未導入のためAI効果が制限されています
+          </div>
+        </div>
+        
+        <!-- インフラDX -->
+        <div class="domain-card" data-domain="infrastructure">
+          <div class="domain-header">
+            <span class="domain-icon">🏗️</span>
+            <h3>インフラDX</h3>
+            <a href="domain.html?d=infrastructure" class="detail-link" target="_blank">詳細 →</a>
+          </div>
+          
+          <div class="domain-modes">
+            <label class="mode-option">
+              <input type="radio" name="mode-infrastructure" value="plain" checked>
+              <span class="mode-label">
+                <span class="mode-name">Plain</span>
+                <span class="mode-cost">0pt</span>
+              </span>
+            </label>
+
+            <label class="mode-option">
+              <input type="radio" name="mode-infrastructure" value="ai">
+              <span class="mode-label">
+                <span class="mode-name">AI</span>
+                <span class="mode-cost">2pt</span>
+              </span>
+            </label>
+          </div>
+          
+          <div class="domain-effect">
+            <div class="effect-item">
+              <span class="effect-label">入力項目:</span>
+              <span class="effect-value" id="effect-infrastructure-input">-</span>
+            </div>
+            <div class="effect-item">
+              <span class="effect-label">推定時間:</span>
+              <span class="effect-value" id="effect-infrastructure-time">-</span>
+            </div>
+          </div>
+          
+          <div class="mynumber-warning" style="display: none;">
+            ⚠️ マイナンバー未導入のためAI効果が制限されています
+          </div>
+        </div>
+
+        <!-- 税務DX -->
+        <div class="domain-card" data-domain="tax">
+          <div class="domain-header">
+            <span class="domain-icon">🧾</span>
+            <h3>税務DX</h3>
+            <a href="domain.html?d=tax" class="detail-link" target="_blank">詳細 →</a>
+          </div>
+          
+          <div class="domain-modes">
+            <label class="mode-option">
+              <input type="radio" name="mode-tax" value="plain" checked>
+              <span class="mode-label">
+                <span class="mode-name">Plain</span>
+                <span class="mode-cost">0pt</span>
+              </span>
+            </label>
+            
+            <label class="mode-option">
+              <input type="radio" name="mode-tax" value="ai">
+              <span class="mode-label">
+                <span class="mode-name">AI</span>
+                <span class="mode-cost">2pt</span>
+              </span>
+            </label>
+          </div>
+          
+          <div class="domain-effect">
+            <div class="effect-item">
+              <span class="effect-label">入力項目:</span>
+              <span class="effect-value" id="effect-tax-input">-</span>
+            </div>
+            <div class="effect-item">
+              <span class="effect-label">推定時間:</span>
+              <span class="effect-value" id="effect-tax-time">-</span>
+            </div>
+          </div>
+          
+          <div class="mynumber-warning" style="display: none;">
+            ⚠️ マイナンバー未導入のためAI効果が制限されています
+          </div>
+        </div>
+
+        <!-- 福祉DX -->
+        <div class="domain-card" data-domain="welfare">
+          <div class="domain-header">
+            <span class="domain-icon">🤝</span>
+            <h3>福祉DX</h3>
+            <a href="domain.html?d=welfare" class="detail-link" target="_blank">詳細 →</a>
+          </div>
+          
+          <div class="domain-modes">
+            <label class="mode-option">
+              <input type="radio" name="mode-welfare" value="plain" checked>
+              <span class="mode-label">
+                <span class="mode-name">Plain</span>
+                <span class="mode-cost">0pt</span>
+              </span>
+            </label>
+            
+            <label class="mode-option">
+              <input type="radio" name="mode-welfare" value="ai">
+              <span class="mode-label">
+                <span class="mode-name">AI</span>
+                <span class="mode-cost">2pt</span>
+              </span>
+            </label>
+          </div>
+          
+          <div class="domain-effect">
+            <div class="effect-item">
+              <span class="effect-label">入力項目:</span>
+              <span class="effect-value" id="effect-welfare-input">-</span>
+            </div>
+            <div class="effect-item">
+              <span class="effect-label">推定時間:</span>
+              <span class="effect-value" id="effect-welfare-time">-</span>
             </div>
           </div>
           
