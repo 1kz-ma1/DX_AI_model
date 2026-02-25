@@ -1,23 +1,23 @@
-// intro.js - キャラクター選択画面
+// intro.js - シチュエーション選択画面
 
 let charactersData = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // キャラクターデータを読み込み
+  // シチュエーション（キャラクターデータを流用）を読み込み
   try {
     const response = await fetch('assets/data/characters.json');
     charactersData = await response.json();
-    renderCharacterGrid();
+    renderSituationGrid();
   } catch (error) {
     console.error('Failed to load characters:', error);
-    alert('キャラクターデータの読み込みに失敗しました');
+    alert('シチュエーションデータの読み込みに失敗しました');
   }
 });
 
 /**
- * キャラクターグリッドを描画
+ * シチュエーショングリッドを描画
  */
-function renderCharacterGrid() {
+function renderSituationGrid() {
   const grid = document.getElementById('characterGrid');
   if (!grid || !charactersData) return;
   
@@ -57,32 +57,32 @@ function renderCharacterGrid() {
         </div>
       </div>
       
-      <button class="select-character-btn" onclick="selectCharacter('${char.id}')">
-        このキャラクターで体験する →
+      <button class="select-character-btn" onclick="selectSituation('${char.id}')">
+        このシチュエーションで開始 →
       </button>
     </div>
   `).join('');
 }
 
 /**
- * キャラクターを選択
+ * シチュエーションを選択
  */
-function selectCharacter(characterId) {
-  const character = charactersData.characters.find(c => c.id === characterId);
+function selectSituation(situationId) {
+  const character = charactersData.characters.find(c => c.id === situationId);
   if (!character) return;
   
   // 視覚的フィードバック
-  const card = document.querySelector(`[data-character-id="${characterId}"]`);
+  const card = document.querySelector(`[data-character-id="${situationId}"]`);
   if (card) {
     card.style.transform = 'scale(0.95)';
     card.style.opacity = '0.6';
   }
   
-  // プロファイルとして保存
+  // プロファイルとして保存（シチュエーション情報を保存）
   const profile = {
-    character: characterId,
-    characterName: character.name,
-    characterRole: character.role,
+    situation: situationId,
+    situationLabel: character.situation,
+    personaName: character.name,
     timestamp: new Date().toISOString()
   };
   
