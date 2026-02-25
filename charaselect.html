@@ -23,9 +23,87 @@
     <section class="situation-selection">
       <h2 class="section-title">🧩 シチュエーションを選択してください</h2>
       <div id="characterGrid" class="character-grid">
-        <!-- JSで動的生成 -->
+        <!-- 静的カード（JS不要で安定表示） -->
+
+        <div class="character-card situation-card disabled" data-domain-id="administration">
+          <div class="situation-header">
+            <div class="situation-icon">🏛️</div>
+            <h3 class="situation-title">行政DX</h3>
+          </div>
+          <p class="situation-summary">住民票・各種申請・補助金手続などの再設計デモ</p>
+          <div class="domain-priorities">
+            <strong>関わる分野：</strong>
+            <div class="priority-badges"><span class="priority-badge">行政</span></div>
+          </div>
+          <button class="select-character-btn disabled" disabled>未実装（準備中）</button>
+        </div>
+
+        <div class="character-card situation-card" data-domain-id="medical">
+          <div class="situation-header">
+            <div class="situation-icon">🏥</div>
+            <h3 class="situation-title">医療-受付</h3>
+          </div>
+          <p class="situation-summary">入退院などの手続きを、いかに効率化できるかを体験できます！</p>
+          <div class="domain-priorities">
+            <strong>関わる分野：</strong>
+            <div class="priority-badges"><span class="priority-badge">医療</span></div>
+          </div>
+          <button class="select-character-btn" data-domain="medical">このシチュエーションで開始 →</button>
+        </div>
+
+        <div class="character-card situation-card disabled" data-domain-id="insurance">
+          <div class="situation-header">
+            <div class="situation-icon">🛡️</div>
+            <h3 class="situation-title">保険DX</h3>
+          </div>
+          <p class="situation-summary">保険請求・審査のプロセスを再設計するデモ</p>
+          <div class="domain-priorities">
+            <strong>関わる分野：</strong>
+            <div class="priority-badges"><span class="priority-badge">保険</span></div>
+          </div>
+          <button class="select-character-btn disabled" disabled>未実装（準備中）</button>
+        </div>
+
+        <div class="character-card situation-card disabled" data-domain-id="education">
+          <div class="situation-header">
+            <div class="situation-icon">📚</div>
+            <h3 class="situation-title">教育DX</h3>
+          </div>
+          <p class="situation-summary">学校事務・出欠・成績管理の効率化デモ</p>
+          <div class="domain-priorities">
+            <strong>関わる分野：</strong>
+            <div class="priority-badges"><span class="priority-badge">教育</span></div>
+          </div>
+          <button class="select-character-btn disabled" disabled>未実装（準備中）</button>
+        </div>
+
+        <div class="character-card situation-card disabled" data-domain-id="logistics">
+          <div class="situation-header">
+            <div class="situation-icon">📦</div>
+            <h3 class="situation-title">物流DX</h3>
+          </div>
+          <p class="situation-summary">配送・在庫・伝票処理の効率化デモ</p>
+          <div class="domain-priorities">
+            <strong>関わる分野：</strong>
+            <div class="priority-badges"><span class="priority-badge">物流</span></div>
+          </div>
+          <button class="select-character-btn disabled" disabled>未実装（準備中）</button>
+        </div>
+
+        <div class="character-card situation-card disabled" data-domain-id="disaster">
+          <div class="situation-header">
+            <div class="situation-icon">🚨</div>
+            <h3 class="situation-title">災害対応DX</h3>
+          </div>
+          <p class="situation-summary">災害時の情報共有と支援物資管理のデモ</p>
+          <div class="domain-priorities">
+            <strong>関わる分野：</strong>
+            <div class="priority-badges"><span class="priority-badge">災害</span></div>
+          </div>
+          <button class="select-character-btn disabled" disabled>未実装（準備中）</button>
+        </div>
+
       </div>
-      
 
     </section>
 
@@ -35,6 +113,21 @@
   </main>
 
   <script src="assets/js/state.js"></script>
-  <script src="assets/js/intro.js"></script>
+  <script>
+    // 簡易ハンドラ: 表示は静的にして安定化。開始ボタンだけJSで処理
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('button[data-domain]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const domainId = btn.getAttribute('data-domain');
+          if (!domainId) return;
+          const card = document.querySelector(`[data-domain-id="${domainId}"]`);
+          if (card) { card.style.transform = 'scale(0.95)'; card.style.opacity = '0.6'; }
+          const profile = { situation: domainId, situationLabel: domainId, timestamp: new Date().toISOString() };
+          saveProfile(profile);
+          setTimeout(() => navigate('strategy.html'), 200);
+        });
+      });
+    });
+  </script>
 </body>
 </html>

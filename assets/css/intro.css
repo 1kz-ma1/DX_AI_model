@@ -398,6 +398,29 @@ body {
 }
 
 /* レスポンシブデザイン */
+
+/* 無効化されたシチュエーション（グレーアウト） */
+.situation-card.disabled {
+  filter: grayscale(100%);
+  opacity: 0.5;
+  pointer-events: none;
+  border-color: var(--color-gray-300);
+  background: linear-gradient(180deg, #f7fafc 0%, #f3f4f6 100%);
+}
+
+.select-character-btn.disabled {
+  background: linear-gradient(180deg, #e5e7eb, #d1d5db);
+  color: var(--color-gray-600);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.situation-icon {
+  font-size: 2.5rem;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: var(--spacing-sm);
+}
 @media (max-width: 768px) {
   .intro-container {
     padding: var(--spacing-lg);
