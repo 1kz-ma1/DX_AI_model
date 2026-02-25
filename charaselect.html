@@ -124,7 +124,7 @@
           if (card) { card.style.transform = 'scale(0.95)'; card.style.opacity = '0.6'; }
           const profile = { situation: domainId, situationLabel: '医療-受付', timestamp: new Date().toISOString() };
           saveProfile(profile);
-          setTimeout(() => navigate('../game-mode/hospital-dx.html'), 200);
+          setTimeout(() => navigate('hospital-dx.html'), 200);
         });
       });
     });
