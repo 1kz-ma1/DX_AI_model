@@ -1,82 +1,71 @@
-// intro.js - シチュエーション選択画面
+// intro.js - シチュエーション選択画面（ドメイン単位）
 
-let charactersData = null;
+let domainsData = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // シチュエーション（キャラクターデータを流用）を読み込み
   try {
-    const response = await fetch('assets/data/characters.json');
-    charactersData = await response.json();
-    renderSituationGrid();
-  } catch (error) {
-    console.error('Failed to load characters:', error);
+    const res = await fetch('assets/data/domains.json');
+    domainsData = await res.json();
+    renderDomainGrid();
+  } catch (err) {
+    console.error('Failed to load domains:', err);
     alert('シチュエーションデータの読み込みに失敗しました');
   }
 });
 
 /**
- * シチュエーショングリッドを描画
+ * ドメイン（シチュエーション）カードを描画
  */
-function renderSituationGrid() {
+function renderDomainGrid() {
   const grid = document.getElementById('characterGrid');
-  if (!grid || !charactersData) return;
-  
-  grid.innerHTML = charactersData.characters.map(char => `
-    <div class="character-card situation-card" data-character-id="${char.id}">
-      <div class="situation-header">
-        <h3 class="situation-title">${char.situation}</h3>
-      </div>
-      <p class="situation-summary">${char.description}</p>
+  if (!grid || !domainsData || !Array.isArray(domainsData.domains)) return;
 
-      <div class="domain-priorities">
-        <strong>関わる分野：</strong>
-        <div class="priority-badges">
-          ${Object.entries(char.domains).filter(([_, data]) => data.priority !== 'none').map(([domain, data]) => {
-            const domainNames = {
-              administration: '行政',
-              medical: '医療',
-              education: '教育',
-              logistics: '物流',
-              disaster: '災害'
-            };
-            const priorityClass = data.priority === 'critical' ? 'critical' : data.priority === 'high' ? 'high' : 'medium';
-            return `<span class="priority-badge ${priorityClass}">${domainNames[domain]}</span>`;
-          }).join('')}
+  grid.innerHTML = domainsData.domains.map(domain => {
+    const disabled = domain.id !== 'medical';
+    const disabledClass = disabled ? 'disabled' : '';
+    const buttonHtml = disabled
+      ? `<button class="select-character-btn disabled" disabled>未実装（準備中）</button>`
+      : `<button class="select-character-btn" onclick="selectSituation('${domain.id}')">このシチュエーションで開始 →</button>`;
+
+    return `
+      <div class="character-card situation-card ${disabledClass}" data-domain-id="${domain.id}">
+        <div class="situation-header">
+          <div class="situation-icon">${domain.emoji || '🧩'}</div>
+          <h3 class="situation-title">${domain.name}</h3>
         </div>
+        <p class="situation-summary">${(domain.description || domain.intro || '').replace(/\n/g,'')}</p>
+        <div class="domain-priorities">
+          <strong>関わる分野：</strong>
+          <div class="priority-badges">
+            <span class="priority-badge">${domain.name.replace(/DX/g,'')}</span>
+          </div>
+        </div>
+        ${buttonHtml}
       </div>
-
-      <button class="select-character-btn" onclick="selectSituation('${char.id}')">
-        このシチュエーションで開始 →
-      </button>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 /**
- * シチュエーションを選択
+ * シチュエーション（ドメイン）を選択
  */
-function selectSituation(situationId) {
-  const character = charactersData.characters.find(c => c.id === situationId);
-  if (!character) return;
-  
-  // 視覚的フィードバック
-  const card = document.querySelector(`[data-character-id="${situationId}"]`);
+function selectSituation(domainId) {
+  const domain = (domainsData.domains || []).find(d => d.id === domainId);
+  if (!domain) return;
+
+  const card = document.querySelector(`[data-domain-id="${domainId}"]`);
   if (card) {
     card.style.transform = 'scale(0.95)';
     card.style.opacity = '0.6';
   }
-  
-  // プロファイルとして保存（シチュエーション情報のみ）
+
   const profile = {
-    situation: situationId,
-    situationLabel: character.situation,
+    situation: domainId,
+    situationLabel: domain.name,
     timestamp: new Date().toISOString()
   };
-  
+
   saveProfile(profile);
-  
-  // 少し待ってから遷移（視覚的フィードバックのため）
-  setTimeout(() => {
-    navigate('strategy.html');
-  }, 200);
+
+  setTimeout(() => navigate('strategy.html'), 200);
 }
