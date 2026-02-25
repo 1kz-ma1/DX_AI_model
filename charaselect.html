@@ -122,9 +122,9 @@
           if (!domainId) return;
           const card = document.querySelector(`[data-domain-id="${domainId}"]`);
           if (card) { card.style.transform = 'scale(0.95)'; card.style.opacity = '0.6'; }
-          const profile = { situation: domainId, situationLabel: domainId, timestamp: new Date().toISOString() };
+          const profile = { situation: domainId, situationLabel: '医療-受付', timestamp: new Date().toISOString() };
           saveProfile(profile);
-          setTimeout(() => navigate('strategy.html'), 200);
+          setTimeout(() => navigate('../game-mode/hospital-dx.html'), 200);
         });
       });
     });
