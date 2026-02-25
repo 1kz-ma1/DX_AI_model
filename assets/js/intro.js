@@ -22,24 +22,12 @@ function renderSituationGrid() {
   if (!grid || !charactersData) return;
   
   grid.innerHTML = charactersData.characters.map(char => `
-    <div class="character-card" data-character-id="${char.id}">
-      <div class="character-emoji">${char.emoji}</div>
-      <h3 class="character-name">${char.name}</h3>
-      <div class="character-role">${char.role}</div>
-      <p class="character-description">${char.description}</p>
-      
-      <div class="character-situation">
-        <strong>状況：</strong>
-        <p>${char.situation}</p>
+    <div class="character-card situation-card" data-character-id="${char.id}">
+      <div class="situation-header">
+        <h3 class="situation-title">${char.situation}</h3>
       </div>
-      
-      <div class="character-pain-points">
-        <strong>困りごと：</strong>
-        <ul>
-          ${char.pain_points.map(point => `<li>${point}</li>`).join('')}
-        </ul>
-      </div>
-      
+      <p class="situation-summary">${char.description}</p>
+
       <div class="domain-priorities">
         <strong>関わる分野：</strong>
         <div class="priority-badges">
@@ -56,7 +44,7 @@ function renderSituationGrid() {
           }).join('')}
         </div>
       </div>
-      
+
       <button class="select-character-btn" onclick="selectSituation('${char.id}')">
         このシチュエーションで開始 →
       </button>
@@ -78,11 +66,10 @@ function selectSituation(situationId) {
     card.style.opacity = '0.6';
   }
   
-  // プロファイルとして保存（シチュエーション情報を保存）
+  // プロファイルとして保存（シチュエーション情報のみ）
   const profile = {
     situation: situationId,
     situationLabel: character.situation,
-    personaName: character.name,
     timestamp: new Date().toISOString()
   };
   
